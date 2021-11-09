@@ -1,5 +1,5 @@
 # grahami
-code associated with grahami ref genome project
+code associated with grahami reference genome project
 
 # fastqc
 quality filtering reads
