@@ -57,3 +57,6 @@ download from OnDemand and input into excel
 
 shows how well pilon worked
 
+"Corrected 1996 snps; corrected 58 small insertions totaling 818 bases, 375 small deletions totaling 7991 bases"
+
+total snps:small insertions:small deletions
