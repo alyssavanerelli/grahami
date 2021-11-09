@@ -1,0 +1,9 @@
+eval "$(conda shell.bash hook)"
+conda activate busco
+
+echo "Bash commands for the analysis you are going to run"
+#busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_20Oct2018_jSags.fasta -c 16 -l vertebrata_odb10 -o HiC_2 -m genome
+#busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_09Oct2018_QyJEk.fasta -c 16 -l vertebrata_odb10 -o Chicago -m genome
+#busco -i /projects/f_geneva_1/alyssa/grahami/Asm2m66700.scaffolds.fa -c 16 -l vertebrata_odb10 -o Illumina -m genome
+#busco -i /projects/f_geneva_1/alyssa/grahami/sealer/run1_scaffold.fa -c 16 -l vertebrata_odb10 -o run1 -m genome
+busco -i /projects/f_geneva_1/alyssa/grahami/sealer/run2_scaffold.fa -c 16 -l vertebrata_odb10 -o run2 -m genome
