@@ -1,0 +1,12 @@
+### pull certain lines from text file and add to a text file ###
+
+grep "Corrected" slurm-*-pilonloop.out | cut -f 2,5,11 -d " " > summary_data
+
+  #2,5,11 refers to "column" with numbers - columns are separated by spaces in document
+  
+  
+### convert file to csv
+
+sed 's/ \+/,/g' summary_data > summary_data.csv
+
+### download from OnDemand and export into excel to get summary of gaps filled
