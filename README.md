@@ -26,3 +26,5 @@ need to create and activate a conda environment first
 evaluating the completeness of the genome at each step
 
 checks how many conserved vertebrate genes show up in our genomes
+
+need to download the vertebrata genes - cannot remember how to do this ?
