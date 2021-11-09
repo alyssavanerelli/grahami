@@ -31,4 +31,6 @@ need to download the vertebrata genes - cannot remember how to do this ?
 
 # pilon
 ## split
-first need to split genome into scaffolds
+first need to split genome into scaffolds because of memory issues
+
+split file into
