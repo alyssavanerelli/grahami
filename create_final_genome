@@ -1,0 +1,3 @@
+## cd into pilon_out
+
+cat * > grahami.fa
