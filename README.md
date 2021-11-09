@@ -63,3 +63,9 @@ total snps:small insertions:small deletions
 
 # create final genome
 merge all pilon fasta files into one genome file
+
+# sort and rename
+sort genome file by size and rename into chromosomes
+
+# final busco
+run busco again to track improvements
