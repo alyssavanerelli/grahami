@@ -1,0 +1,14 @@
+#!/bin/bash
+LINES=$(cut -f 1 /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/[split scaffold file])
+for LINE in $LINES
+do
+  sbatch pilon_loop.sh "$LINE"
+  sleep 0.25
+done
+
+
+### sleep line will delay job submission so all jobs will not be submitted at once ###
+
+### to run this file after creating need to 
+chmod 755 run_loop.sh
+./run_loop
