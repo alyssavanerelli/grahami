@@ -48,5 +48,12 @@ will redirect output to different folders
 ## run_loop
 make file to run the loop with input
 
+# gap_summary_stats
+create a file pulling number of gaps filled from slurm output files
 
+convert to csv
+
+download from OnDemand and input into excel
+
+shows how well pilon worked
 
