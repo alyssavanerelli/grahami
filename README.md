@@ -5,6 +5,8 @@ code associated with grahami reference genome project
 quality filtering reads
 
 do this for each illumina read file
+
+files need to be unzipped
   
 # sealer
 use illumina short reads to fill in gaps in the current reference genome 
