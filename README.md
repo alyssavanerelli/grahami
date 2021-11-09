@@ -39,5 +39,14 @@ will do separately for each illumina read
 # split by scaffold
 first need to split genome into scaffolds because of memory issues
 
-# pilon loop
+# pilon
+## pilon_loop
 making a loop file that will extract chr from fasta file, extract chr from bam file, index bam file, and run pilon for each scaffold in the genome separately
+
+will redirect output to different folders
+
+## run_loop
+make file to run the loop with input
+
+
+
