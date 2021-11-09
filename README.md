@@ -29,8 +29,13 @@ checks how many conserved vertebrate genes show up in our genomes
 
 need to download the vertebrata genes - cannot remember how to do this ?
 
-# pilon
-## split
+# bwa
+align illumina reads to current genome with bwa
+
+creates bam file
+
+# split by scaffold
 first need to split genome into scaffolds because of memory issues
 
-split file into
+# pilon loop
+making a loop file that will extract chr from fasta file, extract chr from bam file, index bam file, and run pilon for each scaffold in the genome separately
