@@ -69,3 +69,6 @@ sort genome file by size and rename into chromosomes
 
 # final busco
 run busco again to track improvements
+
+# final stats
+run stats again
