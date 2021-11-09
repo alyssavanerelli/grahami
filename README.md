@@ -34,6 +34,8 @@ align illumina reads to current genome with bwa
 
 creates bam file
 
+will do separately for each illumina read
+
 # split by scaffold
 first need to split genome into scaffolds because of memory issues
 
