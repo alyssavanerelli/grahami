@@ -1,0 +1,11 @@
+echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load java                                # load any modules needed
+
+
+echo "Bash commands for the analysis you are going to run"
+#stats.sh in=run3_scaffold.fa
+#stats.sh in=anolis_cristatellu_09Oct2018_QyJEk.fasta
+#stats.sh in=Asm2m66700.scaffolds.fa
+#stats.sh in=/projects/f_geneva_1/alyssa/grahami/sealer/run1_scaffold.fa
+stats.sh in=/projects/f_geneva_1/alyssa/grahami/sealer/run2_scaffold.fa
