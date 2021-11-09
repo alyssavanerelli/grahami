@@ -1,0 +1,22 @@
+species=$1
+
+echo "Bash commands for the analysis you are going to run"
+echo ""
+echo "##### sort by size and rename sequence"
+sortbyname.sh -Xmx4g in=${species}.fa out=${species}_sorted.fa length descending
+
+# add dummy to beginning
+printf ">dummy\nNNN\n" | cat - ${species}_sorted.fa > temp && mv temp ${species}_sorted.fa
+
+
+#rename
+rename.sh in=${species}_sorted.fa out=${species}_sorted_renamed.fa prefix=scaffold -Xmx10g fastawrap=500000000
+
+# remove single sequence entry from multifasta
+cat ${species}_sorted_renamed.fa | awk '{if (substr($0,1) == ">scaffold_0") censor=1; else if (substr($0,1,1) == ">") censor=0; if (censor==0) print $0}' > ${species}_fixed.fasta
+
+rm ${species}_sorted.fa
+rm ${species}_sorted_renamed.fa
+
+
+### to run this file: "sbatch sort_rename.sh grahami.fa" ###
