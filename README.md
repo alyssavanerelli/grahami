@@ -28,3 +28,7 @@ evaluating the completeness of the genome at each step
 checks how many conserved vertebrate genes show up in our genomes
 
 need to download the vertebrata genes - cannot remember how to do this ?
+
+# pilon
+## split
+first need to split genome into scaffolds
