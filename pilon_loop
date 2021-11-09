@@ -1,0 +1,31 @@
+echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load java
+module load samtools
+
+CHRNAME=$1
+
+echo "####### extract chr from fasta file"
+samtools faidx /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/run2_scaffold.fa "${CHRNAME}" > /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/fastas/${CHRNAME}_ONLY.fa
+
+
+echo ""
+echo "####### extract chr from bam file"
+samtools view -b /projects/f_geneva_1/alyssa/grahami/pilon/149_bwa_aligned.bam "${CHRNAME}" > /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_149.bam
+samtools view -b /projects/f_geneva_1/alyssa/grahami/pilon/150_bwa_aligned.bam "${CHRNAME}" > /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_150.bam
+
+
+echo ""
+echo "####### run pilon"
+echo ""
+echo "################### index with samtools"
+samtools index -b /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_149.bam
+samtools index -b /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_150.bam
+
+echo ""
+echo "################### run pilon"
+java -Xmx170G -jar ~/bin/pilon-1.24.jar \
+--genome /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/fastas/${CHRNAME}_ONLY.fa \
+--bam /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_149.bam \
+--bam /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_150.bam \
+--output /projects/f_geneva_1/alyssa/grahami/pilon/pilon_out/run2_pilon_${CHRNAME} --diploid
