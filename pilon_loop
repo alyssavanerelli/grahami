@@ -29,3 +29,8 @@ java -Xmx170G -jar ~/bin/pilon-1.24.jar \
 --bam /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_149.bam \
 --bam /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_150.bam \
 --output /projects/f_geneva_1/alyssa/grahami/pilon/pilon_out/run2_pilon_${CHRNAME} --diploid
+
+
+
+#### can run just this file with [sbatch pilon_loop.sh "scaffold name"] for one file 
+
