@@ -1,0 +1,25 @@
+#### getting scaffold sizes ####
+
+echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load java
+module load samtools
+
+echo "Bash commands for the analysis you are going to run"
+samtools faidx /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/run2_scaffold.fa
+ cut -f1-2 /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/run2_scaffold.fa.fai > scaffold_sizes.txt
+ 
+ 
+#### sort by size ####
+ 
+cut -f2 scaffold_sizes.txt | sort -n > scaffold_sizes_sort.txt
+
+
+#### split into files with 500 lines each ####
+
+split -l 500 scaffold_sizes_sort.txt scaffolds_
+
+
+#### split largest file into smaller files with 100 lines each ####
+
+split -l 100 scaffolds_bf large_scaffolds_
