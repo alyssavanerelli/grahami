@@ -1,0 +1,9 @@
+echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load java
+module load samtools
+
+
+echo "Bash commands for the analysis you are going to run"
+samtools flagstat /projects/f_geneva_1/alyssa/grahami/pilon/149_bwa_aligned.bam
+#samtools flagstat /projects/f_geneva_1/alyssa/grahami/pilon/150_bwa_aligned.bam
