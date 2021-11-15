@@ -76,3 +76,9 @@ run busco again to track improvements
 
 # final stats
 run stats again
+
+
+# Annotation
+labeling the genome
+
+## maker
