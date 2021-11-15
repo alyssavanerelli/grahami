@@ -38,6 +38,8 @@ creates bam file
 
 will do separately for each illumina read
 
+tmp bam files cannot already exist (if a run failed)
+
 # split by scaffold
 first need to split genome into scaffolds because of memory issues
 
