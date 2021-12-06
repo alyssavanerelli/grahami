@@ -28,6 +28,7 @@ _optionally_ modify maker_evm.ctl and maker_bopts.ctl
 input genome, protein homology evidence, repeat masker model org (_Anolis carolinensis?_)
 
 **how to find repeat masker model organism**
+go to code
 
 use `FamDB` to search database for transposable element and repetitive DNA families.
 
