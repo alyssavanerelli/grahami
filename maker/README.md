@@ -21,4 +21,13 @@ do not modify maker_exe.ctl
 
 _optionally_ modify maker_evm.ctl and maker_bopts.ctl
 
-## modify maker_opts.ctl
+**will modify this control file each run _make new file each time_**
+
+# round 1
+## modify control file
+input genome, protein homology evidence
+
+/projects/f_geneva_1/alyssa/grahami/annotation/AnoCar2.0_protein_GCF_000090745.1.faa
+/projects/f_geneva_1/alyssa/grahami/annotation/PogVit1.1_protein_GCF_900067755.1.faa
+/projects/f_geneva_1/alyssa/grahami/annotation/Shinisaurus_crocodilurus_gene.pep
+/projects/f_geneva_1/alyssa/grahami/annotation/[sagrei]
