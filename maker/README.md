@@ -28,6 +28,7 @@ _optionally_ modify maker_evm.ctl and maker_bopts.ctl
 input genome, protein homology evidence, repeat masker model org (_Anolis carolinensis?_)
 
 **how to find repeat masker model organism**
+
 go to code
 
 use `FamDB` to search database for transposable element and repetitive DNA families.
@@ -39,8 +40,6 @@ wget https://raw.githubusercontent.com/Dfam-consortium/FamDB/master/famdb.py
 famdb.py -i dfam.h5 names Anolis
 ```
 
-Singularity> /opt/sw/packages/gcc-4_8/singularity/3.1.0/bin/singularity/RepeatMasker/famdb.py -i 
-/opt/sw/packages/gcc-4_8/singularity/3.1.0/bin/singularity/RepeatMaskerLib.h5 names Heliconius
 
 
 
