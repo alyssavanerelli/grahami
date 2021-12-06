@@ -1,3 +1,10 @@
+# software and data needed
+## software
+1. [RepeatModeler](http://www.repeatmasker.org/RepeatModeler/) and [RepeatMasker](http://www.repeatmasker.org/RMDownload.html) with all dependencies and [RepBase](https://www.girinst.org/repbase/)
+2. 
+
+ 
+
 # make control files
 run interactive job on login node
 
