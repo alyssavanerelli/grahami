@@ -21,13 +21,27 @@ do not modify maker_exe.ctl
 
 _optionally_ modify maker_evm.ctl and maker_bopts.ctl
 
-**will modify this control file each run _make new file each time_**
+**will modify this control file each run - _make new file each time_**
 
 # round 1
 ## modify control file
-input genome, protein homology evidence
+input genome, protein homology evidence, repeat masker model org (_Anolis carolinensis?_)
 
-/projects/f_geneva_1/alyssa/grahami/annotation/AnoCar2.0_protein_GCF_000090745.1.faa
-/projects/f_geneva_1/alyssa/grahami/annotation/PogVit1.1_protein_GCF_900067755.1.faa
-/projects/f_geneva_1/alyssa/grahami/annotation/Shinisaurus_crocodilurus_gene.pep
-/projects/f_geneva_1/alyssa/grahami/annotation/[sagrei]
+**how to find repeat masker model organism**
+
+use `FamDB` to search database for transposable element and repetitive DNA families.
+
+commands are:
+```
+pip3 install --user h5py
+wget https://raw.githubusercontent.com/Dfam-consortium/FamDB/master/famdb.py
+famdb.py -i dfam.h5 names Anolis
+```
+
+Singularity> /opt/sw/packages/gcc-4_8/singularity/3.1.0/bin/singularity/RepeatMasker/famdb.py -i 
+/opt/sw/packages/gcc-4_8/singularity/3.1.0/bin/singularity/RepeatMaskerLib.h5 names Heliconius
+
+
+
+
+# round 2
