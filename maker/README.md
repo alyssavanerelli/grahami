@@ -13,13 +13,17 @@
  
 
 # make control files
+```
+module load singularity
+
+srun -p p_ccib_1 singularity exec /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif maker -CTL
+```
+
 run interactive job on login node
 
-will crease 4 files. only required to modify maker_opts.ctl
+will crease 3 files. only required to modify maker_opts.ctl
 
 do not modify maker_exe.ctl
-
-_optionally_ modify maker_evm.ctl and maker_bopts.ctl
 
 **will modify this control file each run - _make new file each time_**
 
