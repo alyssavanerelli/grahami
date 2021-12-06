@@ -1,6 +1,13 @@
-srun --pty p_ccib_1 singularity shell --cleanenv /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+singularity shell --cleanenv /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
 
-Singularity> /usr/local/share/RepeatMasker/famdb.py -i /usr/local/share/RepeatMasker/Libraries/RepeatMaskerLib.h5 names Anolis
+Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annotation> 
+/usr/local/share/RepeatMasker/famdb.py -i /usr/local/share/RepeatMasker/Libraries/RepeatMaskerLib.h5 names Anolis_carolinensis
+
+## found anolis_carolinensis
+
+
+Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annotation> exit
+
 
 
 
