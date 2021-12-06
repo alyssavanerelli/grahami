@@ -35,17 +35,4 @@ input genome, protein homology evidence, repeat masker model org (_Anolis caroli
 
 go to code
 
-use `FamDB` to search database for transposable element and repetitive DNA families.
-
-commands are:
-```
-pip3 install --user h5py
-wget https://raw.githubusercontent.com/Dfam-consortium/FamDB/master/famdb.py
-famdb.py -i dfam.h5 names Anolis
-```
-
-
-
-
-
 # round 2
