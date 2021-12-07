@@ -21,7 +21,7 @@ srun -p p_ccib_1 singularity exec /projects/f_geneva_1/programs/maker:2.31.11-re
 
 run interactive job on login node
 
-will crease 3 files. only required to modify maker_opts.ctl
+will create 3 files - we are only required to modify maker_opts.ctl
 
 do not modify maker_exe.ctl
 
@@ -35,4 +35,18 @@ input genome, protein homology evidence, repeat masker model org (_Anolis caroli
 
 go to code
 
+
+
+
+
+
+
+
+
 # round 2
+
+
+
+
+
+
