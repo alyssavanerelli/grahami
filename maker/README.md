@@ -21,10 +21,10 @@ module load singularity
 srun -p p_ccib_1 singularity exec /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif maker -CTL
 ```
 
-run interactive job on login node
-
-will create 3 files
-**1. maker_bopts.ctl***
+this will create 3 files
+1. **maker_bopts.ctl**
+2. **maker_exe.ctl**
+3. **maker_opts.ctl**
 
 we are only required to modify maker_opts.ctl
 
@@ -34,11 +34,11 @@ do not modify maker_exe.ctl
 
 # round 1
 ## modify control file
-input genome, protein homology evidence, repeat masker model org (_Anolis carolinensis?_)
+input genome, protein homology evidence, repeat masker model org (_Anolis carolinensis_)
 
 **how to find repeat masker model organism**
 
-go to code
+launch `singularity` and search for species name. more detail in code
 
 ## make .sh files to run maker
 
