@@ -7,10 +7,12 @@
 5. [SNAP](http://korflab.ucdavis.edu/software.html)
 6. [BEDtools](https://bedtools.readthedocs.io/en/latest/)
 
+_maker, RepeatModeler, and RepeatMasker are included with singularity that is already installed_
+
 ## data/resources
 1. assembled reference genome, in fasta format
 2. protein sequences from related species, in fasta format
- 
+
 
 # make control files
 ```
@@ -21,7 +23,10 @@ srun -p p_ccib_1 singularity exec /projects/f_geneva_1/programs/maker:2.31.11-re
 
 run interactive job on login node
 
-will create 3 files - we are only required to modify maker_opts.ctl
+will create 3 files
+**1. maker_bopts.ctl***
+
+we are only required to modify maker_opts.ctl
 
 do not modify maker_exe.ctl
 
@@ -35,7 +40,21 @@ input genome, protein homology evidence, repeat masker model org (_Anolis caroli
 
 go to code
 
+## make .sh files to run maker
 
+### aug
+
+
+### sub
+
+
+### bsh
+
+
+### trans_aug
+
+
+### gff
 
 
 
