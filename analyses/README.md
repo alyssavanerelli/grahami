@@ -1,5 +1,5 @@
 # next steps
-## [juicer](grahami/analyses/juicer/README.md)
+## juicer
 HiC maps - diagonal graph
 
 using HiC assembly and reference genome
