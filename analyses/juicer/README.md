@@ -46,7 +46,6 @@ ln -s juicer_tools_1.22.01.jar juicer_tools.jar           #creating a file juice
 cd ..
 mkdir AnoGra                                              #making my working directory for Anolis grahami
 mkdir fastq                                               #directory where fastq HiC reads will go
-cp ../anolis_cristatellu_20Oct2018_jSags.fasta AnoGra/fastq/
 ```
 
 # Running Juicer on the cluster
@@ -65,7 +64,7 @@ bwa index /projects/f_geneva_1/alyssa/grahami/juicerdir/references/AnoGra1.1.fa
 ```
 
 2. You should have a working directory `juicerdir/AnoGra/` that contains `fastq/`
-   - fastq (zipped or unzipped) files should be either copied or soft-linked to this folder
+   - fastq reads (zipped or unzipped) should be either copied or soft-linked to this folder
 
 3. Type `screen` then launch Juicer:
 
