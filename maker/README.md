@@ -43,7 +43,19 @@ launch `singularity` and search for species name. more detail in code
 ## make .sh files to run maker
 
 ### aug
+run after bsh
 
+Augustus configuration
+
+This will train Augustus gene models through BUSCO using the vertebrata_odb10 dataset
+
+```
+#path to vertebrata_odb10
+/projects/f_geneva_1/alyssa/grahami/busco
+```
+
+
+busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_20Oct2018_jSags.fasta -c 16 -l vertebrata_odb10 -o HiC_2 -m genome
 
 ### sub
 
@@ -52,7 +64,7 @@ launch `singularity` and search for species name. more detail in code
 
 
 ### trans_aug
-
+Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database
 
 ### gff
 
