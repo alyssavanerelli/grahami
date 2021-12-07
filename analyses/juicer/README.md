@@ -26,3 +26,71 @@ You should have Juicer directory containing `scripts/`, `references/` (and optio
   - this is your working directory
   - `fastq/`
     - this contains your sequence HiC reads and can remained zipped
+
+### Example
+```
+cd /projects/f_geneva_1/alyssa/grahami
+mkdir juicerdir                                           #this is where i will complete all my juicer analyses
+cd juicerdir
+
+mkdir references
+cp ../../AnoGra1.1.fa references/                         #copying my final assembly (in FASTA format) to the references directory
+
+git clone https://github.com/theaidenlab/juicer.git       #this will download all the juicer scripts to a directory `juicer/`
+ln -s juicer/SLURM/scripts/ scripts                       #this will make a directory `scripts/` in my original `juicerdir/` directory containing only the SLURM scripts
+
+cd scripts
+wget https://s3.amazonaws.com/hicfiles.tc4ga.com/public/juicer/juicer_tools_1.22.01.jar       #downloading the most recent version of juicer tools jar
+ln -s juicer_tools_1.22.01.jar juicer_tools.jar           #creating a file juicer_tools.jar that links to this version
+
+cd ..
+mkdir AnoGra                                              #making my working directory for Anolis grahami
+mkdir fastq                                               #directory where fastq HiC reads will go
+cp ../anolis_cristatellu_20Oct2018_jSags.fasta AnoGra/fastq/
+```
+
+# Running Juicer on the cluster
+_modules that will need to be loaded: cuda/8.0, java/14.0.1_
+
+1. `references/` directory
+   - make sure to copy reference genome for your species to this folder
+   - BWA index this reference
+
+```
+module purge                                    # clears out any pre-existing modules
+module load samtools                            # load any modules needed
+module load bwa
+
+bwa index /projects/f_geneva_1/alyssa/grahami/juicerdir/references/AnoGra1.1.fa
+```
+
+2. You should have a working directory `juicerdir/AnoGra/` that contains `fastq/`
+   - fastq (zipped or unzipped) files should be either copied or soft-linked to this folder
+
+3. Type `screen` then launch Juicer:
+
+```
+/projects/f_geneva_1/alyssa/grahami/juicedir/scripts/juicer.sh [options]
+```
+[options](https://github.com/aidenlab/juicer/wiki/Usage) for juicer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
