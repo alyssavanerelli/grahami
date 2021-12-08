@@ -1,6 +1,8 @@
 # BUSCO_PHYLOGENOMICS
 this pipeline runs directly on the output from BUSCO
 
+![Image](https://github.com/jamiemcg/BUSCO_phylogenomics/blob/master/pipeline.png?raw=true)
+
 **Requirements**
 - [Python](https://www.python.org/)
 - [BioPython](https://biopython.org/)
@@ -111,6 +113,10 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 
 
 
+**code for _Anolis grahami_**
+```
+python BUSCO_Phylogenomics.py
+```
 
 
 
