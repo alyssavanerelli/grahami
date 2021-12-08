@@ -13,16 +13,20 @@ this pipeline runs directly on the output from BUSCO
   pip uninstall biopython
   ```
 - [ ] [MUSCLE](https://www.drive5.com/muscle/)
-  - [download link](https://github.com/rcedgar/muscle/releases/tag/v5.0.1428)
+  - [download links here](https://github.com/rcedgar/muscle/releases/tag/v5.0.1428)
 - [ ] [trimAl](http://trimal.cgenomics.org/)
+  - [download links here](http://trimal.cgenomics.org/downloads)
 - [ ] [IQ-TREE](http://www.iqtree.org/)
+  - [download links here](http://www.iqtree.org/)
 
 `muscle`, `trimal`, and `iqtree` should be in `$PATH`
 
 **to check for these programs**
+
 `which [program]` or `module spider [program]` (in this case you would need to load these programs before running job with `module load [program]`)
 
 **to add these programs to `$PATH`**
+
 download `wget` program while in `/home/av795/bin`?
 
 ## directory structure
