@@ -4,11 +4,17 @@ this pipeline runs directly on the output from BUSCO
 ![Image](https://github.com/jamiemcg/BUSCO_phylogenomics/blob/master/pipeline.png?raw=true)
 
 **Requirements**
-- [Python](https://www.python.org/)
-- [BioPython](https://biopython.org/)
-- [MUSCLE](https://www.drive5.com/muscle/)
-- [trimAl](http://trimal.cgenomics.org/)
-- [IQ-TREE](http://www.iqtree.org/)
+- [x] [Python](https://www.python.org/)
+- [ ] [BioPython](https://biopython.org/)
+  - use `pip` to install 
+  ```
+  pip install biopython
+  pip install --upgrade biopython
+  pip uninstall biopython
+  ```
+- [ ] [MUSCLE](https://www.drive5.com/muscle/)
+- [ ] [trimAl](http://trimal.cgenomics.org/)
+- [ ] [IQ-TREE](http://www.iqtree.org/)
 
 `muscle`, `trimal`, and `iqtree` should be in `$PATH`
 
