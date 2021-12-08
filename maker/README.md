@@ -42,6 +42,19 @@ launch `singularity` and search for species name. more detail in code
 
 ## make .sh files to run maker
 
+### sub
+- This is the first script to be submitted
+- used 2 whole cores to run this 
+
+
+
+
+
+
+
+
+
+
 ### aug
 run after bsh
 
@@ -57,9 +70,6 @@ This will train Augustus gene models through BUSCO using the vertebrata_odb10 da
 
 busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_20Oct2018_jSags.fasta -c 16 -l vertebrata_odb10 -o HiC_2 -m genome
 
-### sub
-- This is the first script to be submitted
-- 
 
 ### bsh
 
