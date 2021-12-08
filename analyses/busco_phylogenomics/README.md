@@ -1,5 +1,16 @@
 # BUSCO_PHYLOGENOMICS
 
+## directory structure
+- `busco`
+  - `busco_phylogenomics`
+    - `genomes`
+      - contains fasta genome files
+    - `busco_out`
+      - contains slurm file (this is where I run the job)
+      - results from BUSCO runs
+      - `slurmout`
+        - slurm output files from jobs
+
 ## Gather Genomes
 download genome sequence files from NCBI (or other places) in FASTA format
 ```
@@ -11,7 +22,7 @@ Proceed to unzip file and rename
 
 ## run BUSCO on all genomes
 
-busco.sh file
+**busco.sh file**
 ```
 #!/bin/bash
 #SBATCH --partition=cmain                    # which partition to run the job, options are in the Amarel guide
@@ -41,7 +52,7 @@ busco -i /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/$
 
 then create a loop.sh to cycle through all the genome fasta files in a folder
 
-run_busco.sh
+**run_busco.sh**
 ```
 #!/bin/bash
 FILES=$(ls -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/*.fa | cut -d "/" -f 9 | sort)
@@ -55,7 +66,7 @@ done
 
 to submit this job: `./run_busco.sh`
 
-
+- In addition, move over BUSCO analysis ran on final assembly to this folder: `busco_out`
 
 
 
