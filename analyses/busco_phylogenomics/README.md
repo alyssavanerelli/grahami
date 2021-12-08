@@ -1,6 +1,8 @@
 # BUSCO_PHYLOGENOMICS
 this pipeline runs directly on the output from BUSCO
 
+[github page](https://github.com/jamiemcg/BUSCO_phylogenomics)
+
 ![Image](https://github.com/jamiemcg/BUSCO_phylogenomics/blob/master/pipeline.png?raw=true)
 
 **Requirements**
