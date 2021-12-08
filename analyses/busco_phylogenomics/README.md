@@ -1,4 +1,22 @@
 # BUSCO_PHYLOGENOMICS
+this pipeline runs directly on the output from BUSCO
+
+**Requirements**
+- [Python](https://www.python.org/)
+- [BioPython](https://biopython.org/)
+- [MUSCLE](https://www.drive5.com/muscle/)
+- [trimAl](http://trimal.cgenomics.org/)
+- [IQ-TREE](http://www.iqtree.org/)
+
+`muscle`, `trimal`, and `iqtree` should be in `$PATH`
+
+**to check for these programs**
+`which [program]` or `module spider [program]` (in this case you would need to load these programs before running job with `module load [program]`)
+
+**to add these programs to `$PATH`**
+
+
+
 
 ## directory structure
 - `busco`
@@ -68,9 +86,28 @@ to submit this job: `./run_busco.sh`
 
 - In addition, move over BUSCO analysis ran on final assembly to this folder: `busco_out`
 
+## create directory of BUSCO results
 
+```
+mkdir input_dir
 
+```
 
+## Running busco_phylogenomics
+
+```
+python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatrix --threads 20
+```
+
+**Required Parameters**
+- `-d --directory`: input directory containing BUSCO runs
+- `-o --output`: output directory
+- `-t --threads`: number of threads to use
+- `--supermatrix` and/or `--supertree`: choose to run supermatrix and/or supertree methods
+
+**Optional Parameters**
+- `-psc`: BUSCO families that are present and single-copy in N% of species will be included in supermatrix analysis (default = 100%). Families that are missing for a species will be replaced with missing characters ("?").
+- `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually processing/filtering the alignments further when running IQ-Tree, etc..
 
 
 
