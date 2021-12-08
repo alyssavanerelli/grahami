@@ -56,7 +56,7 @@ mkdir fastq                                               #directory where fastq
 # Running Juicer on the cluster
 _modules that will need to be loaded: cuda/8.0 and java/1.8.0_252_
 
-1. `references/` directory
+1. `juicerdir/AnoGra/references/` directory
    - make sure to copy reference genome for your species to this folder
    - BWA index this reference
 
@@ -66,19 +66,41 @@ module load samtools                            # load any modules needed
 module load bwa
 
 bwa index /projects/f_geneva_1/alyssa/grahami/juicerdir/references/AnoGra1.1.fa
+
+samtools faidx /projects/f_geneva_1/alyssa/grahami/juicerdir/references/AnoGra1.1.fa
 ```
 
-2. You should have a working directory `juicerdir/AnoGra/` that contains `fastq/`
+2. Create a file only containing your genome scaffold names and sizes
+
+```
+cut -f1-2 AnoGra1.1.fa.fai > AnoGra1.1.chrom.sizes
+```
+
+3. You should have a working directory `juicerdir/AnoGra/` that contains `fastq/`
    - fastq reads (zipped or unzipped) should be either copied or soft-linked to this folder
 
-3. Type `screen` then launch Juicer:
+
+**What should be in your working directory folders at this stage, complete before running juicer**
+- `AnoGra`
+  - `fastq`
+    - HiC R1 and R2 reads ONLY
+  - `references`
+    - genome file: `AnoGra1.1.fa`
+    - scaffold sizes file: `AnoGra1.1.chrom.sizes`
+    - bwa and samtools indexed files ending in: amb, ann, bwt, fai, pac, sa
+
+_anything else (e.g. bwa index slurm file, slurm output file, etc.) needs to be stored elsewhere. I moved these to the larger `juicerdir` folder_
+
+
+
+4. Type `screen` then launch Juicer:
 
 ```
 /projects/f_geneva_1/alyssa/grahami/juicedir/scripts/juicer.sh [options]
 ```
 [options](https://github.com/aidenlab/juicer/wiki/Usage) for juicer
 
-code specific to _Anolis grahami_
+**code specific to _Anolis grahami_**
 
 ```
 screen              # this will launch Juicer
