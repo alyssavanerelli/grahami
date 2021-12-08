@@ -73,8 +73,6 @@ conda activate busco
 
 FASTA=$1
 
-echo "${FASTA}"
-
 echo "Bash commands for the analysis you are going to run"
 busco -i /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/${FASTA} -c 16 -l vertebrata_odb10 -o ${FASTA} -m genome
 ```
