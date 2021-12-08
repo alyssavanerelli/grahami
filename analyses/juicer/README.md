@@ -26,6 +26,11 @@ You should have Juicer directory containing `scripts/`, `references/` (and optio
   - this is your working directory
   - `fastq/`
     - this contains your sequence HiC reads and can remained zipped
+  - `references`
+    - copy over references file here as well
+  - `scripts`
+    - soft link scripts folder here as well
+    - `ln -s ../juicer/SLURM/scripts/ scripts`
 
 ### Example
 ```
@@ -49,7 +54,7 @@ mkdir fastq                                               #directory where fastq
 ```
 
 # Running Juicer on the cluster
-_modules that will need to be loaded: cuda/8.0, java/14.0.1_
+_modules that will need to be loaded: cuda/8.0 and java/1.8.0_252_
 
 1. `references/` directory
    - make sure to copy reference genome for your species to this folder
@@ -73,7 +78,17 @@ bwa index /projects/f_geneva_1/alyssa/grahami/juicerdir/references/AnoGra1.1.fa
 ```
 [options](https://github.com/aidenlab/juicer/wiki/Usage) for juicer
 
+code specific to _Anolis grahami_
 
+```
+screen              # this will launch Juicer
+module load cuda/8.0
+module load java/1.8.0_252
+
+
+
+./scripts/juicer.sh -g AnoGra1.1 -d /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra -p /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/references/AnoGra1.1.fa.chrom.sizes -y none -z /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/references/AnoGra1.1.fa -D /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra -t 20 -q p_ccib_1 -l p_ccib_1
+```
 
 
 
