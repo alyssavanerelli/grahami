@@ -1,3 +1,19 @@
+#!/bin/bash
+
+
+#SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+#SBATCH --job-name=sealer                       # job name for listing in queue
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/sealer/slurm-%j-%x.out
+#SBATCH --mem=170G                              # memory to allocate in Mb
+#SBATCH -n 32                                   # number of cores to use
+#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH --time=5-00:00:00                       # maximum run time days-hours:minutes:seconds
+#SBATCH --requeue                               # restart and paused or superseeded jobs
+#SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
+#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE      # email for the following reasons
+
+
 echo "load any Amarel modules that script requires"
 module purge                                    # clears out any pre-existing modules
 module load boost                               # load any modules needed
@@ -15,3 +31,11 @@ ${reads}150_filtered.R1.fq \
 ${reads}150_filtered.R2.fq \
 ${longreads}_filtered.R1.fq \
 ${longreads}_filtered.R2.fq
+
+
+echo "change user group of files created"
+chgrp -R g_geneva_1 /projects/f_geneva_1/alyssa/grahami       # changes group of all files in listed directory
+
+
+echo "This is a run"
+echo "Now it is done"
