@@ -135,7 +135,9 @@ Results will be contained in the `aligned/` folder in your working directory (e.
 You should run the script `cleanup.sh` to zip all the text files and delete the unnecessary `splits` directory and `merged_sort.txt` file once you are sure the pipeline has successfully completed
 
 
+# Viewing Results
 
+`.hic` results can be loaded into [Juicebox](https://github.com/aidenlab/Juicebox/wiki)
 
 
 
