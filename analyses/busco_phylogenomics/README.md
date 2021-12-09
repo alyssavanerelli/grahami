@@ -53,7 +53,9 @@ Proceed to unzip file and rename
 
 ## run BUSCO on all genomes
 
-**busco.sh file**
+<details><summary>busco.sh file</summary>
+<p>
+  
 ```
 #!/bin/bash
 #SBATCH --partition=cmain                    # which partition to run the job, options are in the Amarel guide
@@ -79,9 +81,15 @@ echo "Bash commands for the analysis you are going to run"
 busco -i /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/${FASTA} -c 16 -l vertebrata_odb10 -o ${FASTA} -m genome
 ```
 
+<p>
+</details>
+
 then create a loop.sh to cycle through all the genome fasta files in a folder
 
-**run_busco.sh**
+
+<details><summary>run_busco.sh file</summary>
+<p>
+
 ```
 #!/bin/bash
 FILES=$(ls -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/*.fa | cut -d "/" -f 9 | sort)
@@ -92,6 +100,9 @@ do
   #echo "$FILE"
 done
 ```
+
+<p>
+</details>
 
 to submit this job: `./run_busco.sh`
 
