@@ -14,12 +14,59 @@ this pipeline runs directly on the output from BUSCO
   pip install --upgrade biopython
   pip uninstall biopython
   ```
-- [ ] [MUSCLE](https://www.drive5.com/muscle/)
+- [x] [MUSCLE](https://www.drive5.com/muscle/)
   - [download links here](https://github.com/rcedgar/muscle/releases/tag/v5.0.1428)
-- [ ] [trimAl](http://trimal.cgenomics.org/)
+    <details><summary>code</summary>
+    <p>
+    
+      ```
+    cd
+    wget [link]
+    mv muscle_v5.0.1428_linux muscle
+    chmod 755 muscle
+    mv muscle bin/
+      ```
+    </p>
+    </details>
+    
+- [x] [trimAl](http://trimal.cgenomics.org/)
   - [download links here](http://trimal.cgenomics.org/downloads)
-- [ ] [IQ-TREE](http://www.iqtree.org/)
+    <details><summary>code</summary>
+    <p>
+    
+    ```
+    # download, unzip, and untar file
+    cd
+    wget [link]
+    gunzip trimal.v1.2rev59.tar.gz
+    tar -xvf trimal.v1.2rev59.tar
+    
+    #compile package
+    cd trimAl/source
+    make
+    
+    # move `readal` and `trimal` (result of previous step) to `bin/`
+    mv readal trimal bin/
+    ```
+    </p>
+    </details>
+    
+- [x] [IQ-TREE](http://www.iqtree.org/)
   - [download links here](http://www.iqtree.org/)
+    
+    <details><summary>code</summary>
+    <p>
+    
+    ```
+    cd
+    wget [link]
+    unzip iqtree-1.6.12-MacOSX.zip
+    
+    mv iqtree-1.6.12-MacOSX/bin/iqtree bin/
+    ```
+    
+    </p>
+    </details>
 
 `muscle`, `trimal`, and `iqtree` should be in `$PATH`
 
