@@ -89,6 +89,10 @@ either need to be in /home/av795/bin or add downloaded folder to path in `.bash_
       - results from BUSCO runs
       - `slurmout`
         - slurm output files from jobs
+    - `phy_input`
+      - directory where busco results will need to be moved to use as input for busco_phylogenomics
+    - `phy_output`
+      - directory where output from busco_phylogenomics will go
 
 ## Gather Genomes
 download genome sequence files from NCBI (or other places) in FASTA format
@@ -97,7 +101,7 @@ cd /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes
 wget [link]
 ```
 
-Proceed to unzip file and rename
+Proceed to unzip files and rename
 
 ## run BUSCO on all genomes
 
@@ -182,11 +186,6 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 </p>
 </details>
 
-**_grahami_ code**
-```
-python BUSCO_Phylogenomics.py
-```
-
 **Required Parameters**
 - `-d --directory`: input directory containing BUSCO runs
 - `-o --output`: output directory
@@ -198,13 +197,10 @@ python BUSCO_Phylogenomics.py
 - `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually processing/filtering the alignments further when running IQ-Tree, etc..
 
 
-
-**code for _Anolis grahami_**
+**_Anolis grahami_ code**
 ```
-python BUSCO_Phylogenomics.py
+python BUSCO_Phylogenomics.py -d phy_input -o phy_output --supermatrix --threads 20
 ```
-
-
 
 
 
