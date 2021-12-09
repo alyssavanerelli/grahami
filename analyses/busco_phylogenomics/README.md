@@ -8,6 +8,7 @@ this pipeline runs directly on the output from BUSCO
 **Requirements**
 - [x] [Python](https://www.python.org/)
 - [x] [BioPython](https://biopython.org/)
+  - [github page](https://github.com/biopython/biopython)
   - use `pip` to install 
   ```
   pip install biopython
@@ -76,7 +77,7 @@ this pipeline runs directly on the output from BUSCO
 
 **to add these programs to `$PATH`**
 
-download `wget` program while in `/home/av795/bin`?
+either need to be in /home/av795/bin or add downloaded folder to path in `.bash_profile`
 
 ## directory structure
 - `busco`
@@ -155,17 +156,35 @@ to submit this job: `./run_busco.sh`
 
 - In addition, move over BUSCO analysis ran on final assembly to this folder: `busco_out`
 
-## create directory of BUSCO results
-
-```
-mkdir input_dir
-
-```
 
 ## Running busco_phylogenomics
+1. activate conda busco environment or make new conda environment
+```
+conda activate busco
+```
+2. move results from busco to new input directory
+```
+cd /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics
+mkdir phy_input
+mv busco_out/*.fa input_dir/
+```
+3. create output directory
+```
+mkdir phy_output
+```
+4. run busco_phylogenomics on BUSCO results
+<details><summary>general code</summary>
 
 ```
 python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatrix --threads 20
+```
+
+</p>
+</details>
+
+**_grahami_ code**
+```
+python BUSCO_Phylogenomics.py
 ```
 
 **Required Parameters**
