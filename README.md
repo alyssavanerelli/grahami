@@ -338,7 +338,7 @@ chmod 755 run_loop.sh
 _this code can be ran from the command line_
 
 
-<details><summary>Example Code</summary>
+<details><summary>Code</summary>
 <p>
   
   ```
@@ -380,7 +380,7 @@ We next need to merge all of our separate pilon fasta files into one
 
 _run this from the command line_
 
-<details><summary>Output Format</summary>
+<details><summary>Code</summary>
 <p>
   
   ```
@@ -395,7 +395,7 @@ _run this from the command line_
 # Sort and Rename Scaffolds
 Sort genome scaffolds by size and name accordingly
 
-<details><summary>Output Format</summary>
+<details><summary>Sort and Rename</summary>
 <p>
   
   ```
