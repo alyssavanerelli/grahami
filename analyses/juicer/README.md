@@ -1,5 +1,7 @@
 # Installing Juicer
 
+[Official GitHub](https://github.com/aidenlab/juicer/wiki)
+
 ## Make sure dependencies are installed
 - For alignment and creation of the Hi-C pairs file `merged_nodups.txt`
   - [GNU CoreUtils](https://www.gnu.org/software/coreutils/manual/)
@@ -114,7 +116,23 @@ module load java/1.8.0_252
 
 
 
+# Juicer Results
 
+Results will be contained in the `aligned/` folder in your working directory (e.g., `AnoGra/`)
+- **inter.hic / inter_30.hic**: The .hic files for Hi-C contacts at MAPQ > 0 and at MAPQ >= 30, respectively
+- **merged_nodups.txt**: The Hi-C contacts with duplicates removed. This file is also input to the assembly and diploid pipelines
+- **collisions.txt**: Reads that map to more than two places in the genome
+- **inter.txt, inter_hists.m / inter_30.txt, inter_30_hists.m**: The statistics and graphs files for Hi-C contacts at MAPQ > 0 and at MAPQ >= 30, respectively. These are also stored within the respective .hic files in the header. The .m files can be loaded into Matlab. The statistics and graphs are displayed under Dataset Metrics when loaded into Juicebox
+- **dups.txt, opt_dups.txt**: Duplicates and optical duplicates
+- **abnormal.sam, unmapped.sam**: Abnormal chimeric and unmapped reads
+- **merged_sort.txt**: This is a combination of merged_nodups / dups / opt_dups and can be deleted once the pipeline has successfully completed
+- **stats_dups.txt / stats_dups_hists.m**: Statistics and graphs on the duplicates
+
+`splits` is a temporary working directory and can be deleted once you are sure the pipeline ran successfully
+
+`debug` contains logging information for the pipeline
+
+You should run the script `cleanup.sh` to zip all the text files and delete the unnecessary `splits` directory and `merged_sort.txt` file once you are sure the pipeline has successfully completed
 
 
 
