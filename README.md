@@ -177,7 +177,6 @@ bwa mem -t 10 /projects/f_geneva_1/alyssa/grahami/sealer/run2_scaffold.fa \
 | samtools sort -@10 -o /projects/f_geneva_1/alyssa/grahami/pilon/150/150_bwa_aligned.bam -
   ```
 
-
 </p>
 </details>
 
@@ -185,6 +184,24 @@ bwa mem -t 10 /projects/f_geneva_1/alyssa/grahami/sealer/run2_scaffold.fa \
 
 # Pilon
 **`Pilon`** is a base call polishing program that improves our assembly further
+
+## Directory Setup
+
+- `Pilon`: top directory
+  - `chr_split`
+    - Directory where sorted scaffold sizes are
+    - Also contains broken up scaffold files (used an input for `run_loop.sh`)
+    - `fastas`
+      - Where individual chr fasta files will be deposited
+  - `pilon_out`
+    - Where output for pilon run on each scaffold will be deposited
+  - `slurm_out`
+    - Where slurm output files (containing corrected statistics) will be deposited for each scaffold
+  - `pilon_loop.sh`
+    - Job script with commands
+  - `run_loop.sh`
+    - Script that will run `pilon_loop.sh` through each split scaffold sizes file
+
 
 ## Split by Scaffold
 Before running `pilon`, the genome needs to be split into scaffolds because of memory issues
@@ -280,7 +297,8 @@ java -Xmx170G -jar ~/bin/pilon-1.24.jar \
 _to run this loop on just one file, run `sbatch pilon_loop.sh "[scaffold name]"`_
 
 ## run the pilon loop
-This file will run `pilon_loop.sh` on each scaffold
+- This file will run `pilon_loop.sh` on each scaffold
+- Will need to submit this job for each 500 line scaffold file (and smaller 100 line files)
 
 <details><summary>run_loop.sh</summary>
 <p>
@@ -307,47 +325,114 @@ chmod 755 run_loop.sh
 ./run_loop
 ```
 
-# gap_summary_stats
-create a file pulling number of gaps filled from slurm output files
+# Calculate Pilon Improvement Statistics
+- This code will create a file of base corrections done by `pilon`
+- We need to extract this information from the slurm output file
 
-convert to csv
+**Steps**
+1. Create a file pulling number of gaps filled/bases corrected from slurm output files for each scaffold
+2. Convert this file to `.csv`
+3. Download file through OnDemand and open in excel
+4. Summarize SNPs, small insertions, and small deletions corrected
 
-download from OnDemand and input into excel
-
-shows how well pilon worked
-
-"Corrected 1996 snps; corrected 58 small insertions totaling 818 bases, 375 small deletions totaling 7991 bases"
-
-total snps:small insertions:small deletions
+_this code can be ran from the command line_
 
 
-<details><summary>Split into files with 500 lines each</summary>
+<details><summary>Example Code</summary>
 <p>
   
   ```
-  split -l 500 scaffold_sizes_sort.txt scaffolds_
-  ```
+  s### pull certain lines from text file and add to a text file ###
 
+grep "Corrected" slurm-*-pilonloop.out | cut -f 2,5,11 -d " " > summary_data
+
+  #2,5,11 refers to "column" with numbers - columns are separated by spaces in document
+  
+  
+### convert file to csv
+
+sed 's/ \+/,/g' summary_data > summary_data.csv
+
+### download from OnDemand and export into excel to get summary of gaps filled
+  ```
 
 </p>
 </details>
 
 
 
-# create final genome
-merge all pilon fasta files into one genome file
+<details><summary>Output Format</summary>
+<p>
+  
+  ```
+  "Corrected 1996 snps; corrected 58 small insertions totaling 818 bases, 375 small deletions totaling 7991 bases"
 
-# sort and rename
-sort genome file by size and rename into chromosomes
+  total snps:small insertions:small deletions
+  ```
 
-# final busco
-run busco again to track improvements
-
-# final stats
-run stats again
+</p>
+</details>
 
 
-# Annotation
-labeling the genome
 
-## maker
+# Creat Final Genome File
+We next need to merge all of our separate pilon fasta files into one
+
+_run this from the command line_
+
+<details><summary>Output Format</summary>
+<p>
+  
+  ```
+  ## cd into pilon_out
+
+  cat * > grahami.fa
+  ```
+
+</p>
+</details>
+
+# Sort and Rename Scaffolds
+Sort genome scaffolds by size and name accordingly
+
+<details><summary>Output Format</summary>
+<p>
+  
+  ```
+  species=$1
+
+echo "Bash commands for the analysis you are going to run"
+echo ""
+echo "##### sort by size and rename sequence"
+sortbyname.sh -Xmx4g in=${species}.fa out=${species}_sorted.fa length descending
+
+# add dummy to beginning
+printf ">dummy\nNNN\n" | cat - ${species}_sorted.fa > temp && mv temp ${species}_sorted.fa
+
+
+#rename
+rename.sh in=${species}_sorted.fa out=${species}_sorted_renamed.fa prefix=scaffold -Xmx10g fastawrap=500000000
+
+# remove single sequence entry from multifasta
+cat ${species}_sorted_renamed.fa | awk '{if (substr($0,1) == ">scaffold_0") censor=1; else if (substr($0,1,1) == ">") censor=0; if (censor==0) print $0}' > ${species}_fixed.fasta
+
+rm ${species}_sorted.fa
+rm ${species}_sorted_renamed.fa
+
+  ```
+
+</p>
+</details>
+
+**To run this file**
+```
+sbatch sort_rename.sh grahami.fa
+```
+
+# Final BUSCO run
+Follow instructions above to run BUSCO on this final genome assembly
+
+# Final Stats Calc
+Follow instructions above to run stats on this final genome assembly
+
+# Next Steps: Go to Maker folder
