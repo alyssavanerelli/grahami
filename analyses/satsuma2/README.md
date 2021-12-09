@@ -72,37 +72,48 @@
     - The satsuma_run.sh file is used by SatsumaSynteny2 to start the slaves. 
     - Before running SatsumaSynteny2, you need to modify this file to suit your HPC environment by commenting out the lines you don't need with #. Y
     - You will also need to change 'QueueName' to a queue that exists on your system.
-    - 
 
 
-   
-   
+4. Edit satsuma_run.sh for SLURM
+      ```
+     #!/bin/bash
 
-4. Satsuma _grahami_code
-   <details><summary>code</summary>
-   <p>
+     # Script for starting Satsuma jobs on different job submission environments
+     # One section only should be active, ie. not commented out
    
+     # Usage: satsuma_run.sh <current_path> <kmatch_cmd> <ncpus> <mem> <job_id> <run_synchronously>
+     # mem should be in Gb, ie. 100Gb = 100
+     
+     # no submission system, processes are run locally either synchronously or asynchronously
+     if [ "$6" -eq 1 ]; then
+       eval "$2"
+     else
+       eval "$2" &
+     fi
+     
+     ##############################################################################################################
+     ## For the sections below you will need to change the queue name (QueueName) to one existing on your system ##
+     ##############################################################################################################
+  
+     # qsub (PBS systems)
+     #echo "cd $1; $2" | qsub -V -qQueueName -l ncpus=$3,mem=$4G -N $5
+     
+     # bsub (LSF systems)
+     #mem=`expr $4 + 1000`
+     #bsub -o ${5}.log -J $5 -n $3 -q QueueName -R "rusage[mem=$mem]" "$2"
+     
+     # SLURM systems
+     echo "#!/bin/bash" > slurm_tmp.sh
+     echo srun $2 >> slurm_tmp.sh
+     sbatch -p p_ccib_1 -c $3 -J $5 -o ${5}.log --mem ${4}G slurm_tmp.sh
+     ```
+
+
+5. Run Satsuma
+
    ```
-   #!/bin/bash
-   #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
-   #SBATCH --account=general
-   #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
-   #SBATCH --job-name=pilonloop                     # job name for listing in queue
-   #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/pilon/slurm_out/slurm-%j-%x.out
-   #SBATCH --mem=160G                              # memory to allocate in Mb
-   #SBATCH -n 1                                   # number of cores to use
-   #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
-   #SBATCH --time=9-00:00:00                       # maximum run time days-hours:minutes:seconds
-   #SBATCH --requeue                               # restart and paused or superseeded jobs
-   #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
-   #SBATCH --mail-type=BEGIN,FAIL,END,REQUEUE      # email for the following reasons
-   
+   ./SatsumaSynteny2 -q query.fa -t target.fa -o output_dir
    ```
-   
-   </p>
-   </details>
-
-
 
 
 
