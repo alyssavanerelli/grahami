@@ -152,25 +152,160 @@ I cannot remember how to do this
 
 
 # bwa
-align illumina reads to current genome with bwa
+- Program is used to allign illumina short reads to current genome assembly
+- Do this separately for each illumina paired-end read
+- This will create a `.bam` file
+- If a run failed, temporary `.bam` files need to be deleted to re-run.
 
-creates bam file
+<details><summary>EXAMPLE</summary>
+<p>
+  
+  ```
+  echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load samtools                            # load any modules needed
+module load bwa
 
-will do separately for each illumina read
+echo "Bash commands for the analysis you are going to run"
 
-tmp bam files cannot already exist (if a run failed)
+echo "index and align with BWA"
+bwa index /projects/f_geneva_1/alyssa/grahami/sealer/run2_scaffold.fa
 
-# split by scaffold
-first need to split genome into scaffolds because of memory issues
+bwa mem -t 10 /projects/f_geneva_1/alyssa/grahami/sealer/run2_scaffold.fa \
+/projects/f_geneva_1/alyssa/grahami/DTG-SG-150_filtered.R1.fq \
+/projects/f_geneva_1/alyssa/grahami/DTG-SG-150_filtered.R2.fq \
+| samtools sort -@10 -o /projects/f_geneva_1/alyssa/grahami/pilon/150/150_bwa_aligned.bam -
+  ```
 
-# pilon
+
+</p>
+</details>
+
+
+
+# Pilon
+**`Pilon`** is a base call polishing program that improves our assembly further
+
+## Split by Scaffold
+Before running `pilon`, the genome needs to be split into scaffolds because of memory issues
+
+<details><summary>Get Scaffold Sizes</summary>
+<p>
+  
+  ```
+  echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load java
+module load samtools
+
+echo "Bash commands for the analysis you are going to run"
+samtools faidx /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/run2_scaffold.fa
+ cut -f1-2 /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/run2_scaffold.fa.fai > scaffold_sizes.txt
+  ```
+
+</p>
+</details>
+
+
+<details><summary>Sort By Size</summary>
+<p>
+  
+  ```
+  cut -f2 scaffold_sizes.txt | sort -n > scaffold_sizes_sort.txt
+  ```
+
+
+</p>
+</details>
+
+
+<details><summary>Split into files with 500 lines each</summary>
+<p>
+  
+  ```
+  split -l 500 scaffold_sizes_sort.txt scaffolds_
+  ```
+
+
+</p>
+</details>
+
+_The largest scaffolds were then broken down further into smaller files with 100 lines each to make sure we did not run into memory issues_
+
 ## pilon_loop
-making a loop file that will extract chr from fasta file, extract chr from bam file, index bam file, and run pilon for each scaffold in the genome separately
+In this step, we are creating a file that will extract each chr from the fasta file, extract each chr from the bam file, index this bam file, and run pilon for each scaffold in the genome assembly separately.
+- output will redirect into separate folders
 
-will redirect output to different folders
 
-## run_loop
-make file to run the loop with input
+<details><summary>Pilon Loop</summary>
+<p>
+  
+  ```
+  echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load java
+module load samtools
+
+CHRNAME=$1
+
+echo "####### extract chr from fasta file"
+samtools faidx /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/run2_scaffold.fa "${CHRNAME}" > /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/fastas/${CHRNAME}_ONLY.fa
+
+
+echo ""
+echo "####### extract chr from bam file"
+samtools view -b /projects/f_geneva_1/alyssa/grahami/pilon/149_bwa_aligned.bam "${CHRNAME}" > /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_149.bam
+samtools view -b /projects/f_geneva_1/alyssa/grahami/pilon/150_bwa_aligned.bam "${CHRNAME}" > /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_150.bam
+
+
+echo ""
+echo "####### run pilon"
+echo ""
+echo "################### index with samtools"
+samtools index -b /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_149.bam
+samtools index -b /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_150.bam
+
+echo ""
+echo "################### run pilon"
+java -Xmx170G -jar ~/bin/pilon-1.24.jar \
+--genome /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/fastas/${CHRNAME}_ONLY.fa \
+--bam /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_149.bam \
+--bam /projects/f_geneva_1/alyssa/grahami/pilon/temp_bam/${CHRNAME}_only_150.bam \
+--output /projects/f_geneva_1/alyssa/grahami/pilon/pilon_out/run2_pilon_${CHRNAME} --diploid
+  ```
+
+</p>
+</details>
+
+_to run this loop on just one file, run `sbatch pilon_loop.sh "[scaffold name]"`_
+
+## run the pilon loop
+This file will run `pilon_loop.sh` on each scaffold
+
+<details><summary>run_loop.sh</summary>
+<p>
+  
+  ```
+  #!/bin/bash
+LINES=$(cut -f 1 /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/[split scaffold file])
+for LINE in $LINES
+do
+  sbatch pilon_loop.sh "$LINE"
+  sleep 0.25
+done
+
+
+### sleep line will delay job submission so all jobs will not be submitted at once ###
+  ```
+
+</p>
+</details>
+
+***To run this job***
+```
+chmod 755 run_loop.sh
+./run_loop
+```
 
 # gap_summary_stats
 create a file pulling number of gaps filled from slurm output files
@@ -184,6 +319,20 @@ shows how well pilon worked
 "Corrected 1996 snps; corrected 58 small insertions totaling 818 bases, 375 small deletions totaling 7991 bases"
 
 total snps:small insertions:small deletions
+
+
+<details><summary>Split into files with 500 lines each</summary>
+<p>
+  
+  ```
+  split -l 500 scaffold_sizes_sort.txt scaffolds_
+  ```
+
+
+</p>
+</details>
+
+
 
 # create final genome
 merge all pilon fasta files into one genome file
