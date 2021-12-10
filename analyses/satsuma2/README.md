@@ -148,7 +148,7 @@
      ```
      mv satsuma_run.sh /home/av795/.conda/envs/satsuma/bin
      ```
-
+***Does this need to be an executable file??***
 
 3. Run Satsuma
   
