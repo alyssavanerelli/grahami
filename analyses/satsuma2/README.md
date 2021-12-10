@@ -40,7 +40,7 @@
     - `-t<string>`: targer fasta sequence
     - `-o<string>`: output directory
    
-   **Optional parameters**
+   **Optional parameters**   
     - `-l<int>`: minimum alignment length (def=0)
     - `-t_chunk<int>`: target chunk size (def=4096)
     - `-q_chunk<int>`: query chunk size (def=4096)
@@ -63,6 +63,7 @@
     - `-nofilter<bool>`: do not pre-filter seeds (slower runtime) (def=0)
     - `-dups<bool>`: allow for duplications in the query sequence (def=0)
     - `-dump_cycle_matches<bool>`: dump matches on each cycle (for debug/testing) (def=0)
+
 
    **More Info**
    
@@ -102,6 +103,9 @@
 </details>
 
 4. Edit satsuma_run.sh for SLURM
+  - **This file needs to be made in the same directory as the satsuma binary files**
+    `/home/av795/.conda/envs/satsuma/bin`
+
       ```
      #!/bin/bash
 
@@ -137,9 +141,23 @@
 
 
 5. Run Satsuma
+  - To run SatsumaSynteny2, you need to paste these lines into the command line (not sbatch a script)
+  - SatsumaSynteny2 will then use the `satsuma_run.sh` file created above to submit slurm jobs
 
    ```
-   ./SatsumaSynteny2 -q query.fa -t target.fa -o output_dir
+   export SATSUMA2_PATH=/home/av795/.conda/envs/satsuma/bin
+   
+   module use /projects/community/modulefiles/
+   module load gcc/7.3.0-gc563
+   
+   cd /projects/f_geneva_1/alyssa/grahami/satsuma
+   
+   /home/av795/.conda/envs/satsuma/bin/SatsumaSynteny2 \
+    -t /projects/f_geneva_1/alyssa/grahami/satsuma/            wilkim00-wil/D_willistoni_rnmd_short.sort_trim.fasta \
+    -q /projects/f_geneva_1/alyssa/grahami/satsuma/            wilkim00-wil/D.willistoni.00.trim20.rnmd.fasta \
+    -o /projects/f_geneva_1/alyssa/grahami/satsuma/out
+    -slaves 4 \
+    -threads 4 \
    ```
 
 - the query sequence: _sagrei_ genome
