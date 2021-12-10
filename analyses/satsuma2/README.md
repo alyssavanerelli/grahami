@@ -145,9 +145,9 @@
 
 2. Move this file to binaries folder (for satsuma)
 
-    ```
-    mv satsuma_run.sh /home/av795/.conda/envs/satsuma/bin
-    ```
+     ```
+     mv satsuma_run.sh /home/av795/.conda/envs/satsuma/bin
+     ```
 
 
 3. Run Satsuma
@@ -155,21 +155,21 @@
   - To run SatsumaSynteny2, you need to paste these lines into the command line (not sbatch a script)
   - SatsumaSynteny2 will then use the `satsuma_run.sh` file created above to submit slurm jobs
 
-   ```
-   export SATSUMA2_PATH=/home/av795/.conda/envs/satsuma/bin
+    ```
+    export SATSUMA2_PATH=/home/av795/.conda/envs/satsuma/bin
    
-   module use /projects/community/modulefiles/
-   module load gcc/7.3.0-gc563
+    module use /projects/community/modulefiles/
+    module load gcc/7.3.0-gc563
    
-   cd /projects/f_geneva_1/alyssa/grahami/satsuma
+    cd /projects/f_geneva_1/alyssa/grahami/satsuma
    
-   /home/av795/.conda/envs/satsuma/bin/SatsumaSynteny2 \
-    -t /projects/f_geneva_1/alyssa/grahami/satsuma/            wilkim00-wil/D_willistoni_rnmd_short.sort_trim.fasta \
-    -q /projects/f_geneva_1/alyssa/grahami/satsuma/            wilkim00-wil/D.willistoni.00.trim20.rnmd.fasta \
-    -o /projects/f_geneva_1/alyssa/grahami/satsuma/out
-    -slaves 4 \
-    -threads 4 \
-   ```
+    /home/av795/.conda/envs/satsuma/bin/SatsumaSynteny2 \
+     -t /projects/f_geneva_1/alyssa/grahami/satsuma/            wilkim00-wil/D_willistoni_rnmd_short.sort_trim.fasta \
+     -q /projects/f_geneva_1/alyssa/grahami/satsuma/            wilkim00-wil/D.willistoni.00.trim20.rnmd.fasta \
+     -o /projects/f_geneva_1/alyssa/grahami/satsuma/out
+     -slaves 4 \
+     -threads 4 \
+    ```
 
 - the query sequence: _sagrei_ genome
 - the target sequence: _grahami_ genome
