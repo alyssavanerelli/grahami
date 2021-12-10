@@ -139,6 +139,12 @@ You should run the script `cleanup.sh` to zip all the text files and delete the 
 
 `.hic` results can be loaded into [Juicebox](https://github.com/aidenlab/Juicebox/wiki)
 
+Juicebox is also available to use in [online format](https://aidenlab.org/juicebox/)
+
+Downloads for desktop can be found [here](https://github.com/aidenlab/Juicebox/wiki/Download)
+
+
+
 
 
 
