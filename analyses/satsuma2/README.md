@@ -9,7 +9,7 @@
 
 
 ## Installation
-1. Create a new [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html) environment for satsuma ??
+1. Create a new [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html) environment for satsuma
     ```
     conda create satsuma
     
@@ -65,6 +65,10 @@
     - `-dump_cycle_matches<bool>`: dump matches on each cycle (for debug/testing) (def=0)
 
    **More Info**
+   
+   <details><summary>expand</summary>
+   <p>
+   
     - The query and target sequences are chunked (based on the -t_chunk and -q_chunk parameters) then KMatch is used to detect aligning regions between chunks.
     - The number of chunks generated depends on the length of your query and target sequences. The amount of memory reserved for KMatch can be modified using the -km_mem parameter which defaults to 100Gb.
     - The number of slaves, threads per slave and memory limit per slave are specified using the -slaves, -threads and -sl_mem parameters.
@@ -72,6 +76,31 @@
     - The satsuma_run.sh file is used by SatsumaSynteny2 to start the slaves. 
     - Before running SatsumaSynteny2, you need to modify this file to suit your HPC environment by commenting out the lines you don't need with #. Y
     - You will also need to change 'QueueName' to a queue that exists on your system.
+    - If SatsumaSynteny2 is run without a submission system, KMatch jobs will be launched synchronously in order to keep memory requirements low. If you have plenty of memory available you can opt to run the KMatch jobs asynchronously (-km_sync 0). KMatch requires a lot of memory and multiple KMatch processes running at the same time may cause SatsumaSynteny2 to abort if not enough memory is available.
+    - The parameters `-km_mem` and `-sl_mem` are only applied when using a job submission system. We strongly recommend using a job submission system to run SatsumaSynteny2 which allows more control of the resource requirements of this software.
+    - If the output directory is not empty, SatsumaSynteny2 will not overwrite any files but exit with an error message.
+    - Idling processes self-terminate after two minutes. The overall alignments will still complete, but using fewer processes.
+    - Currently, the entire sequences are loaded into RAM by each process. For comparison of large genomes, we strongly recommend to make sure that the CPUs have enough RAM available (~ the size of both genomes in bytes).
+
+</p>
+</details>
+
+   **Tips**
+   
+   <details><summary>expand</summary>
+   <p>
+   
+    - The default parameters should work well for most genomes.
+    - SatsumaSynteny2 runs most efficiently on either multi-processor machines or on clusters that are tightly coupled (fast access to files shared by the control process and the slaves)
+    - Especially for larger genomes, we recommend leaving one CPU dedicated to the control process SatsumaSynteny2.
+    - For larger genomes (>1Gb), we recommend using one chromosome of one genome as the query sequence and the entire other genome as the target sequence, and process alignments one query chromosome at a time.
+    - To include large-scale duplications in the query sequence (in addition to the target sequence), use the option –dups.
+    - If using the option –nofilter, the number of initial searches (-ni) should be higher than the number of processes (-n) to ensure that subsequent processes have sufficient seeds. Note that initial searches will be queued to a number of processes specified by -n.
+    - When many processes search a tight space, the number of pixels per CPU (-m) should be small (e.g. ‘–m 1’ as in the sample script/data set) to avoid unbalanced load (i.e. some processes get all the pixels while others are starved, since they overlap). However, a small value for –m increases inter-process communication, which should be a consideration when deploying hundreds of processes.
+     
+
+</p>
+</details>
 
 
 4. Edit satsuma_run.sh for SLURM
@@ -85,11 +114,11 @@
      # mem should be in Gb, ie. 100Gb = 100
      
      # no submission system, processes are run locally either synchronously or asynchronously
-     if [ "$6" -eq 1 ]; then
-       eval "$2"
-     else
-       eval "$2" &
-     fi
+     #if [ "$6" -eq 1 ]; then
+     #  eval "$2"
+     #else
+     #  eval "$2" &
+     #fi
      
      ##############################################################################################################
      ## For the sections below you will need to change the queue name (QueueName) to one existing on your system ##
@@ -115,7 +144,8 @@
    ./SatsumaSynteny2 -q query.fa -t target.fa -o output_dir
    ```
 
-
+- the query sequence: _sagrei_ genome
+- the target sequence: _grahami_ genome
 
 
 
