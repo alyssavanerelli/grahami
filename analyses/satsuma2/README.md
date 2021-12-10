@@ -108,7 +108,7 @@
 
 ### Ready to Run
 
-1. Make satsuma_run.sh for SLURM
+1. Make `satsuma_run.sh` for SLURM
 
       ```
      #!/bin/bash
