@@ -170,7 +170,7 @@ conda activate busco
 ```
 cd /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics
 mkdir phy_input
-mv busco_out/*.fa input_dir/
+mv busco_out/*.fa phy_input/
 ```
 3. create output directory
 ```
