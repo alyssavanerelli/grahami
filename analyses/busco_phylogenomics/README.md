@@ -74,6 +74,9 @@ this pipeline runs directly on the output from BUSCO
 **to check for these programs**
 
 `which [program]` or `module spider [program]` (in this case you would need to load these programs before running job with `module load [program]`)
+- all the programs are installed in path so nothing will need to be manually loaded
+
+`biopython` will be installed as a python package so to check run `pip list` and search for `biopython` and `numpy` in the output list
 
 **to add these programs to `$PATH`**
 
