@@ -21,6 +21,8 @@
     ```
 ## Running Satsuma2
 
+### Set Up
+
 1. Activate satsuma conda environment
    ```
    conda activate satsuma
@@ -102,9 +104,11 @@
 </p>
 </details>
 
-4. Edit satsuma_run.sh for SLURM
-  - **This file needs to be made in the same directory as the satsuma binary files**
-    `/home/av795/.conda/envs/satsuma/bin`
+
+
+### Ready to Run
+
+1. Make satsuma_run.sh for SLURM
 
       ```
      #!/bin/bash
@@ -139,8 +143,15 @@
      sbatch -p p_ccib_1 -c $3 -J $5 -o ${5}.log --mem ${4}G slurm_tmp.sh
      ```
 
+2. Move this file to binaries folder (for satsuma)
 
-5. Run Satsuma
+    ```
+    mv satsuma_run.sh /home/av795/.conda/envs/satsuma/bin
+    ```
+
+
+3. Run Satsuma
+  
   - To run SatsumaSynteny2, you need to paste these lines into the command line (not sbatch a script)
   - SatsumaSynteny2 will then use the `satsuma_run.sh` file created above to submit slurm jobs
 
@@ -162,6 +173,7 @@
 
 - the query sequence: _sagrei_ genome
 - the target sequence: _grahami_ genome
+
 
 
 
