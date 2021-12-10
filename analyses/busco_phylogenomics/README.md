@@ -83,19 +83,23 @@ this pipeline runs directly on the output from BUSCO
 either need to be in /home/av795/bin or add downloaded folder to path in `.bash_profile`
 
 ## directory structure
-- `busco`
-  - `busco_phylogenomics`
-    - `genomes`
+- `busco/`
+  - `busco_phylogenomics/`
+    - `genomes/`
       - contains fasta genome files
-    - `busco_out`
+    - `busco_out/`
       - contains slurm file (this is where I run the job)
       - results from BUSCO runs
-      - `slurmout`
+      - `slurmout/`
         - slurm output files from jobs
-    - `phy_input`
+    - `phy_input/`
       - directory where busco results will need to be moved to use as input for busco_phylogenomics
-    - `phy_output`
+    - `phy_output/`
       - directory where output from busco_phylogenomics will go
+    - `slurmout/`
+      - where slurm output file for busco_phylogenomics run will go
+    - `phy_sub.sh`
+      - submission script for busco_phylogenomics
 
 ## Gather Genomes
 download genome sequence files from NCBI (or other places) in FASTA format
@@ -204,6 +208,37 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 ```
 python BUSCO_Phylogenomics.py -d phy_input -o phy_output --supermatrix --threads 20
 ```
+_remember that busco conda environment must be activated before submitting submission script_
+
+<details><summary>phy_sub.sh</summary>
+  <p>
+    
+    ```
+    #!/bin/bash
+    #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+    #SBATCH --account=general
+    #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+    #SBATCH --job-name=buscophy                     # job name for listing in queue
+    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
+    #SBATCH --mem=160G                              # memory to allocate in Mb
+    #SBATCH -n 20                                   # number of cores to use
+    #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+    #SBATCH --time=3-00:00:00                       # maximum run time days-hours:minutes:seconds
+    #SBATCH --requeue                               # restart and paused or superseeded jobs
+    #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
+    #SBATCH --mail-type=BEGIN,REQUEUE, FAIL,END     # email for the following reasons
+
+    
+    python BUSCO_Phylogenomics.py -d phy_input -o phy_output --supermatrix --threads 20
+    ```
+    
+  </p>
+  </details>
+  
+
+
+5. visualize results
+
 
 
 
