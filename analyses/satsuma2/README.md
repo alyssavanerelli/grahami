@@ -150,7 +150,38 @@
      ```
 ***Does this need to be an executable file??***
 
-3. Run Satsuma
+3. Split _grahami_ genome into largest scaffolds
+
+- Since our genomes are >1 Gb (1.4G and 1.8G), we need to use the entire _sagrei_ genome as the target sequence and one chromosome from _grahami_ as the query sequence.
+- Will split genome into each largest scaffold (the largest (17?) scaffolds)
+- I am using the `AnoGra1.1.chrom.sizes` file (path: `/juicerdir/AnoGra/references/AnoGra1.1.chrom.sizes`)
+
+**copy chrom sizes over**
+```
+cd /projects/f_geneva_1/alyssa/grahami/satsuma
+cp ../juicerdir/AnoGra/references/AnoGra1.1.chrom.sizes .
+```
+
+**keep only 17 largest scaffolds**
+```
+sed '18, $ d' AnoGra1.1.chrom.sizes > AnoGra_lgsc.fa
+```
+
+**split genome into largest scaffolds**
+- I did this line by line since it was only 17 scaffolds and my loop wasn't working
+
+example:
+```
+grep -w scaffold_9 -A 1 AnoGra1.1.fa > sc9.fa
+```
+**check that only that scaffold is there**
+```
+grep ">" sc9.fa                  #should return only ">scaffold_9"
+
+less sc9.fa                      #make sure that ">scaffold_9" and sequence are in the file
+```
+
+4. Run Satsuma
   
   - To run SatsumaSynteny2, you need to paste these lines into the command line (not sbatch a script)
   - SatsumaSynteny2 will then use the `satsuma_run.sh` file created above to submit slurm jobs
@@ -171,9 +202,8 @@
      -threads 4 \
     ```
 
-- the query sequence: _sagrei_ genome
-- the target sequence: _grahami_ genome
-
+- the query sequence: _grahami_ chromosome
+- the target sequence: _sagrei_ genome
 
 
 
