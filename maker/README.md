@@ -42,11 +42,12 @@ launch `singularity` and search for species name. more detail in code
 
 ## make .sh files to run maker
 
-### sub
+### r1maker_sub.sh
 - This is the first script to be submitted
-- used 2 whole cores to run this 
+- Used 2 whole cores to run this 
 
-
+### gff
+- This is the second script to be submitted after r1maker_sub finishes
 
 
 
@@ -77,7 +78,7 @@ busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_20Oct2018_jSags.
 ### trans_aug
 Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database
 
-### gff
+
 
 
 
