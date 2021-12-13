@@ -140,7 +140,7 @@
      # SLURM systems
      echo "#!/bin/bash" > slurm_tmp.sh
      echo srun $2 >> slurm_tmp.sh
-     sbatch -p p_ccib_1 --exclude=gpuc001,gpuc002 -c $3 -J $5 -o ${5}.log --mem ${4}G slurm_tmp.sh
+     sbatch -p p_ccib_1 --exclude=gpuc001,gpuc002 --time=0-06:00:00 -c $3 -J $5 -o ${5}.log --mem ${4}G slurm_tmp.sh
      ```
 
 2. Move this file to binaries folder (for satsuma) and make executable
@@ -199,6 +199,9 @@ tail -n +13 AnoGra1.1.fa > sc7_end.fa
   
   - To run SatsumaSynteny2, you need to paste these lines into the command line (not sbatch a script)
   - SatsumaSynteny2 will then use the `satsuma_run.sh` file created above to submit slurm jobs
+  - Will need to submit this job script **7 times**
+    - one time for each large scaffold (1-6)
+    - one time for the file of scaffolds 7-15,847
 
     ```
     export SATSUMA2_PATH=/home/av795/.conda/envs/satsuma/bin
@@ -220,7 +223,7 @@ tail -n +13 AnoGra1.1.fa > sc7_end.fa
 - the target sequence: _sagrei_ genome
 
 
-
+## Output
 
 
 
