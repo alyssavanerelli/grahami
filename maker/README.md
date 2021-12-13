@@ -40,6 +40,19 @@ input genome, protein homology evidence, repeat masker model org (_Anolis caroli
 
 launch `singularity` and search for species name. more detail in code
 
+<details><summary>example</summary>
+<p>
+
+```
+singularity shell --cleanenv /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annotation> 
+/usr/local/share/RepeatMasker/famdb.py -i /usr/local/share/RepeatMasker/Libraries/RepeatMaskerLib.h5 names Anolis_carolinensis
+```
+
+</p>
+</details>
+
 ## make .sh files to run maker
 
 **`r1maker_sub.sh`**
