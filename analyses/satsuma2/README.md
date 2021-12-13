@@ -7,6 +7,8 @@
    - chromosomes 1-4 are homologous across _sagrei_ and _carolinensis_
 2. look for evidence of fusion/fission in the genome
 
+**We are using _Anolis carolinensis_ for this because they have done analyses to confirm chromosomes**
+
 
 ## Installation
 1. Create a new [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html) environment for satsuma
@@ -220,7 +222,7 @@ tail -n +13 AnoGra1.1.fa > sc7_end.fa
     ```
 
 - the query sequence: _grahami_ chromosome
-- the target sequence: _sagrei_ genome
+- the target sequence: _carolinensis_ genome
 
 
 ## Output
