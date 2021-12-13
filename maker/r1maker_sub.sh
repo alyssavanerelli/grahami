@@ -5,7 +5,7 @@
 #SBATCH --job-name=maker_sub1                           # job name for listing in queue
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
 #SBATCH --mem=0                                         # memory to allocate in Mb
-#SBATCH -n 64
+#SBATCH -n 20
 #SBATCH -N 2                                            # number of nodes the cores should be on, 1 means all cores on same node
 #SBATCH --exclusive
 #SBATCH --time=10-00:00:00                              # maximum run time days-hours:minutes:seconds
@@ -43,4 +43,4 @@ singularity exec ${MAKER_IMAGE} sh -c 'ln -sf /usr/local/share/RepeatMasker/Libr
 # * -nodatastore is suggested for Lustre, as it reduces the number of directories created
 # * -fix_nucleotides needed for hsap_contig.fasta example data
 
-singularity exec --no-home --cleanenv ${MAKER_IMAGE} mpiexec -n 64 maker -fix_nucleotides -nodatastore
+singularity exec --no-home --cleanenv ${MAKER_IMAGE} mpiexec -n 20 maker -fix_nucleotides -nodatastore
