@@ -111,7 +111,7 @@ module load java/1.8.0_252
 
 
 
-./scripts/juicer.sh -g AnoGra1.1 -d /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra -p /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/references/AnoGra1.1.fa.chrom.sizes -y none -z /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/references/AnoGra1.1.fa -D /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra -t 20 -q p_ccib_1 -l p_ccib_1
+./scripts/juicer.sh -g AnoGra1.1 -d /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra -p /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/references/AnoGra1.1.chrom.sizes -y none -z /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/references/AnoGra1.1.fa -D /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra -t 20 -q p_ccib_1 -l p_ccib_1
 ```
 
 
