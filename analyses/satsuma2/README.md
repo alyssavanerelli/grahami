@@ -156,9 +156,9 @@
 
 3. Split _grahami_ genome into largest scaffolds
 
-- Since our genomes are >1 Gb (1.4G and 1.8G), we need to use the entire _sagrei_ genome as the target sequence and one chromosome from _grahami_ as the query sequence.
-- Will split genome into separate files for scaffolds 1-6 (since they are so large)
-- Make a file containing scaffolds 7-15,847
+   - Since our genomes are >1 Gb (1.4G and 1.8G), we need to use the entire _sagrei_ genome as the target sequence and one chromosome from _grahami_ as the query sequence.
+   - Will split genome into separate files for scaffolds 1-6 (since they are so large)
+   - Make a file containing scaffolds 7-15,847
 
 <details><summary>code not used</summary>
 <p>
@@ -178,7 +178,7 @@ sed '18, $ d' AnoGra1.1.chrom.sizes > AnoGra_lgsc.fa
 </details>
 
 **split genome: scaffolds 1-6**
-- do this six times, one time for each scaffold
+ - do this six times, one time for each scaffold
 
 ```
 grep -w scaffold_9 -A 1 AnoGra1.1.fa > sc9.fa
