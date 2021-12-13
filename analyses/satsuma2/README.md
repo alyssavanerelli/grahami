@@ -195,8 +195,8 @@ less sc9.fa                      #make sure that ">scaffold_9" and sequence are 
     cd /projects/f_geneva_1/alyssa/grahami/satsuma
    
     /home/av795/.conda/envs/satsuma/bin/SatsumaSynteny2 \
-     -t /projects/f_geneva_1/alyssa/grahami/satsuma/            wilkim00-wil/D_willistoni_rnmd_short.sort_trim.fasta \
-     -q /projects/f_geneva_1/alyssa/grahami/satsuma/            wilkim00-wil/D.willistoni.00.trim20.rnmd.fasta \
+     -t /projects/f_geneva_1/alyssa/grahami/satsuma/AnoCar2.0.fa \
+     -q /projects/f_geneva_1/alyssa/grahami/satsuma/sc1.fa
      -o /projects/f_geneva_1/alyssa/grahami/satsuma/out
      -slaves 4 \
      -threads 4 \
