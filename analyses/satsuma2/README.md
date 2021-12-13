@@ -140,21 +140,26 @@
      # SLURM systems
      echo "#!/bin/bash" > slurm_tmp.sh
      echo srun $2 >> slurm_tmp.sh
-     sbatch -p p_ccib_1 -c $3 -J $5 -o ${5}.log --mem ${4}G slurm_tmp.sh
+     sbatch -p p_ccib_1 --exclude=gpuc001,gpuc002 -c $3 -J $5 -o ${5}.log --mem ${4}G slurm_tmp.sh
      ```
 
-2. Move this file to binaries folder (for satsuma)
+2. Move this file to binaries folder (for satsuma) and make executable
 
      ```
      mv satsuma_run.sh /home/av795/.conda/envs/satsuma/bin
+     
+     chmod 755 /home/av795/.conda/envs/satsuma/bin/satsuma_run.sh
      ```
-***Does this need to be an executable file??***
+
 
 3. Split _grahami_ genome into largest scaffolds
 
 - Since our genomes are >1 Gb (1.4G and 1.8G), we need to use the entire _sagrei_ genome as the target sequence and one chromosome from _grahami_ as the query sequence.
-- Will split genome into each largest scaffold (the largest (17?) scaffolds)
-- I am using the `AnoGra1.1.chrom.sizes` file (path: `/juicerdir/AnoGra/references/AnoGra1.1.chrom.sizes`)
+- Will split genome into separate files for scaffolds 1-6 (since they are so large)
+- Make a file containing scaffolds 7-15,847
+
+<details><summary>code not used</summary>
+<p>
 
 **copy chrom sizes over**
 ```
@@ -167,19 +172,28 @@ cp ../juicerdir/AnoGra/references/AnoGra1.1.chrom.sizes .
 sed '18, $ d' AnoGra1.1.chrom.sizes > AnoGra_lgsc.fa
 ```
 
-**split genome into largest scaffolds**
-- I did this line by line since it was only 17 scaffolds and my loop wasn't working
+</p>
+</details>
 
-example:
+**split genome: scaffolds 1-6**
+- do this six times, one time for each scaffold
+
 ```
 grep -w scaffold_9 -A 1 AnoGra1.1.fa > sc9.fa
 ```
+
 **check that only that scaffold is there**
 ```
 grep ">" sc9.fa                  #should return only ">scaffold_9"
 
 less sc9.fa                      #make sure that ">scaffold_9" and sequence are in the file
 ```
+
+**split genome: scaffolds 7-15,847**
+```
+tail -n +13 AnoGra1.1.fa > sc7_end.fa
+```
+
 
 4. Run Satsuma
   
@@ -196,10 +210,10 @@ less sc9.fa                      #make sure that ">scaffold_9" and sequence are 
    
     /home/av795/.conda/envs/satsuma/bin/SatsumaSynteny2 \
      -t /projects/f_geneva_1/alyssa/grahami/satsuma/AnoCar2.0.fa \
-     -q /projects/f_geneva_1/alyssa/grahami/satsuma/sc1.fa
-     -o /projects/f_geneva_1/alyssa/grahami/satsuma/out
+     -q /projects/f_geneva_1/alyssa/grahami/satsuma/sc1.fa \
+     -o /projects/f_geneva_1/alyssa/grahami/satsuma/out \
      -slaves 4 \
-     -threads 4 \
+     -threads 4 
     ```
 
 - the query sequence: _grahami_ chromosome
