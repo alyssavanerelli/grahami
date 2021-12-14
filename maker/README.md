@@ -60,6 +60,27 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 - This is the first script to be submitted
 - Used 2 whole cores to run this 
 
+**make two files**
+
+For the next step we will need to make these two files: `AnoGra_rnd1.all.maker.gff` and `AnoGra_rnd1.all.maker.noseq.gff`
+
+To do this we will launch singularity and run these commands. These files will be used as input for `r1maker_gff.sh`
+```
+# cd into directory with maker index log file
+cd /projects/f_geneva_1/alyssa/grahami/annotation/AnoGra1.1.maker.output
+
+# launch singularity
+singularity shell --cleanenv /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+# run these commands in singularity shell
+gff3_merge -s -d AnoGra1.1_master_datastore_index.log > AnoGra_rnd1.all.maker.gff
+fasta_merge -d AnoGra1.1_master_datastore_index.log
+
+# gff without sequences
+gff3_merge -n -s -d AnoGra1.1_master_datastore_index.log > AnoGra_rnd1.all.maker.noseq.gff
+```
+
+
 **`r1maker_gff.sh`**
 - This script will create gff files to be used in `r1maker_aug.sh` and `r1maker_bsh.sh`
 - This is the second script to be submitted after `r1maker_sub.sh` finishes
