@@ -67,36 +67,9 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 - This will also make files needed for `r1maker_aug.sh`
 
 
-
-
-
-
-
-**make two files**
-
-For the next step we will need to make these two files: `AnoGra_rnd1.all.maker.gff` and `AnoGra_rnd1.all.maker.noseq.gff`
-
-To do this we will launch singularity and run these commands. These files will be used as input for `r1maker_gff.sh`
-```
-# cd into directory with maker index log file
-cd /projects/f_geneva_1/alyssa/grahami/annotation/AnoGra1.1.maker.output
-
-# launch singularity
-singularity shell --cleanenv /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
-
-# run these commands in singularity shell
-gff3_merge -s -d AnoGra1.1_master_datastore_index.log > AnoGra_rnd1.all.maker.gff
-fasta_merge -d AnoGra1.1_master_datastore_index.log
-
-# gff without sequences
-gff3_merge -n -s -d AnoGra1.1_master_datastore_index.log > AnoGra_rnd1.all.maker.noseq.gff
-```
-
-
 **`r1maker_gff.sh`**
-- This script will create gff files to be used in `r1maker_aug.sh` and `r1maker_bsh.sh`
-- This is the second script to be submitted after `r1maker_sub.sh` finishes
-- After this finishes, the remaining scripts can be submitted
+- This script will create gff files to be used later
+- Can submit this after `r1maker_bsh.sh` finishes
 
   **output**
   - This step will make 3 files
@@ -106,28 +79,16 @@ gff3_merge -n -s -d AnoGra1.1_master_datastore_index.log > AnoGra_rnd1.all.maker
     - `AnoGra_rnd1.all.maker.repeats.gff`
 
 
-
-
-
-
-
-
 **`r1maker_aug.sh`**
-- Can be run after `r1maker_gff.sh` finishes because it uses some files created here as input
+- Can be run after `r1maker_gff.sh` and `r1maker_bsh.sh` are finished as it uses some files created by those scripts as input
+- This will train Augustus gene models through BUSCO using the vertebrata_odb10 dataset
+
+path to vertebrata_odb10: `/projects/f_geneva_1/alyssa/grahami/busco/busco_downloads/lineages/vertebrata_odb10`
 
 
 
 
-run after bsh
 
-Augustus configuration
-
-This will train Augustus gene models through BUSCO using the vertebrata_odb10 dataset
-
-```
-#path to vertebrata_odb10
-/projects/f_geneva_1/alyssa/grahami/busco
-```
 
 busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_20Oct2018_jSags.fasta -c 16 -l vertebrata_odb10 -o HiC_2 -m genome
 
@@ -141,7 +102,7 @@ busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_20Oct2018_jSags.
 Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database
 
 ## Important Info
-- After round 1 of maker has completed, copy the original control file: `maker_opts.ctl` to `maker_opts_r1.ctl`
+- After round 1 of maker has completed, copy the original control file: `maker_opts.ctl` to `maker_opts_rnd1.ctl`
 - Now for the next round, just modify the original `maker_opts.ctl` file
 - The `maker_exe.ctl` and `maker_bopts.ctl` can remain the unmodified
 
