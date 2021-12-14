@@ -60,6 +60,18 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 - This is the first script to be submitted
 - Used 2 whole cores to run this 
 
+
+**`r1maker_bsh.sh`**
+- This is the next script to be submitted
+- This will make some .gff files that are needed for `r1maker_gff.sh`
+- This will also make files needed for `r1maker_aug.sh`
+
+
+
+
+
+
+
 **make two files**
 
 For the next step we will need to make these two files: `AnoGra_rnd1.all.maker.gff` and `AnoGra_rnd1.all.maker.noseq.gff`
@@ -86,6 +98,20 @@ gff3_merge -n -s -d AnoGra1.1_master_datastore_index.log > AnoGra_rnd1.all.maker
 - This is the second script to be submitted after `r1maker_sub.sh` finishes
 - After this finishes, the remaining scripts can be submitted
 
+  **output**
+  - This step will make 3 files
+    - `AnoGra_rnd1.all.maker.est2genome.gff`
+      - This file will be empty because in round 1 we did not do any gene annotations using est2genome
+    - `AnoGra_rnd1.all.maker.protein2genome.gff`
+    - `AnoGra_rnd1.all.maker.repeats.gff`
+
+
+
+
+
+
+
+
 **`r1maker_aug.sh`**
 - Can be run after `r1maker_gff.sh` finishes because it uses some files created here as input
 
@@ -106,7 +132,8 @@ This will train Augustus gene models through BUSCO using the vertebrata_odb10 da
 busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_20Oct2018_jSags.fasta -c 16 -l vertebrata_odb10 -o HiC_2 -m genome
 
 
-**`r1maker_bsh.sh`**
+
+
 
 
 **`r1maker_trans_aug.sh`**
