@@ -1,29 +1,29 @@
 # next steps
 ## juicer
-HiC maps - diagonal graph
-
-using HiC assembly and reference genome
+- HiC maps - diagonal graph
+- Using HiC assembly and reference genome
+- Do this to make sure our genome is assembled correctly
+- Go to folder to see detailed instructions
 
 ## busco phylogenomics
-gather genomes of related species to be included in phylogenetic analyses
+- Will create trimmed alignments of genes present and single copy in genomes for all species used, then infer phylogenies via either concatenation and phylogenetic analysis (IQ-Tree) or by inferring individual gene trees (IQ-TREE) and performing species tree inference (ASTRAL)
+- Will download a suite of genomes, run BUSCO on each, run busco_phylogenomics, then visualize with iTOL
+- Go to folder for detailed instructions
 
-run BUSCO on each genome - will be used as input for busco_phylogenomics (default settings - except _-safe_ flag with IQ-TREE)
 
-busco_phylogenomics will create trimmed alignments of genes that were present and single copy in all genomes, and infer phylogenies via either concatenation and phylogenetic analysis (IQ-Tree) or by inferring individual gene trees (IQ-TREE) and performing species tree inference (ASTRAL)
-
-visualize with iTOL
-
-## chromosome synteny
-compare chromosome assembly with closely related species to assess synteny
-
-Satsuma2 (default settings)
-https://github.com/bioinfologics/satsuma2
-
-identify chromosomal locations for related species, find syntenic scaffold between related species, compare these to our largest assembly scaffolds
-
-Use R circlize package for visualization of chromosome synteny
+## satsuma2
+- This will compare our chromosome assembly with _Anolis carolinensis_ to assess synteny
+- Confirm placement of scaffolds
+- Look for evidence of fusion/fission across the genome
+- Use R circlize package for visualization of chromosome synteny
+- Go to folder for detailed instructions
 
 ## GC-content
+- This will divide our largest scaffolds into 10kb windows, then calculate GC percentage within each window
+- Visualize with R circlize package
+- Go to folder for detailed instructions
+
+
 Bedtools
 
 divide largest scaffolds into 10kb windows (settings _-w10000 -s10000_) = AnoGra.10k
@@ -36,6 +36,12 @@ genome-wide GC-content and SD using BBmap stats fucntion
 
 
 ## Gene density
+- This program will divide our largest scaffolds into 10kb windows, then calculate the number of genes within each window
+- Will use MAKER generated models as input
+- Visualize with R circlize package
+- Go to folder for detailed instructions
+
+
 Bedtools nuc // will calculate the number of genes within each 10kb window
 
 Use AnoGra.10k and MAKER generated gene models as input
@@ -45,17 +51,6 @@ visualized w R circlize package
 
 
 
-
-
-## mtgenome assembly
-don't know if we'll be doing this or not
-
-if so, could use pipeline caden will show me
-
-## chromosome size analysis
-do we need to do this or can we use sagrei chromosome sizes?
-
-is there a karyotype available?
 
 ## repetative element content
 Kimura-2 parameter divergence from consensus
