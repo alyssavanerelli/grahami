@@ -186,9 +186,9 @@ grep -w scaffold_1 -A 1 AnoGra1.1.fa > sc1.fa
 
 **check that only that scaffold is there**
 ```
-grep ">" sc1.fa                  #should return only ">scaffold_9"
+grep ">" sc1.fa                  #should return only ">scaffold_1"
 
-less sc1.fa                      #make sure that ">scaffold_9" and sequence are in the file
+less sc1.fa                      #make sure that ">scaffold_1" and sequence are in the file
 ```
 
 **split genome: scaffolds 7-15,847**
