@@ -105,7 +105,7 @@ Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the ver
 - The `maker_exe.ctl` and `maker_bopts.ctl` can remain the unmodified
 
 # round 2
-This round will not due the annotation via protein homology because this was completed in the first round and does not need to be done again.
+This round will not do the annotation via protein homology because this was completed in the first round and does not need to be done again.
 
 This will train the programs to better recognize new _grahami_ genes
 
