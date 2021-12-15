@@ -204,8 +204,8 @@ tail -n +13 AnoGra1.1.fa > sc7_end.fa
    conda activate satsuma 
    ```
   
-  - To run SatsumaSynteny2, you need to paste these lines into the command line (not sbatch a script)
-  - SatsumaSynteny2 will then use the `satsuma_run.sh` file created above to submit slurm jobs
+  - To run SatsumaSynteny2, you need to submit a job script with the commands below
+  - SatsumaSynteny2 will then use the `satsuma_run.sh` file created above to submit subsequent slurm jobs
   - Will need to submit this job script **7 times**
     - one time for each large scaffold (1-6)
     - one time for the file of scaffolds 7-15,847
