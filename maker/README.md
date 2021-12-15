@@ -83,19 +83,17 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 - Can be run after `r1maker_gff.sh` and `r1maker_bsh.sh` are finished as it uses some files created by those scripts as input
 - This will train Augustus gene models through BUSCO using the vertebrata_odb10 dataset
 
-path to vertebrata_odb10: `/projects/f_geneva_1/alyssa/grahami/busco/busco_downloads/lineages/vertebrata_odb10`
+- **Need to download new Augustus config file**
+  ```
+  cd
+  git clone https://github.com/Gaius-Augustus/Augustus.git
+  ```
+  - In the submission script, we will define the path to this config folder
 
-
-
-
-
-
-busco -i /projects/f_geneva_1/alyssa/grahami/anolis_cristatellu_20Oct2018_jSags.fasta -c 16 -l vertebrata_odb10 -o HiC_2 -m genome
-
-
-
-
-
+- If the busco online server is down
+  - move `busco_downloads/` folder over to `annotation/` from `busco/`
+  - add `--offline` to the busco command in the `r1maker_aug.sh` script
+    - this will force busco to use the datasets already downloaded instead of searching online for new files
 
 **`r1maker_trans_aug.sh`**
 
