@@ -181,14 +181,14 @@ sed '18, $ d' AnoGra1.1.chrom.sizes > AnoGra_lgsc.fa
  - do this six times, one time for each scaffold
 
 ```
-grep -w scaffold_9 -A 1 AnoGra1.1.fa > sc9.fa
+grep -w scaffold_1 -A 1 AnoGra1.1.fa > sc1.fa
 ```
 
 **check that only that scaffold is there**
 ```
-grep ">" sc9.fa                  #should return only ">scaffold_9"
+grep ">" sc1.fa                  #should return only ">scaffold_9"
 
-less sc9.fa                      #make sure that ">scaffold_9" and sequence are in the file
+less sc1.fa                      #make sure that ">scaffold_9" and sequence are in the file
 ```
 
 **split genome: scaffolds 7-15,847**
