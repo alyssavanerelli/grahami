@@ -12,6 +12,8 @@ _maker, RepeatModeler, RepeatMasker, Augustus, and SNAP are included with singul
 ## data/resources
 1. assembled reference genome, in fasta format
 2. protein sequences from related species, in fasta format
+   - for this assembly we used two species: _Anolis sagrei_ and _Sceloporus undulatus_
+   - did not use _carolinensis_ because _sagrei_ annotations have those present in _carolinensis_ and more
 
 
 # make control files
