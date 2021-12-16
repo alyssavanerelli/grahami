@@ -19,7 +19,7 @@ est_gff= #aligned ESTs or mRNA-seq from an external GFF3 file
 altest_gff= #aligned ESTs from a closly relate species in GFF3 format
 
 #-----Protein Homology Evidence (for best results provide a file for at least one)
-protein=/projects/f_geneva_1/alyssa/grahami/annotation/proteomes/AnoCar2.0_protein_GCF_000090745.1.faa,/projects/f_geneva_1/alyssa/grahami/annotation/proteomes/PogVit1.1_protein_GCF_900067755.1.faa,/projects/f_geneva_1/alyssa/grahami/annotation/proteomes/SceUnd1.1_protein.faa,/projects/f_geneva_1/alyssa/grahami/annotation/proteomes/AnoSag2.1_proteins.fa  #protein sequence file in fasta format (i.e. from mutiple oransisms)
+protein=/projects/f_geneva_1/alyssa/grahami/annotation/proteomes/SceUnd1.1_protein.faa,/projects/f_geneva_1/alyssa/grahami/annotation/proteomes/AnoSag2.1_proteins.fa  #protein sequence file in fasta format (i.e. from mutiple oransisms)
 protein_gff=  #aligned protein homology evidence from an external GFF3 file
 
 #-----Repeat Masking (leave values blank to skip repeat masking)
