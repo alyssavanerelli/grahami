@@ -62,6 +62,8 @@
      - Whatever is written where `label` is will be used as the species name for the figure
 
    ```
+   cd /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out
+   
    find . -name “short_summary.specific*” -type f -exec cp {} /projects/f_geneva_1/alyssa/grahami/figures/busco \;
    ```
    
