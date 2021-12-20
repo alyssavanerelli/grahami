@@ -17,6 +17,7 @@ this pipeline runs directly on the output from BUSCO
   ```
 - [x] [MUSCLE](https://www.drive5.com/muscle/)
   - [download links here](https://github.com/rcedgar/muscle/releases/tag/v5.0.1428)
+  - NEED TO USE VERSION 3
     <details><summary>code</summary>
     <p>
     
@@ -54,16 +55,14 @@ this pipeline runs directly on the output from BUSCO
     
 - [x] [IQ-TREE](http://www.iqtree.org/)
   - [download links here](http://www.iqtree.org/)
+  - 
     
     <details><summary>code</summary>
     <p>
     
     ```
     cd
-    wget [link]
-    unzip iqtree-1.6.12-MacOSX.zip
-    
-    mv iqtree-1.6.12-MacOSX/bin/iqtree bin/
+    conda install -c bioconda iqtree
     ```
     
     </p>
@@ -77,6 +76,8 @@ this pipeline runs directly on the output from BUSCO
 - all the programs are installed in path so nothing will need to be manually loaded
 
 `biopython` will be installed as a python package so to check run `pip list` and search for `biopython` and `numpy` in the output list
+
+to check that all programs are installed _properly_ run `[program] -h` and the help page should print
 
 **to add these programs to `$PATH`**
 
@@ -239,6 +240,7 @@ _remember that busco conda environment must be activated before submitting submi
 
 5. visualize results
 
+A file named `SUPERMATRIX.aln.treefile` will be created in the `phy_out` directory. The results of this file can be copied and pasted into [iTOL](https://itol.embl.de/) to visualize your tree!
 
 
 
