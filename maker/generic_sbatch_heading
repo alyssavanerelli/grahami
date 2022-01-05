@@ -2,12 +2,12 @@
 #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
 #SBATCH --account=general
 #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
-#SBATCH --job-name=pilonloop                     # job name for listing in queue
+#SBATCH --job-name=pilonloop                    # job name for listing in queue
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/pilon/slurm_out/slurm-%j-%x.out
 #SBATCH --mem=160G                              # memory to allocate in Mb
-#SBATCH -n 1                                   # number of cores to use
+#SBATCH -n 1                                    # number of cores to use
 #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
 #SBATCH --time=9-00:00:00                       # maximum run time days-hours:minutes:seconds
 #SBATCH --requeue                               # restart and paused or superseeded jobs
 #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
-#SBATCH --mail-type=FAIL,END                    # email for the following reasons
+#SBATCH --mail-type=BEGIN,FAIL,END,REQUEUE      # email for the following reasons
