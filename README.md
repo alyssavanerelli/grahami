@@ -144,11 +144,52 @@ We are using the **vertebrate** dataset: `vertebrata_odb10`
 
 ## Installing BUSCO and downloading dataset
 
-I cannot remember how to do this
+Install busco using conda
+1. Load anaconda from your home directory
+   ```
+   module load anaconda/2020.07-gc563
+   ```
+2. Create a new conda environment just for busco
+   
+   _this step will take a while and will ask some yes/no questions_
+   ```
+   conda create -n busco -c conda-forge -c bioconda busco=5.2.2
+   ```
+3. Initialize your environment to run bash
+   ```
+   conda init bash
+   ```
+4. Log out of amarel and log back in
+5. Check if everything was installed properly
+   ```
+   conda activate busco
+   busco --help
+   ```
+5. To launch the busco environment in a SLURM script (needed anytime using busco)
+   ```
+   module purge
 
+   eval "$(conda shell.bash hook)"
+   conda activate busco
+   ```
+6. In the script, you will call a dataset: `vertebrata_odb10` (will be retrieved from online database)
 ## Running BUSCO
+1. Launch busco environment
+2. Download any genome file you want to analyze (in fasta format)
+3. Submit a job running busco
 
-1. Create a busco conda environment
+   example submission script:
+   ```
+   module purge
+
+   eval "$(conda shell.bash hook)"
+   conda activate busco
+
+   busco -i path_to_fasta.fa -c 16 \
+   -l vertebrata_odb10 \
+   -o output_file_name \
+   -m genome
+   ```
 
 
 # bwa
