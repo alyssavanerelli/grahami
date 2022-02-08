@@ -208,10 +208,183 @@
   </p>
   </details>
 
+---
+7. Create the `config_generator.sh` file
+  - I am not sure that we need this (may have just been to create configuration files for each species when running on many species)
+  - contains information regarding order of elements passed to novoplasty
+
+  <details><summary>config_generator.sh</summary>
+  <p>
+    
+    ```
+    #!/bin/sh
+
+    genomes="/projects/f_geneva_1/alyssa/grahami/mtgenome/reads"
+    species="$1"
+    readLen="$2"
+    insert="$3"
+    #reads=$4
+    #subfolder=$5
+    #refName=$6
+    ref="$7"
+    Kmer="$8"
+    #format=$9
+    forward="${genomes}/${species}/${5}${4}1.fq"
+    reverse="${genomes}/${species}/${5}${4}2.fq"
+    output="${genomes}/${species}/${species}-novoplasty/"
+    conTemp="/projects/f_geneva_1/alyssa/argentum/argent_configuration_novo.txt"
+    conNew="${output}novo_config_${species}_${9}_${6}_${8}.txt"
+
+    echo -n "$(sed -n '1,3p' ${conTemp})" > ${conNew}
+    echo "${species}_${9}_${6}_${8}" >> ${conNew}
+    echo -n "$(sed -n '4,6p' ${conTemp})" >> ${conNew}
+    echo "${Kmer}" >> ${conNew}
+    echo -n "$(sed -n '7,10p' ${conTemp})" >> ${conNew}
+    echo " " #"${ref}" >> ${conNew}
+    echo -n "$(sed -n '11,12p' ${conTemp})" >> ${conNew}
+    echo " " #"${ref}" >> ${conNew}
+    echo -n "$(sed -n '13,18p' ${conTemp})" >> ${conNew}
+    echo "${readLen}" >> ${conNew}
+    echo -n "$(sed -n '19p' ${conTemp})" >> ${conNew}
+    echo "${insert}" >> ${conNew}
+    echo -n "$(sed -n '20,23p' ${conTemp})" >> ${conNew}
+    echo "${forward}" >> ${conNew}
+    echo -n "$(sed -n '24p' ${conTemp})" >> ${conNew}
+    echo "${reverse}" >> ${conNew}
+    echo -n "$(sed -n '25,37p' ${conTemp})" >> ${conNew}
+    echo "${output}" >> ${conNew}
+    ```
+
+  </p>
+  </details>
 
 
+## Run NOVOPlasty
 
+```
+sbatch run_novoplasty.sh
+```
 
+## Output
+- the mitochondrial genome should be output into `genome` and will be labeled `Circularized_assembly[...].fasta`
+- other log files will be created while novoplasty is running
 
+## Extracting only the mitochondrial reads from the original read files
+- will need to do this to publish the mitochondrial genome
+
+1. Create a folder for this step and copy mtgenome over
+
+  ```
+  mkdir bwa
+  cd bwa
+  cp ../genome/[assembly name] .
+  ```
   
+---
+2. BWA
+  - This step will index reads with bamtools and samtools
+  - will align illumina reads to mtgenome assembly
+
+  <details><summary>bwa.sh</summary>
+  <p>
+    
+    ```
+    #!/bin/bash
+
+    #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+    #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+    #SBATCH --account=general
+    #SBATCH --job-name=bwa                          # job name for listing in queue
+    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/slurm-%j-%x.out
+    #SBATCH --mem=100G                              # memory to allocate in Mb
+    #SBATCH -n 10                                   # number of cores to use
+    #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+    #SBATCH --time=3-00:00:00                       # maximum run time days-hours:minutes:seconds
+    #SBATCH --requeue                               # restart and paused or superseeded jobs
+    #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
+    #SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE	# email for the following reasons
+
+
+
+    echo "load any Amarel modules that script requires"
+    module purge                                    # clears out any pre-existing modules
+    module load samtools                            # load any modules needed
+    module load bwa
+
+    echo "Bash commands for the analysis you are going to run"
+
+    echo "##################### index and align with BWA"
+    bwa index /projects/f_geneva_1/alyssa/grahami/bwa/[assembly_name].fasta
+
+    bwa mem -t 10 /projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/[assembly_name].fasta \
+    /projects/f_geneva_1/alyssa/grahami/mtgenome/reads/DTG-SG-150_filtered.R1.fq \
+    /projects/f_geneva_1/alyssa/grahami/mtgenome/reads/DTG-SG-150_filtered.R2.fq \
+    | samtools sort -@10 -o /projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/grahami_bwa_aligned.bam -
+
+
+    echo "change user group of files created"
+    chgrp -R g_geneva_1 /projects/f_geneva_1/alyssa/grahami/mtgenome             # changes group of all files in listed directory
+
+
+    echo "This is a run"
+    echo "Now it is done"
+    ```
   
+  </p>
+  </details>
+
+---
+3. Extract only the overlapping reads
+  - uses samtools
+
+
+  <details><summary>extract.sh</summary>
+  <p>
+    
+    ```
+    #!/bin/bash
+
+    #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+    #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+    #SBATCH --account=general
+    #SBATCH --job-name=samtools                          # job name for listing in queue
+    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/slurm-%j-%x.out
+    #SBATCH --mem=100G                              # memory to allocate in Mb
+    #SBATCH -n 9                                   # number of cores to use
+    #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+    #SBATCH --time=0-15:00:00                       # maximum run time days-hours:minutes:seconds
+    #SBATCH --requeue                               # restart and paused or superseeded jobs
+    #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
+    #SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE	# email for the following reasons
+
+
+
+    echo "load any Amarel modules that script requires"
+    module purge                                    # clears out any pre-existing modules
+    module load samtools                            # load any modules needed
+    module load bwa
+
+
+    echo "# filtering reads"
+    samtools view -b -@ 9 -F 4 -f 8 grahami_bwa_aligned.bam > subset1.bam
+    samtools view -b -@ 9 -F 8 -f 4 grahami_bwa_aligned.bam > subset2.bam
+    samtools view -b -@ 9 -F 12 grahami_bwa_aligned.bam > subset3.bam
+
+    echo ""
+    echo "samtools merge 3 mappings together"
+    samtools merge merged_grahami.bam \
+    subset1.bam subset2.bam subset3.bam
+
+    echo "samtools sort reads in name order"
+    samtools sort -n merged_grahami.bam -o grahami_ordered.bam
+
+    echo "done"
+  
+  </p>
+  </details>
+
+
+
+
+
+
