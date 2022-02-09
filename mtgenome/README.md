@@ -161,7 +161,7 @@
     -----------------------
     Insert size auto      = yes
     Use Quality Scores    = no
-    Output path           = /projects/f_geneva_1/alyssa/grahami/mtgenome/genome
+    Output path           = /projects/f_geneva_1/alyssa/grahami/mtgenome/genome/
     ```
   
   </p>
