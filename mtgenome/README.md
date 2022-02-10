@@ -161,7 +161,7 @@
     -----------------------
     Insert size auto      = yes
     Use Quality Scores    = no
-    Output path           = /projects/f_geneva_1/alyssa/grahami/mtgenome/genome/
+    Output path           = /projects/f_geneva_1/alyssa/grahami/mtgenome/genome/kmer_41/
     ```
   
   </p>
@@ -265,8 +265,11 @@
 sbatch run_novoplasty.sh
 ```
 
+**genome circularized at kmer=61**
+
 ## Output
 - the mitochondrial genome should be output into `genome` and will be labeled `Circularized_assembly[...].fasta`
+  - `Circularized_assembly_1_grahami_61.fasta`
 - other log files will be created while novoplasty is running
 
 ## Extracting only the mitochondrial reads from the original read files
@@ -277,7 +280,7 @@ sbatch run_novoplasty.sh
   ```
   mkdir bwa
   cd bwa
-  cp ../genome/[assembly name] .
+  cp ../genome/Circularized_assembly_1_grahami_61.fasta .
   ```
   
 ---
@@ -295,7 +298,7 @@ sbatch run_novoplasty.sh
     #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
     #SBATCH --account=general
     #SBATCH --job-name=bwa                          # job name for listing in queue
-    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/slurm-%j-%x.out
+    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/slurmout/slurm-%j-%x.out
     #SBATCH --mem=100G                              # memory to allocate in Mb
     #SBATCH -n 10                                   # number of cores to use
     #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
@@ -314,9 +317,9 @@ sbatch run_novoplasty.sh
     echo "Bash commands for the analysis you are going to run"
 
     echo "##################### index and align with BWA"
-    bwa index /projects/f_geneva_1/alyssa/grahami/bwa/[assembly_name].fasta
+    bwa index /projects/f_geneva_1/alyssa/grahami/bwa/Circularized_assembly_1_grahami_61.fasta
 
-    bwa mem -t 10 /projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/[assembly_name].fasta \
+    bwa mem -t 10 /projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/Circularized_assembly_1_grahami_61.fasta \
     /projects/f_geneva_1/alyssa/grahami/mtgenome/reads/DTG-SG-150_filtered.R1.fq \
     /projects/f_geneva_1/alyssa/grahami/mtgenome/reads/DTG-SG-150_filtered.R2.fq \
     | samtools sort -@10 -o /projects/f_geneva_1/alyssa/grahami/mtgenome/bwa/grahami_bwa_aligned.bam -
