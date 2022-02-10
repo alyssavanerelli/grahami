@@ -243,6 +243,25 @@ _remember that busco conda environment must be activated before submitting submi
 A file named `SUPERMATRIX.aln.treefile` will be created in the `phy_out` directory. The results of this file can be copied and pasted into [iTOL](https://itol.embl.de/) to visualize your tree!
 
 
+## Output
+
+### Supermatrix
+
+
+### Supertree
+
+1. When submitting script, use `--supertree`
+2. Download ASTRAL
+  - [ASTRAL github page](https://github.com/smirarab/ASTRAL)
+  - [ASTRAL github tutorial page](https://github.com/smirarab/ASTRAL/blob/master/astral-tutorial.md)
+  - I installed via git clone, then unzipped the jar file, moved all of astral download to bin
+
+
+**Path to jar file**
+```
+/home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar
+```
+
 
 
 
