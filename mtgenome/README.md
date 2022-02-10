@@ -71,12 +71,12 @@
   
     echo ""
     echo "##################### trimmomatic"
-    java -jar /projects/ccib/geneva/programs/trimmomatic/trimmomatic-0.39.jar PE \
+    java -jar /projects/f_geneva_1/programs/trimmomatic/trimmomatic-0.39.jar PE \
     -threads 20 -phred33 -trimlog ${readset}_trim.log \
     ${readset}_R1_001.fastq ${readset}_R2_001.fastq \
     ${readset}_filtered.R1.fq ${readset}_filtered.unpaired.R1.fq \
     ${readset}_filtered.R2.fq ${readset}_filtered.unpaired.R2.fq \
-    ILLUMINACLIP:/projects/ccib/geneva/programs/trimmomatic/adapters/TruSeq3-PE-2.fa:2:30:10:4 \
+    ILLUMINACLIP:/projects/f_geneva_1/programs/trimmomatic/adapters/TruSeq3-PE-2.fa:2:30:10:4 \
     LEADING:20 TRAILING:20 SLIDINGWINDOW:13:20 MINLEN:23
     echo "$(sacct -j ${SLURM_JOB_ID} --format=elapsed | sed -n -e 3p)"
 
