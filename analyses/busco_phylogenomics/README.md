@@ -255,12 +255,66 @@ A file named `SUPERMATRIX.aln.treefile` will be created in the `phy_out` directo
   - [ASTRAL github page](https://github.com/smirarab/ASTRAL)
   - [ASTRAL github tutorial page](https://github.com/smirarab/ASTRAL/blob/master/astral-tutorial.md)
   - I installed via git clone, then unzipped the jar file, moved all of astral download to bin
-
+3. For astral help (display options)
+  ```
+  java -jar /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar
+  ```
 
 **Path to jar file**
 ```
 /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar
 ```
+
+3. The output file that we will use from supertree analysis in busco_phylogenomics: `ALL.trees`
+
+4. Make `astral.sh` to submit species tree analysis
+
+
+<details><summary>astral.sh</summary>
+<p>
+  
+  ```
+  #!/bin/bash
+
+#SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+#SBATCH --account=general
+#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+#SBATCH --job-name=astral                       # job name for listing in queue
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/astral/slurmout/slurm-%j-%x.out
+#SBATCH --mem=160G                              # memory to allocate in Mb
+#SBATCH -n 20                                   # number of cores to use
+#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH --time=3-00:00:00                       # maximum run time days-hours:minutes:seconds
+#SBATCH --requeue                               # restart and paused or superseeded jobs
+#SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
+#SBATCH --mail-type=BEGIN,REQUEUE, FAIL,END     # email for the following reasons
+
+
+echo "########### load any modules needed"
+module purge
+module load java
+
+
+
+echo ""
+echo "########### commands for analysis you are going to run"
+
+phylogeny="/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/"
+
+java -jar /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar -i ${phylogeny}phy_output_psc100_supertree/ALL.trees -o out.tree 2>out.log
+  ```
+
+</p>
+</details>
+
+
+
+
+
+
+
+
+
 
 
 
