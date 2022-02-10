@@ -305,7 +305,7 @@ java -jar /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar -i ${phylogeny}phy_outp
   
 echo ""
 echo "########### change group access"
-chgrp -R g_geneva_1 /projects/f_geneva_1/alyssa/grahami/          
+chgrp -R g_geneva_1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/astral          
 
 
 echo ""
