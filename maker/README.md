@@ -7,7 +7,7 @@
 5. [SNAP](http://korflab.ucdavis.edu/software.html)
 6. [BEDtools](https://bedtools.readthedocs.io/en/latest/)
 
-_maker, RepeatModeler, RepeatMasker, Augustus, and SNAP are included with singularity that is already installed_
+**_maker, RepeatModeler, RepeatMasker, Augustus, and SNAP are included with singularity that is already installed_**
 
 ## data/resources
 1. assembled reference genome, in fasta format
