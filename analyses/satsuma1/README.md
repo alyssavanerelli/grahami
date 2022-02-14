@@ -70,18 +70,18 @@ time $satsuma_folder/SatsumaSynteny \
   #!/bin/bash
 
 
-#SBATCH --partition=p_ccib_1                       # which partition to run the job, options are in the Amarel guide
+#SBATCH --partition=p_ccib_1   
 #SBATCH --account=general
-#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
-#SBATCH --job-name=satsuma                   # job name for listing in queue
+#SBATCH --exclude=gpuc001,gpuc002         
+#SBATCH --job-name=satsuma                  
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/mtgenome/slurmout/slurm-%j-%x.out
-#SBATCH --mem=110G                              # memory to allocate in Mb
-#SBATCH -n [max cores]                                   # number of cores to use
-#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
-#SBATCH --time=14-00:00:00                       # maximum run time days-hours:minutes:seconds
-#SBATCH --no-requeue                            # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
-#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE	# email for the following reasons
+#SBATCH --mem=110G                              
+#SBATCH --cpus-per-task=24                                 
+#SBATCH --ntasks=1              
+#SBATCH --time=14-00:00:00
+#SBATCH --no-requeue                       
+#SBATCH --mail-user=av795@rutgers.edu     
+#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE	
   
   
   
