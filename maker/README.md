@@ -57,19 +57,22 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 
 ## make .sh files to run maker
 
-**`r1maker_sub.sh`**
+**1. `r1maker_sub.sh`**
 - This script will submit maker using the protein homology sequences to annotate the genome
 - This is the first script to be submitted
 - Used 2 whole cores to run this 
 
+---
 
-**`r1maker_bsh.sh`**
+**2. `r1maker_bsh_n.sh`**
 - This is the next script to be submitted
 - This will make some .gff files that are needed for `r1maker_gff.sh`
 - This will also make files needed for `r1maker_aug.sh`
+- Used the file with "n" because we did not use any filters for this run
 
+---
 
-**`r1maker_gff.sh`**
+**3. `r1maker_gff.sh`**
 - This script will create gff files to be used later
 - Can submit this after `r1maker_bsh.sh` finishes
 
@@ -80,8 +83,9 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
     - `AnoGra_rnd1.all.maker.protein2genome.gff`
     - `AnoGra_rnd1.all.maker.repeats.gff`
 
+---
 
-**`r1maker_aug.sh`**
+**4. `r1maker_aug.sh`**
 - Can be run after `r1maker_gff.sh` and `r1maker_bsh.sh` are finished as it uses some files created by those scripts as input
 - This will train Augustus gene models through BUSCO using the vertebrata_odb10 dataset
 
@@ -93,31 +97,56 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
   - In the submission script, we will define the path to this config folder
 
 - If the busco online server is down
-  - move `busco_downloads/` folder over to `annotation/` from `busco/`
+  - copy `busco_downloads/` folder over to `annotation/` from `busco/`
   - add `--offline` to the busco command in the `r1maker_aug.sh` script
     - this will force busco to use the datasets already downloaded instead of searching online for new files
 
-**`r1maker_trans_aug.sh`**
+---
+
+**5. `r1maker_trans_aug.sh`**
 
 Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database
+
+---
 
 ## Important Info
 - After round 1 of maker has completed, copy the original control file: `maker_opts.ctl` to `maker_opts_rnd1.ctl`
 - Now for the next round, just modify the original `maker_opts.ctl` file
-- The `maker_exe.ctl` and `maker_bopts.ctl` can remain the unmodified
+- The `maker_exe.ctl` and `maker_bopts.ctl` can remain unmodified
 
 # round 2
 This round will not do the annotation via protein homology because this was completed in the first round and does not need to be done again.
 
 This will train the programs to better recognize new _grahami_ genes
 
-**1. modify control file**
+**1. modify control file: `maker_opts.ctl`**
+  - Copy `maker_opts.ctl` to `maker_opts_rnd1.ctl`
+  - Edit `maker_opts.ctl` for round 2
+    - The code for this file is under `maker_opts_rnd2.ctl` (in github)
 
-little description
+---
 
-**2. submit `r2maker_sub.sh`**
+**2.`r2maker_sub.sh`**
 
-blah
+---
+
+**3. `r2maker_bsh.sh`**
+
+---
+
+**4. `r2maker_gff.sh`**
+
+---
+
+**5. `r2maker_aug.sh`**
+
+---
+
+**6. `r2maker_trans_aug.sh`**
+
+---
+
+
 
 
 
