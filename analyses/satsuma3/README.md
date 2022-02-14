@@ -1,6 +1,6 @@
-# Chromosome Synteny Analysis using Satsuma1
+# Chromosome Synteny Analysis using Satsuma3
 
-SatsumaSynteny2 is not working well with SLURM so we are trying SatsaumaSynteny
+SatsumaSynteny2 is not working well with SLURM so we are trying SatsaumaSynteny version 3
 
 
 # Resources
@@ -54,7 +54,12 @@ time $satsuma_folder/SatsumaSynteny \
    ```
    git clone https://git.code.sf.net/p/satsuma/code satsuma-code
    ```
-3. compile?
+3. compile
+   ```
+   cd satsuma-code
+   make
+   ```
+4.
 
 
 
@@ -74,17 +79,27 @@ time $satsuma_folder/SatsumaSynteny \
 #SBATCH --account=general
 #SBATCH --exclude=gpuc001,gpuc002         
 #SBATCH --job-name=satsuma                  
-#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/mtgenome/slurmout/slurm-%j-%x.out
-#SBATCH --mem=110G                              
-#SBATCH --cpus-per-task=24                                 
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/slurmout/slurm-%j-%x.out
+#SBATCH --mem=700G                              
+#SBATCH --cpus-per-task=50                                
 #SBATCH --ntasks=1              
 #SBATCH --time=14-00:00:00
 #SBATCH --no-requeue                       
 #SBATCH --mail-user=av795@rutgers.edu     
 #SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE	
   
-  
-  
+work_folder=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3
+out_folder=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/out
+satsuma_folder=/home/av795/bin/satsuma-code
+
+
+export PATH=/home/av795/bin/satsuma-code:$PATH
+
+time ${satsuma_folder}/SatsumaSynteny \
+-t $work_folder/sc6.fa \
+-q $work_folder/AnoCar2.0.fa \
+-o $out_folder -n 50
+    
   ```
 
 </p>
@@ -94,6 +109,7 @@ time $satsuma_folder/SatsumaSynteny \
 **d**
 
 notes
+
 If the output directory is not empty, SatsumaSynteny will not overwrite any files but exit with an error message.
 
 Idling processes self-terminate after two minutes. The overall alignments will still complete, but using fewer processes.
