@@ -40,7 +40,7 @@ time $satsuma_folder/SatsumaSynteny \
 -t $out_folder/A_sagrei.fa \
 -q $out_folder/A_carolinensis.fa \
 -o $out_folder/Satsuma/Satsuma_sagrei_carolinensis -n 24
-
+  ```
 
 </p>
 </details>
@@ -48,6 +48,7 @@ time $satsuma_folder/SatsumaSynteny \
 
 # Installation
 - Will install using source code
+
 
 
 
