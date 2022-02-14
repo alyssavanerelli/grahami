@@ -49,6 +49,77 @@ time $satsuma_folder/SatsumaSynteny \
 # Installation
 - Will install using source code
 
+1. Follow link to source code
+2. clone environment using link
+   ```
+   git clone https://git.code.sf.net/p/satsuma/code satsuma-code
+   ```
+3. compile?
+
+
+
+
+
+
+# Set up 
+
+<details><summary>satsuma.sh</summary>
+<p>
+  
+  ```
+  #!/bin/bash
+
+
+#SBATCH --partition=p_ccib_1                       # which partition to run the job, options are in the Amarel guide
+#SBATCH --account=general
+#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+#SBATCH --job-name=satsuma                   # job name for listing in queue
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/mtgenome/slurmout/slurm-%j-%x.out
+#SBATCH --mem=110G                              # memory to allocate in Mb
+#SBATCH -n [max cores]                                   # number of cores to use
+#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH --time=14-00:00:00                       # maximum run time days-hours:minutes:seconds
+#SBATCH --no-requeue                            # restart and paused or superseeded jobs
+#SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
+#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE	# email for the following reasons
+  
+  
+  
+  ```
+
+</p>
+</details>
+
+
+**d**
+
+notes
+If the output directory is not empty, SatsumaSynteny will not overwrite any files but exit with an error message.
+
+Idling processes self-terminate after two minutes. The overall alignments will still complete, but using fewer processes.
+
+If alignment runs locally but not on the server farm, check whether processes on the farm can communicate via TCP/IP.
+
+Currently, the entire sequences are loaded into RAM by each process. For comparison of large genomes, we strongly recommend to make sure that the CPUs have enough RAM available (~ the size of both genomes in bytes).
+
+
+Parameter choice, execution and data preparation
+The default parameters should work well for most genomes.
+
+SatsumaSynteny runs most efficiently on either multi-processor machines or on clusters that are tightly coupled (fast access to files shared by the control process and the slaves)
+
+Especially for larger genomes, we recommend leaving one CPU dedicated to the control process SatsumaSynteny.
+
+For larger genomes (>1.5 Gb), we recommend using one chromosome of one genome as the target sequence and the entire other genome as the query sequence, and process alignments one query chromosome at a time. We tested this strategy successfully on a mammalian genome pair.
+
+To include large-scale duplications in the query sequence (in addition to the target sequence), use the option –dups.
+
+If using the option –nofilter, the number of initial searches (-ni) should be higher than the number of processes (-n) to ensure that subsequent processes have sufficient seeds. Note that initial searches will be queued to a number of processes specified by -n.
+
+When many processes search a tight space, the number of pixels per CPU (-m) should be small (e.g. ‘–m 1’ as in the sample script/data set) to avoid unbalanced load (i.e. some processes get all the pixels while others are starved, since they overlap). However, a small value for –m increases inter-process communication, which should be a consideration when deploying hundreds of processes.
+
+
+
 
 
 
