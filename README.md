@@ -130,7 +130,7 @@ This program will calculate scaffold length, N50, % gaps, etc.
 
 
 # BUSCO
-This stands for **B**enchmarking **S**ingle-**C**opy **O**rthologs
+This stands for **B**enchmarking **U**niversal **S**ingle-**C**opy **O**rthologs
 
 **Objectives**
 - We use this to assess genome assembly completeness
