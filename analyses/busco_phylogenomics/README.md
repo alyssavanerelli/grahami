@@ -318,6 +318,22 @@ echo "done"
 
 
 
+## Visualizing species trees in R
+
+[R Phylogenetic Trees](https://yulab-smu.top/treedata-book/chapter4.html)
+
+- update R and RStudio
+- packages needed
+  - `tidyverse`
+  - `ggtree`
+    - To install this package (need updated version of R)
+      ```
+      if (!require("BiocManager", quietly = TRUE))
+      install.packages("BiocManager")
+
+      BiocManager::install("ggtree")
+      ```
+  - `treeio`
 
 
 
