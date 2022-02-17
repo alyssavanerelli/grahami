@@ -136,6 +136,35 @@ When many processes search a tight space, the number of pixels per CPU (-m) shou
 
 
 
+# Output
+- `satsuma_summary.out`: readable alignments (Satsuma only)
+- `satsuma_summary.refined.out`: final readable alignments (Satsuma and SatsumaSynteny)
+
+format:
+```
+Contents:
+Target sequence name (provided by fasta)
+First target base
+Last target base
+Query sequence name (provided by fasta)
+First query base
+Last query base
+Identity
+Orientation
+
+EXAMPLE:
+
+chrX 5947 6164 chrX 9153 9360 0.626728 +
+chrX 6270 6452 chrX 9472 9654 0.576923 +
+```
+
+## to plot results
+- `./MicroSyntenyPlot –i <satsuma_summary.txt>` 
+  - to create a postscript dot plot (color coded by target chromosomes).
+- `./ChromosomePaint` 
+  - to create a postscript file that colors chromosomes by color.
+- `./BlockDisplaySatsuma` 
+  - to create a file that can be shown in the interactive multi-level synteny browser
 
 
 
