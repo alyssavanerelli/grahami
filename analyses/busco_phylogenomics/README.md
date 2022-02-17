@@ -334,6 +334,7 @@ echo "done"
       BiocManager::install("ggtree")
       ```
   - `treeio`
+    - used to parse the tree file into R
 
 
 
