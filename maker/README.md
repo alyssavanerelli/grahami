@@ -1,3 +1,6 @@
+# Resources
+[Daren Card Github Page](https://gist.github.com/darencard/bb1001ac1532dd4225b030cf0cd61ce2)
+
 # software and data needed
 ## software
 1. [RepeatModeler](http://www.repeatmasker.org/RepeatModeler/) and [RepeatMasker](http://www.repeatmasker.org/RMDownload.html) with all dependencies and [RepBase](https://www.girinst.org/repbase/)
@@ -62,13 +65,23 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 - This is the first script to be submitted
 - Used 2 whole cores to run this 
 
+  **output**
+  - `AnoGra1.1.maker.output`
+
 ---
 
 **2. `r1maker_bsh_n.sh`**
 - This is the next script to be submitted
+- This will train the gene model software `SNAP`
 - This will make some .gff files that are needed for `r1maker_gff.sh`
 - This will also make files needed for `r1maker_aug.sh`
 - Used the file with "n" because we did not use any filters for this run
+- Ideally want to use an aed of at least 0.25 and a length of 50 amino acids (`-x 0.25 -l 50`) - to give MAKER good gene models
+  - We did not get output when using these criteria so we used the `-n` flag which means no criteria
+
+
+  **output**
+  - `AnoGra1.1.maker.output/snap/braker`
 
 ---
 
@@ -87,7 +100,7 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 
 **4. `r1maker_aug.sh`**
 - Can be run after `r1maker_gff.sh` and `r1maker_bsh.sh` are finished as it uses some files created by those scripts as input
-- This will train Augustus gene models through BUSCO using the vertebrata_odb10 dataset
+- This will train `Augustus` gene models through BUSCO using the vertebrata_odb10 dataset
 
 - **Need to download new Augustus config file**
   ```
@@ -100,12 +113,19 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
   - copy `busco_downloads/` folder over to `annotation/` from `busco/`
   - add `--offline` to the busco command in the `r1maker_aug.sh` script
     - this will force busco to use the datasets already downloaded instead of searching online for new files
+ 
+ 
+  **output**
+  - `AnoGra_rnd1_aug`
+
 
 ---
 
 **5. `r1maker_trans_aug.sh`**
+- Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database
 
-Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database
+  **output**
+  - `AnoGra_annotation_eval1_1`
 
 ---
 
@@ -115,14 +135,19 @@ Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the ver
 - The `maker_exe.ctl` and `maker_bopts.ctl` can remain unmodified
 
 # round 2
-This round will not do the annotation via protein homology because this was completed in the first round and does not need to be done again.
-
-This will train the programs to better recognize new _grahami_ genes
+- This round will not do the annotation via protein homology because this was completed in the first round and does not need to be done again.
+- This will train the programs to better recognize new _grahami_ genes
+- We will use the gene models generated from the first round
 
 **1. modify control file: `maker_opts.ctl`**
   - Copy `maker_opts.ctl` to `maker_opts_rnd1.ctl`
   - Edit `maker_opts.ctl` for round 2
     - The code for this file is under `maker_opts_rnd2.ctl` (in github)
+
+  **main differences**
+  - removes FASTA sequences to map and replaces them with the GFF files (`est_gff`, `protein_gff`, and `rm_gff`)
+  - specify the path to the SNAP HMM and the species name for Augustus, so that these gene prediciton programs are run
+  - switch `est2genome` and `protein2genome` to 0 so that gene predictions are based on the Augustus and SNAP gene models
 
 ---
 
