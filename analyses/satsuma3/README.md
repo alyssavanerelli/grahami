@@ -96,9 +96,9 @@ satsuma_folder=/home/av795/bin/satsuma-code
 export PATH=/home/av795/bin/satsuma-code:$PATH
 
 time ${satsuma_folder}/SatsumaSynteny \
--t $work_folder/sc6.fa \
--q $work_folder/AnoCar2.0.fa \
--o $out_folder -n 50
+-t ${work_folder}/sc6.fa \
+-q ${work_folder}/AnoCar2.0.fa \
+-o ${out_folder} -n 50
     
   ```
 
@@ -159,12 +159,87 @@ chrX 6270 6452 chrX 9472 9654 0.576923 +
 ```
 
 ## to plot results
-- `./MicroSyntenyPlot –i <satsuma_summary.txt>` 
+- `./MicroSyntenyPlot –i <satsuma_summary.txt>`
   - to create a postscript dot plot (color coded by target chromosomes).
 - `./ChromosomePaint` 
   - to create a postscript file that colors chromosomes by color.
 - `./BlockDisplaySatsuma` 
   - to create a file that can be shown in the interactive multi-level synteny browser
+
+### `./ChromosomePaint`
+- Comparative cromosome painter
+
+Available arguments:
+```
+-i<string> : MizBee file
+-o<string> : outfile (post-script)
+-d<double> : dot size (def=1)
+-s<double> : scale (def=60000)
+-t<int> : target id (def=-1)
+-d<bool> : print indivisual matchs (def=0)
+-f<bool> : forward only (def=0)
+```
+
+My code:
+```
+time 
+```
+
+---
+
+### `./MicroSyntenyPlot`
+- Micro-synteny plotter
+
+**Available arguments:**
+```
+-i<string> : HomologyByXCorr output file
+-o<string> : outfile (post-script)
+-d<double> : dot size (def=1)
+-s<double> : scale (def=60000)
+-t<int> : target id (def=-1)
+-f<bool> : forward only (def=0)
+```
+
+**My code:**
+```
+time ${satsuma_folder}/MicroSyntenyPlot \
+-i ${out_folder}/xcorr_aligns.final.all.out \
+-o ${out_folder}/MicroSyntenyPlot
+```
+
+**output**
+`MicroSyntenyPlot`
+
+---
+
+### `./BlockDisplaySatsuma`
+- Takes a satsuma summary file and writes displayable blocks.
+
+Available arguments:
+```
+-i<string> : satsuma summary file
+-t<string> : target fasta file
+-q<string> : query fasta file
+-min<int> : minimum block size (def=3)
+-s<int> : minimum scaffold size (def=100000)
+-transpose<bool> : switch query and target (def=0)
+```
+
+**My code:**
+```
+time ${satsuma_folder}/BlockDisplaySatsuma \
+-i ${out_folder}/satsuma_summary.chained.out \
+-t $work_folder/sc6.fa \
+-q $work_folder/AnoCar2.0.fa
+```
+
+**output**
+
+
+
+
+
+
 
 
 
