@@ -118,6 +118,27 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
   **output**
   - `AnoGra_rnd1_aug`
 
+- Need to move some of the augustus output to our **Augustus path**
+  - Will be creating a folder in species with our trained gene models
+
+```
+cd AnoGra_rnd1_aug/run_vertebrata_odb10/augustus_output/retraining_parameters/
+
+#rename folder
+mv BUSCO_AnoGra_rnd1_aug/ Anolis_grahami/
+
+#rename files within folder
+cd Anolis_grahami/
+
+rename BUSCO_AnoGra_rnd1_aug Anolis_grahami *
+
+#also need to rename these strings within some of the files
+sed -i 's/BUSCO_AnoGra_rnd1_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg
+sed -i 's/BUSCO_AnoGra_rnd1_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg.orig1 
+
+cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
+#now we will use this Anolis_grahami species in our augustus path as input for round 2 of maker
+```
 
 ---
 
