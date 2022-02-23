@@ -19,7 +19,7 @@ est_gff= #aligned ESTs or mRNA-seq from an external GFF3 file
 altest_gff= #aligned ESTs from a closly relate species in GFF3 format
 
 #-----Protein Homology Evidence (for best results provide a file for at least one)
-protein=/projects/f_geneva_1/alyssa/grahami/annotation/proteomes/SceUnd1.1_protein.faa,/projects/f_geneva_1/alyssa/grahami/annotation/proteomes/AnoSag2.1_proteins.fa  #protein sequence file in fasta form$
+protein= #protein sequence file in fasta form
 protein_gff=/projects/f_geneva_1/alyssa/grahami/annotation/AnoGra1.1.maker.output/AnoGra_rnd1.all.maker.protein2genome.gff #aligned protein homology evidence from an external GFF3 file
 
 #-----Repeat Masking (leave values blank to skip repeat masking)
@@ -33,7 +33,7 @@ softmask=1 #use soft-masking rather than hard-masking in BLAST (i.e. seg and dus
 #-----Gene Prediction
 snaphmm=/projects/f_geneva_1/alyssa/grahami/annotation/AnoGra1.1.maker.output/snap/braker/AnoGra_rnd1.zff.length5_aed0.5.hmm #SNAP HMM file
 gmhmm= #GeneMark HMM file
-augustus_species=[species here-anolis grahami from last round] #Augustus gene prediction species model
+augustus_species=Anolis_grahami #Augustus gene prediction species model
 fgenesh_par_file= #FGENESH parameter file
 pred_gff= #ab-initio predictions from an external GFF3 file
 model_gff= #annotated gene models from an external GFF3 file (annotation pass-through)
