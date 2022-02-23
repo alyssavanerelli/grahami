@@ -127,6 +127,7 @@ This program will calculate scaffold length, N50, % gaps, etc.
 </p>
 </details>
 
+**rename slurm output files to whichever step of assembly you ran this for (that information is not included in the slurm file)**
 
 
 # BUSCO
