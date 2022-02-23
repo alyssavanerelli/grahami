@@ -1,4 +1,4 @@
-# Assmebling _Anolis grahami_ Reference Genome
+# Assembling _Anolis grahami_ Reference Genome
 
 Code associated with grahami reference genome project.
 
