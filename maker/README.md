@@ -150,6 +150,15 @@ cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 
 ---
 
+**Count the number of gene models and gene lengths after each round**
+- can assess when to stop doing more rounds
+- more rounds does not always mean better, we want to do a few but not too many
+
+```
+cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5 - $4) } END { print NR, sum / NR }'
+```
+
+
 ## Important Info
 - After round 1 of maker has completed, copy the original control file: `maker_opts.ctl` to `maker_opts_rnd1.ctl`
 - Now for the next round, just modify the original `maker_opts.ctl` file
