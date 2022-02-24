@@ -158,6 +158,16 @@ cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5 - $4) } END { print NR, sum / NR }'
 ```
 
+**Visualize the AED distribution**
+- AED ranges from 0 to 1 and quantifies the confidence in a gene model based on empirical evidence
+- the lower the AED, the better a gene model is likely to be
+- Ideally, 95% or more of the gene models will have an AED of 0.5 or better in the case of good assemblies.
+- can use the script `AED_cdf_generator.pl` to do this
+
+```
+perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
+```
+
 
 ## Important Info
 - After round 1 of maker has completed, copy the original control file: `maker_opts.ctl` to `maker_opts_rnd1.ctl`
@@ -200,6 +210,22 @@ cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5
 **6. `r2maker_trans_aug.sh`**
 
 ---
+
+
+
+
+
+
+# Number of gene models and gene lengths for each round
+
+| Round   | # gene models | gene lengths |
+| ------- | ------------- | ------------ |
+| Round 1 | 107260        |      2238.24 |
+| Round 2 |         |       |
+| Round 3 |         |       |
+| Round 4 |         |       |
+
+
 
 
 
