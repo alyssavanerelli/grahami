@@ -59,14 +59,11 @@ time $satsuma_folder/SatsumaSynteny \
    cd satsuma-code
    make
    ```
-4.
-
-
-
 
 
 
 # Set up 
+- set up the `satsuma.sh` run file that will submit the job
 
 <details><summary>satsuma.sh</summary>
 <p>
@@ -106,11 +103,11 @@ time ${satsuma_folder}/SatsumaSynteny \
 </details>
 
 
-**d**
-
-notes
-
-If the output directory is not empty, SatsumaSynteny will not overwrite any files but exit with an error message.
+<details><summary>notes</summary>
+<p>
+  
+  ```
+  If the output directory is not empty, SatsumaSynteny will not overwrite any files but exit with an error message.
 
 Idling processes self-terminate after two minutes. The overall alignments will still complete, but using fewer processes.
 
@@ -133,6 +130,11 @@ To include large-scale duplications in the query sequence (in addition to the ta
 If using the option –nofilter, the number of initial searches (-ni) should be higher than the number of processes (-n) to ensure that subsequent processes have sufficient seeds. Note that initial searches will be queued to a number of processes specified by -n.
 
 When many processes search a tight space, the number of pixels per CPU (-m) should be small (e.g. ‘–m 1’ as in the sample script/data set) to avoid unbalanced load (i.e. some processes get all the pixels while others are starved, since they overlap). However, a small value for –m increases inter-process communication, which should be a consideration when deploying hundreds of processes.
+  ```
+
+</p>
+</details>
+
 
 
 
@@ -163,6 +165,7 @@ chrX 6270 6452 chrX 9472 9654 0.576923 +
   - to create a postscript dot plot (color coded by target chromosomes).
 - `./ChromosomePaint` 
   - to create a postscript file that colors chromosomes by color.
+  - needs to be given a MizBee file
 - `./BlockDisplaySatsuma` 
   - to create a file that can be shown in the interactive multi-level synteny browser
 
@@ -229,12 +232,12 @@ Available arguments:
 ```
 time ${satsuma_folder}/BlockDisplaySatsuma \
 -i ${out_folder}/satsuma_summary.chained.out \
--t $work_folder/sc6.fa \
--q $work_folder/AnoCar2.0.fa
+-t ${work_folder}/AnoGra1.1.fa \
+-q ${work_folder}/AnoCar2.0.fa
 ```
 
 **output**
-
+I think the output will be in the slurm output file
 
 
 
