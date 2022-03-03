@@ -3,6 +3,9 @@
 
 # software and data needed
 ## software
+
+**_maker, RepeatModeler, RepeatMasker, Augustus, and SNAP are included with singularity that is already installed_**
+
 1. [RepeatModeler](http://www.repeatmasker.org/RepeatModeler/) and [RepeatMasker](http://www.repeatmasker.org/RMDownload.html) with all dependencies and [RepBase](https://www.girinst.org/repbase/)
 2. MAKER MPI 
 3. [Augustus](http://bioinf.uni-greifswald.de/augustus/)
@@ -10,7 +13,6 @@
 5. [SNAP](http://korflab.ucdavis.edu/software.html)
 6. [BEDtools](https://bedtools.readthedocs.io/en/latest/)
 
-**_maker, RepeatModeler, RepeatMasker, Augustus, and SNAP are included with singularity that is already installed_**
 
 ## data/resources
 1. assembled reference genome, in fasta format
@@ -18,6 +20,8 @@
    - for this assembly we used two species: _Anolis sagrei_ and _Sceloporus undulatus_
    - did not use _carolinensis_ because _sagrei_ annotations have those present in _carolinensis_ and more
 
+# Important information to remember
+- If a script fails for some reason (e.g. r1maker_sub.sh), all the files created from that submission script need to be deleted before running again
 
 # make control files
 ```
