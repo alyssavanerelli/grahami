@@ -45,18 +45,12 @@ input genome, protein homology evidence, repeat masker model org (_Anolis caroli
 
 launch `singularity` and search for species name. more detail in code
 
-<details><summary>example</summary>
-<p>
-
 ```
 singularity shell --cleanenv /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
 
 Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annotation> 
 /usr/local/share/RepeatMasker/famdb.py -i /usr/local/share/RepeatMasker/Libraries/RepeatMaskerLib.h5 names Anolis_carolinensis
 ```
-
-</p>
-</details>
 
 ## make .sh files to run maker
 
@@ -229,6 +223,11 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
 
 
 
+# Files to delete after annotation is finished
+- we will need to delete intermediate files and files that we could make again (we have the scripts to do so) to save memory in our `f_geneva_1` folder
+
+
+- 
 
 
 
