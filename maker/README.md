@@ -108,6 +108,7 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
   git clone https://github.com/Gaius-Augustus/Augustus.git
   ```
   - In the submission script, we will define the path to this config folder
+  - **`Augustus` folder needs to be in /projects/ not in your home directory**
 
 - If the busco online server is down
   - copy `busco_downloads/` folder over to `annotation/` from `busco/`
