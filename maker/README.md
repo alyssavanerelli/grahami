@@ -102,7 +102,14 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
   git clone https://github.com/Gaius-Augustus/Augustus.git
   ```
   - In the submission script, we will define the path to this config folder
-  - **`Augustus` folder needs to be in /projects/ not in your home directory**
+  - To avoid issues where MAKER cannot find the right scripts, there are 2 options
+    - keep `Augustus/` folder in home directory
+      - there cannot be any programs in `/home/av795/bin/` that will interfere with maker (e.g. snap, augustus, etc.)
+      - remove the `--no-home` line from your inital maker submission script (last line in `r2maker_sub.sh`)
+    - move `Augustus/` folder to your folder in `/projects/` 
+      - with this option, you will KEEP the `--no-home` line in the submission script
+    - whichever option you choose, just be consistent
+
 
 - If the busco online server is down
   - copy `busco_downloads/` folder over to `annotation/` from `busco/`
@@ -187,19 +194,27 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
 ---
 
 **2.`r2maker_sub.sh`**
+- this will be the submission script to run a new iteration of maker using the gene models generated in the previous run
+- I kept `Augustus/` in my home directory and removed the `--no-home` line from this submission script
+- the line `-base Agra_rnd2` will make any files created during this run start with that text (this is important because it will avoid maker round 2 overwriting files from round 1)
 
 ---
 
 **3. `r2maker_bsh.sh`**
+- this will train snap gene models
+- want to keep AED and length requirements (`-x` and `-l`)
+- main changes from rnd1: change the names to be specific for rnd2
 
 ---
 
 **4. `r2maker_gff.sh`**
-
+- main changes from rnd1: change the names to be specific for rnd2
 ---
 
 **5. `r2maker_aug.sh`**
-
+- main changes from rnd1
+  - change the names to be specific for rnd2
+  - change species from `human` to `Anolis_grahami`
 ---
 
 **6. `r2maker_trans_aug.sh`**
@@ -220,7 +235,9 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
 | Round 3 |         |       |
 | Round 4 |         |       |
 
-
+# AED generator
+- will run this each round
+- can make plot in R
 
 
 # Files to delete after annotation is finished
