@@ -21,7 +21,7 @@
    - did not use _carolinensis_ because _sagrei_ annotations have those present in _carolinensis_ and more
 
 # Important information to remember
-- If a script fails for some reason (e.g. r1maker_sub.sh), all the files created from that submission script need to be deleted before running again
+- If a script fails for some reason (e.g. `r1maker_sub.sh`), all the files created from that submission script need to be deleted before running again
 
 # make control files
 ```
