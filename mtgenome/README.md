@@ -117,7 +117,7 @@
   </p>
   </details>
   
-  ---
+---
 5. Set up config file: `novo_config.txt`
   - This will have the information regarding reads, kmer, seed, reference, etc. that novoplasty will use to assemble the mtgenome
 
