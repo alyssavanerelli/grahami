@@ -144,15 +144,3 @@ Juicebox is also available to use in [online format](https://aidenlab.org/juiceb
 Downloads for desktop can be found [here](https://github.com/aidenlab/Juicebox/wiki/Download)
 
 [tutorial](https://aidenlab.gitbook.io/juicebox/)
-
-
-
-
-
-
-
-
-
-
-
-
