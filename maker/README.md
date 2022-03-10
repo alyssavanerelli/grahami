@@ -89,10 +89,10 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 
   **output**
   - This step will make 3 files
-    - `AnoGra_rnd1.all.maker.est2genome.gff`
+    - `Agra_rnd1.all.maker.est2genome.gff`
       - This file will be empty because in round 1 we did not do any gene annotations using est2genome
-    - `AnoGra_rnd1.all.maker.protein2genome.gff`
-    - `AnoGra_rnd1.all.maker.repeats.gff`
+    - `Agra_rnd1.all.maker.protein2genome.gff`
+    - `Agra_rnd1.all.maker.repeats.gff`
 
 ---
 
@@ -131,16 +131,16 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 cd Agra_rnd1_aug/run_vertebrata_odb10/augustus_output/retraining_parameters/
 
 #rename folder
-mv BUSCO_AnoGra_rnd1_aug/ Anolis_grahami/
+mv BUSCO_Agra_rnd1_aug/ Anolis_grahami/
 
 #rename files within folder
 cd Anolis_grahami/
 
-rename BUSCO_AnoGra_rnd1_aug Anolis_grahami *
+rename BUSCO_Agra_rnd1_aug Anolis_grahami *
 
 #also need to rename these strings within some of the files
-sed -i 's/BUSCO_AnoGra_rnd1_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg
-sed -i 's/BUSCO_AnoGra_rnd1_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg.orig1 
+sed -i 's/BUSCO_Agra_rnd1_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg
+sed -i 's/BUSCO_Agra_rnd1_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg.orig1 
 
 cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 #now we will use this Anolis_grahami species in our augustus path as input for round 2 of maker
