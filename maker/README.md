@@ -64,7 +64,7 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 - Used 2 whole cores to run this 
 
   **output**
-  - `AnoGra1.1.maker.output`
+  - `Agra_rnd1.maker.output`
 
 ---
 
@@ -79,7 +79,7 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
 
 
   **output**
-  - `AnoGra1.1.maker.output/snap/braker`
+  - `Agra_rnd1.maker.output/snap/braker`
 
 ---
 
@@ -122,13 +122,13 @@ Singularity maker:2.31.11-repbase.sif:/projectsc/f_geneva_1/alyssa/grahami/annot
  
  
   **output**
-  - `AnoGra_rnd1_aug`
+  - `Agra_rnd1_aug`
 
 - Need to move some of the augustus output to our **Augustus path**
   - Will be creating a folder in species with our trained gene models
 
 ```
-cd AnoGra_rnd1_aug/run_vertebrata_odb10/augustus_output/retraining_parameters/
+cd Agra_rnd1_aug/run_vertebrata_odb10/augustus_output/retraining_parameters/
 
 #rename folder
 mv BUSCO_AnoGra_rnd1_aug/ Anolis_grahami/
@@ -152,7 +152,7 @@ cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 - Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database
 
   **output**
-  - `AnoGra_annotation_eval1_1`
+  - `Agra_annotation_eval1`
 
 ---
 
