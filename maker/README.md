@@ -234,7 +234,7 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
 
 | Round   | # gene models | gene lengths |
 | :-----: | :-----------: | :----------: |
-| Round 1 | 107260        |      2238.24 |
+| Round 1 | 107979        |      2340.89 |
 | Round 2 |         |       |
 | Round 3 |         |       |
 | Round 4 |         |       |
