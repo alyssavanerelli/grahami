@@ -160,6 +160,56 @@ chrX 5947 6164 chrX 9153 9360 0.626728 +
 chrX 6270 6452 chrX 9472 9654 0.576923 +
 ```
 
+## Visualize results in R
+- I am using code from Pietro
+- This code will make a circos plot to view _carolinensis_ and _grahami_ syteny
+
+_my genomes are too big to load in on my local machine so i am using R on amarel to load them in. I will then save an R data object and open this in R studio on my laptop_
+
+1. Request an interactive node on amarel
+```
+srun --partition=p_ccib_1 --mem=150G --time=01:00:00 --pty bash
+```
+2. Load and launch R
+```
+module load R
+R
+```
+3. Load in genomes
+```
+# load in grahami genome
+
+wd <- "/projects/f_geneva_1/alyssa/grahami"
+setwd(wd)
+list.files()
+grahami.genome<-read.table(paste(wd,"AnoGra1.1.fa",sep="//"),sep = "\t")
+
+# load in carolinensis genome
+
+wd <- "/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3"
+setwd(wd)
+list.files()
+carolinensis.genome<-read.table(paste(wd,"AnoCar2.0.fa",sep="//"),sep = "\t")
+
+# load in satsuma summary file
+
+links<-read.table(paste(wd,"satsuma_summary.chained.out",sep = "//"))
+links<-links[,1:6]
+colnames(links)<-c("grahami","start_grahami","stop_grahami","carolinensis","start_carolinensis","stop_carolinensis")
+links<-links[order(links$grahami,links$start_grahami),]
+```
+4. Save this as an R data object
+[more info](https://rstudio-education.github.io/hopr/dataio.html#r-files)
+```
+save(grahami.genome,carolinensis.genome,links, file = "synteny.RData")
+```
+5. Save this file to Desktop using OnDemand
+6. Open this file in RStudio
+```
+load("synteny.RData")
+```
+
+
 ## to plot results
 - `./MicroSyntenyPlot –i <satsuma_summary.txt>`
   - to create a postscript dot plot (color coded by target chromosomes).
