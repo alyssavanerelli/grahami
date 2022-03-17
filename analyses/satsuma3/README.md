@@ -199,6 +199,7 @@ colnames(links)<-c("grahami","start_grahami","stop_grahami","carolinensis","star
 links<-links[order(links$grahami,links$start_grahami),]
 ```
 4. Save this as an R data object
+
 [more info](https://rstudio-education.github.io/hopr/dataio.html#r-files)
 ```
 save(grahami.genome,carolinensis.genome,links, file = "synteny.RData")
@@ -208,6 +209,18 @@ save(grahami.genome,carolinensis.genome,links, file = "synteny.RData")
 ```
 load("synteny.RData")
 ```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## to plot results
