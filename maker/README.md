@@ -239,9 +239,19 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
 | Round 3 |         |       |
 | Round 4 |         |       |
 
+
 # AED generator
 - will run this each round
 - can make plot in R
+- AED: annotation edit distance
+  - measure of how confident we are in an individual annotation at the gene level 
+  - every gene model has an AED score
+  - high confidence=low AED
+  - 0=great, 1=bad
+- what we want
+  - want it to go up rapidly
+- X axis: AED
+- Y axis: frequncy
 
 
 # Files to delete after annotation is finished
