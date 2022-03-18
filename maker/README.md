@@ -220,43 +220,31 @@ cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5 - $4) } END { print NR, sum / NR }'
 ```
 
-## Visualize the AED distribution**
-- AED ranges from 0 to 1 and quantifies the confidence in a gene model based on empirical evidence
-- the lower the AED, the better a gene model is likely to be
-  - 0=great, 1=bad
-- Ideally, 95% or more of the gene models will have an AED of 0.5 or better in the case of good assemblies.
-- can use the script `AED_cdf_generator.pl` to do this
-- X axis: AED, Y axis: frequency
-- 
-
-```
-perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
-```
-
-
-
 ## Number of gene models and gene lengths for each round
 
 | Round   | # gene models | gene lengths |
 | :-----: | :-----------: | :----------: |
 | Round 1 | 107979        |      2340.89 |
-| Round 2 |         |       |
+| Round 2 | 47152         |      7430.67 |
 | Round 3 |         |       |
 | Round 4 |         |       |
 
 
-## AED generator
-- will run this each round
-- can make plot in R
+## Visualize the AED distribution
 - AED: annotation edit distance
-  - measure of how confident we are in an individual annotation at the gene level 
+- AED ranges from 0 to 1 and quantifies the confidence in a gene model based on empirical evidence
   - every gene model has an AED score
-  - high confidence=low AED
+- the lower the AED, the better a gene model is likely to be
   - 0=great, 1=bad
-- what we want
-  - want it to go up rapidly
-- X axis: AED
-- Y axis: frequncy
+- Ideally, 95% or more of the gene models will have an AED of 0.5 or better in the case of good assemblies.
+- can use the script `AED_cdf_generator.pl` to do this
+- X axis: AED, Y axis: frequency
+- we will run this every round
+- we want to see the line increase rapidly 
+
+```
+perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff> > AED_rnd
+```
 
 
 # Files to delete after annotation is finished
