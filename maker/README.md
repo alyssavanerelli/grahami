@@ -156,24 +156,6 @@ cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 
 ---
 
-**Count the number of gene models and gene lengths after each round**
-- can assess when to stop doing more rounds
-- more rounds does not always mean better, we want to do a few but not too many
-
-```
-cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5 - $4) } END { print NR, sum / NR }'
-```
-
-**Visualize the AED distribution**
-- AED ranges from 0 to 1 and quantifies the confidence in a gene model based on empirical evidence
-- the lower the AED, the better a gene model is likely to be
-- Ideally, 95% or more of the gene models will have an AED of 0.5 or better in the case of good assemblies.
-- can use the script `AED_cdf_generator.pl` to do this
-
-```
-perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
-```
-
 
 ## Important Info
 - After round 1 of maker has completed, copy the original control file: `maker_opts.ctl` to `maker_opts_rnd1.ctl`
@@ -207,6 +189,8 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
 **3. `r2maker_bsh.sh`**
 - this will train snap gene models
 - want to keep AED and length requirements (`-x` and `-l`)
+  - these cutoffs still did not work
+  - used `-n` flag still
 - main changes from rnd1: change the names to be specific for rnd2
 
 ---
@@ -227,10 +211,31 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
 
 
 
-
-
-
 # Number of gene models and gene lengths for each round
+- count the number of gene models and gene lengths after each round
+- can assess when to stop doing more rounds
+- more rounds does not always mean better, we want to do a few but not too many
+
+```
+cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5 - $4) } END { print NR, sum / NR }'
+```
+
+## Visualize the AED distribution**
+- AED ranges from 0 to 1 and quantifies the confidence in a gene model based on empirical evidence
+- the lower the AED, the better a gene model is likely to be
+  - 0=great, 1=bad
+- Ideally, 95% or more of the gene models will have an AED of 0.5 or better in the case of good assemblies.
+- can use the script `AED_cdf_generator.pl` to do this
+- X axis: AED, Y axis: frequency
+- 
+
+```
+perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
+```
+
+
+
+## Number of gene models and gene lengths for each round
 
 | Round   | # gene models | gene lengths |
 | :-----: | :-----------: | :----------: |
@@ -240,7 +245,7 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff>
 | Round 4 |         |       |
 
 
-# AED generator
+## AED generator
 - will run this each round
 - can make plot in R
 - AED: annotation edit distance
