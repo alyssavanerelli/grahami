@@ -203,6 +203,12 @@ cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 - main changes from rnd1
   - change the names to be specific for rnd2
   - change species from `human` to `Anolis_grahami`
+- change file names and copy over folder again 
+  - before
+      ```
+      cd /home/av795/Augustus/config/species/
+      mv Anolis_grahami/ Anolis_grahami_rnd1/
+      ```
 ---
 
 **6. `r2maker_trans_aug.sh`**
