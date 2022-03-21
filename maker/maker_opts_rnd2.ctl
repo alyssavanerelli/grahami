@@ -20,18 +20,18 @@ altest_gff= #aligned ESTs from a closly relate species in GFF3 format
 
 #-----Protein Homology Evidence (for best results provide a file for at least one)
 protein= #protein sequence file in fasta form
-protein_gff=/projects/f_geneva_1/alyssa/grahami/annotation/AnoGra1.1.maker.output/AnoGra_rnd1.all.maker.protein2genome.gff #aligned protein homology evidence from an external GFF3 file
+protein_gff=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/Agra_rnd1.all.maker.protein2genome.gff #aligned protein homology evidence from an external GFF3 file
 
 #-----Repeat Masking (leave values blank to skip repeat masking)
 model_org= #select a model organism for DFam masking in RepeatMasker
 rmlib= #provide an organism specific repeat library in fasta format for RepeatMasker
 repeat_protein= #provide a fasta file of transposable element proteins for RepeatRunner
-rm_gff=/projects/f_geneva_1/alyssa/grahami/annotation/AnoGra1.1.maker.output/AnoGra_rnd1.all.maker.repeats.gff #pre-identified repeat elements from an external GFF3 file
+rm_gff=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/Agra_rnd1.all.maker.repeats.gff #pre-identified repeat elements from an external GFF3 file
 prok_rm=0 #forces MAKER to repeatmask prokaryotes (no reason to change this), 1 = yes, 0 = no
 softmask=1 #use soft-masking rather than hard-masking in BLAST (i.e. seg and dust filtering)
 
 #-----Gene Prediction
-snaphmm=/projects/f_geneva_1/alyssa/grahami/annotation/AnoGra1.1.maker.output/snap/braker/AnoGra_rnd1.zff.length5_aed0.5.hmm #SNAP HMM file
+snaphmm=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/snap/braker/Agra_rnd1.zff.length5_aed0.5.hmm #SNAP HMM file
 gmhmm= #GeneMark HMM file
 augustus_species=Anolis_grahami #Augustus gene prediction species model
 fgenesh_par_file= #FGENESH parameter file
