@@ -186,7 +186,7 @@ library(ape)
 wd <- "/projects/f_geneva_1/alyssa/grahami"
 setwd(wd)
 list.files()
-grahami.genome = read.FASTA("/projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa")
+grahami.genome = read.table(paste(wd,"AnoGra_wrapped.fa",sep="//"),sep = "\t")
 
 # load in carolinensis genome
 
