@@ -215,15 +215,9 @@ save(grahami.genome,carolinensis.genome,links, file = "synteny.RData")
 5. Save this file to Desktop using OnDemand
 6. Open this file in RStudio
 ```
-load("synteny.RData")
+load("~/Desktop/synteny.RData")
 ```
-5. load `synteny.RData` into RStudio
-```
-> load("~/Desktop/synteny.RData")
-```
-
-
-6. manipulate `grahami.genome` file to be in the same format as `carolinensis.genome`
+7. manipulate `grahami.genome` file to be in the same format as `carolinensis.genome`
 
 
 
