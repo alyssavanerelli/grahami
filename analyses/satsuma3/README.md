@@ -177,12 +177,16 @@ R
 ```
 3. Load in genomes
 ```
+# load libraries
+
+library(ape)
+
 # load in grahami genome
 
 wd <- "/projects/f_geneva_1/alyssa/grahami"
 setwd(wd)
 list.files()
-grahami.genome<-read.table(paste(wd,"AnoGra1.1.fa",sep="//"),sep = "\t")
+grahami.genome = read.FASTA("/projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa")
 
 # load in carolinensis genome
 
@@ -192,6 +196,10 @@ list.files()
 carolinensis.genome<-read.table(paste(wd,"AnoCar2.0.fa",sep="//"),sep = "\t")
 
 # load in satsuma summary file
+
+wd <- "/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/out_all"
+setwd(wd)
+list.files()
 
 links<-read.table(paste(wd,"satsuma_summary.chained.out",sep = "//"))
 links<-links[,1:6]
@@ -209,10 +217,7 @@ save(grahami.genome,carolinensis.genome,links, file = "synteny.RData")
 ```
 load("synteny.RData")
 ```
-
-
-
-
+5. manipulate `grahami.genome` file to be in the same format as `carolinensis.genome`
 
 
 
