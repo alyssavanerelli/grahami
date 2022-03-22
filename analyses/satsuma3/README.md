@@ -172,13 +172,18 @@ srun --partition=p_ccib_1 --mem=150G --time=01:00:00 --pty bash
 ```
 2. Load and launch R
 ```
-module load R
+module load R/4.1.0-gc563
+
+module load gcc/5.4
+
 R
 ```
-3. Load in genomes
+3. Code
 ```
-# load libraries
+# Let's import the circlize package, to make our circos plots.
 
+library(circlize)
+library(RColorBrewer)
 library(ape)
 
 # load in grahami genome
@@ -205,6 +210,35 @@ links<-read.table(paste(wd,"satsuma_summary.chained.out",sep = "//"))
 links<-links[,1:6]
 colnames(links)<-c("grahami","start_grahami","stop_grahami","carolinensis","start_carolinensis","stop_carolinensis")
 links<-links[order(links$grahami,links$start_grahami),]
+
+
+# Next, we will concatenate both .genome files in a single file that has an additional column attributing each scaffold to one of the two species.
+# I will write a short function to that.
+
+genome.formatting<-function(taxon,genome.file){
+  
+  print('Naming columns in ".genome"')
+  colnames(genome.file)<-c("scaffold","stop")
+  
+  print('Adding "taxon" column')
+  genome.file$taxon<-strtrim(taxon,3)
+  
+  print('Adding "start" column')
+  genome.file$start<-0
+  
+  print('Re-ordering data frame')
+  genome.file<-genome.file[,c("taxon","scaffold","start","stop")]
+  
+  print('Returning formatted data frame')
+  
+  return(genome.file)
+  
+}
+
+carolinensis.genome<-genome.formatting('carolinensis',carolinensis.genome)
+grahami.genome<-genome.formatting('grahami',grahami.genome)
+
+anolis.genome<-rbind(carolinensis.genome,grahami.genome)
 ```
 4. Save this as an R data object
 
