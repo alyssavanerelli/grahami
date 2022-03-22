@@ -217,7 +217,6 @@ save(grahami.genome,carolinensis.genome,links, file = "synteny.RData")
 ```
 load("~/Desktop/synteny.RData")
 ```
-7. manipulate `grahami.genome` file to be in the same format as `carolinensis.genome`
 
 
 
