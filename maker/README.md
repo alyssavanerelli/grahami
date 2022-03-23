@@ -167,6 +167,13 @@ cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 - This will train the programs to better recognize new _grahami_ genes
 - We will use the gene models generated from the first round
 
+copy submission files and change rnd1 to rnd2
+```
+cp r1maker_bsh.sh r2maker_bsh.sh
+
+sed -i -e 's/rnd1/rnd2/g' r2maker_bsh.sh
+```
+
 **1. modify control file: `maker_opts.ctl`**
   - Copy `maker_opts.ctl` to `maker_opts_rnd1.ctl`
   - Edit `maker_opts.ctl` for round 2
