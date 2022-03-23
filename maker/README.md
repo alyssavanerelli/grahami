@@ -252,6 +252,17 @@ cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5
 perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff> > AED_rnd
 ```
 
+# Testing snap vs augustus gene models
+create files only containing AED scores from either snap or augustus gene models (for both rounds 2 and 3)
+```
+# create file with only AED scores
+grep "AED" Agra_rnd2.all.maker.gff > Agra_rnd2_AED.gff
+
+# create aug and snap files
+grep -v "snap" Agra_rnd2_AED.gff > Agra_rnd2_AED_augustus.gff
+grep -v "augustus" Agra_rnd2_AED.gff > Agra_rnd2_AED_snap.gff
+```
+
 
 # Files to delete after annotation is finished
 - we will need to delete intermediate files and files that we could make again (we have the scripts to do so) to save memory in our `f_geneva_1` folder
