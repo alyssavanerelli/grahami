@@ -241,6 +241,7 @@ cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5
 | Round 2 | 47152         |      7430.67 |
 | Round 3 | 47810         |      5087.77 |
 | Round 4 | 52494         |      6518.57 |
+| Round 5 | 52829         |      6579.63 |
 
 
 ## Visualize the AED distribution
