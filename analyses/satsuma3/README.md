@@ -135,7 +135,14 @@ When many processes search a tight space, the number of pixels per CPU (-m) shou
 </p>
 </details>
 
-
+# Details
+- I ran _grahami_ and _carolinensis_ in one run 
+- To run _grahami_ and _sagrei_, I split _grahami_ into separate scaffolds and submitted them separately
+  - Then combined output files
+    ```
+    # combine files
+    cat sc1/satsuma_summary.chained.out sc2/satsuma_summary.chained.out sc3/satsuma_summary.chained.out sc4/satsuma_summary.chained.out sc5/satsuma_summary.chained.out sc6/satsuma_summary.chained.out sc7-end/satsuma_summary.chained.out > satsuma_summary_all.chained.out
+    ```
 
 
 # Output
@@ -163,188 +170,29 @@ chrX 6270 6452 chrX 9472 9654 0.576923 +
 ## Visualize results in R
 - I am using code from Pietro
 - This code will make a circos plot to view _carolinensis_ and _grahami_ syteny
+- Also will do this to visualize synteny between _grahami_ and _sagrei_
 
-_my genomes are too big to load in on my local machine so i am using R on amarel to load them in. I will then save an R data object and open this in R studio on my laptop_
+- I am doing this using the interactive RStudio available via OnDemand
 
-1. Request an interactive node on amarel
-```
-srun --partition=p_ccib_1 --mem=150G --time=01:00:00 --pty bash
-```
-2. Load and launch R
-```
-module load R/4.1.0-gc563
-
-module load gcc/5.4
-
-R
-```
-3. Code
-```
-# Let's import the circlize package, to make our circos plots.
-
-library(circlize)
-library(RColorBrewer)
-library(ape)
-
-# load in grahami genome
-
-wd <- "/projects/f_geneva_1/alyssa/grahami"
-setwd(wd)
-list.files()
-grahami.genome = read.table(paste(wd,"AnoGra_wrapped.fa",sep="//"),sep = "\t")
-
-# load in carolinensis genome
-
-wd <- "/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3"
-setwd(wd)
-list.files()
-carolinensis.genome<-read.table(paste(wd,"AnoCar2.0.fa",sep="//"),sep = "\t")
-
-# load in satsuma summary file
-
-wd <- "/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/out_all"
-setwd(wd)
-list.files()
-
-links<-read.table(paste(wd,"satsuma_summary.chained.out",sep = "//"))
-links<-links[,1:6]
-colnames(links)<-c("grahami","start_grahami","stop_grahami","carolinensis","start_carolinensis","stop_carolinensis")
-links<-links[order(links$grahami,links$start_grahami),]
-
-
-# Next, we will concatenate both .genome files in a single file that has an additional column attributing each scaffold to one of the two species.
-# I will write a short function to that.
-
-genome.formatting<-function(taxon,genome.file){
+First we need to make a file containing the scaffold name and size for each species
+- _grahami_: done during pilon and copied over
+- _carolinensis_:
+  - need to change the formatting of the header to match the satsuma synteny output
+  ```
+  # remove spaces from header
+  cp AnoCar2.0.fa AnoCar_t.fa
+  sed -i 's/ /_/g' AnoCar_t.fa 
   
-  print('Naming columns in ".genome"')
-  colnames(genome.file)<-c("scaffold","stop")
-  
-  print('Adding "taxon" column')
-  genome.file$taxon<-strtrim(taxon,3)
-  
-  print('Adding "start" column')
-  genome.file$start<-0
-  
-  print('Re-ordering data frame')
-  genome.file<-genome.file[,c("taxon","scaffold","start","stop")]
-  
-  print('Returning formatted data frame')
-  
-  return(genome.file)
-  
-}
+  # index and create file of sizes
+  samtools faidx /projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/AnoCar_t.fa
+  cut -f1-2 /projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/AnoCar_t.fa.fai > AnoCar2.0.chrom.sizes
+  ```
 
-carolinensis.genome<-genome.formatting('carolinensis',carolinensis.genome)
-grahami.genome<-genome.formatting('grahami',grahami.genome)
-
-anolis.genome<-rbind(carolinensis.genome,grahami.genome)
-```
-4. Save this as an R data object
-
-[more info](https://rstudio-education.github.io/hopr/dataio.html#r-files)
-```
-save(grahami.genome,carolinensis.genome,links, file = "synteny.RData")
-```
-5. Save this file to Desktop using OnDemand
-6. Open this file in RStudio
-```
-load("~/Desktop/synteny.RData")
-```
-
-
-
-
-
-
-
-
-
-
-## to plot results
-- `./MicroSyntenyPlot –i <satsuma_summary.txt>`
-  - to create a postscript dot plot (color coded by target chromosomes).
-- `./ChromosomePaint` 
-  - to create a postscript file that colors chromosomes by color.
-  - needs to be given a MizBee file
-- `./BlockDisplaySatsuma` 
-  - to create a file that can be shown in the interactive multi-level synteny browser
-
-### `./ChromosomePaint`
-- Comparative cromosome painter
-
-Available arguments:
-```
--i<string> : MizBee file
--o<string> : outfile (post-script)
--d<double> : dot size (def=1)
--s<double> : scale (def=60000)
--t<int> : target id (def=-1)
--d<bool> : print indivisual matchs (def=0)
--f<bool> : forward only (def=0)
-```
-
-My code:
-```
-time 
-```
-
----
-
-### `./MicroSyntenyPlot`
-- Micro-synteny plotter
-
-**Available arguments:**
-```
--i<string> : HomologyByXCorr output file
--o<string> : outfile (post-script)
--d<double> : dot size (def=1)
--s<double> : scale (def=60000)
--t<int> : target id (def=-1)
--f<bool> : forward only (def=0)
-```
-
-**My code:**
-```
-time ${satsuma_folder}/MicroSyntenyPlot \
--i ${out_folder}/xcorr_aligns.final.all.out \
--o ${out_folder}/MicroSyntenyPlot
-```
-
-**output**
-`MicroSyntenyPlot`
-
----
-
-### `./BlockDisplaySatsuma`
-- Takes a satsuma summary file and writes displayable blocks.
-
-Available arguments:
-```
--i<string> : satsuma summary file
--t<string> : target fasta file
--q<string> : query fasta file
--min<int> : minimum block size (def=3)
--s<int> : minimum scaffold size (def=100000)
--transpose<bool> : switch query and target (def=0)
-```
-
-**My code:**
-```
-time ${satsuma_folder}/BlockDisplaySatsuma \
--i ${out_folder}/satsuma_summary.chained.out \
--t ${work_folder}/AnoGra1.1.fa \
--q ${work_folder}/AnoCar2.0.fa
-```
-
-**output**
-I think the output will be in the slurm output file
-
-
-
-
-
-
+- _sagrei_:
+  ```
+  samtools faidx /projects/f_geneva_1/alyssa/grahami/AnoSag2.1.fa
+  cut -f1-2 /projects/f_geneva_1/alyssa/grahami/AnoSag2.1.fa.fai > AnoSag2.1.chrom.sizes
+  ```
 
 
 
