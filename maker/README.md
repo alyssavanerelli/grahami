@@ -17,8 +17,9 @@
 ## data/resources
 1. assembled reference genome, in fasta format
 2. protein sequences from related species, in fasta format
-   - for this assembly we used two species: _Anolis sagrei_ and _Sceloporus undulatus_
-   - did not use _carolinensis_ because _sagrei_ annotations have those present in _carolinensis_ and more
+   - for this assembly we used two species: _Anolis sagrei_ and _Anolis carolinensis_
+3. EST data from _Anolis sagrei_
+   - used limb data
 
 # Important information to remember
 - If a script fails for some reason (e.g. `r1maker_sub.sh`), all the files created from that submission script need to be deleted before running again
