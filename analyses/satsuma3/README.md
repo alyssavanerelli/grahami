@@ -2,6 +2,12 @@
 
 SatsumaSynteny2 is not working well with SLURM so we are trying SatsaumaSynteny version 3
 
+**Main Objectives**
+1. homology of known anole chromosomes
+   - chromosomes 1-4 are homologous across _sagrei_ and _carolinensis_
+2. look for evidence of fusion/fission in the genome
+
+**We are using _Anolis carolinensis_ for this because they have done analyses to confirm chromosomes**
 
 # Resources
 - [Satsuma](http://satsuma.sourceforge.net/)
@@ -135,7 +141,7 @@ When many processes search a tight space, the number of pixels per CPU (-m) shou
 </p>
 </details>
 
-# Details
+# Run syteny for _sagrei_ and _carolinensis_
 - I ran _grahami_ and _carolinensis_ in one run 
 - To run _grahami_ and _sagrei_, I split _grahami_ into separate scaffolds and submitted them separately
   - Then combined output files
@@ -143,6 +149,36 @@ When many processes search a tight space, the number of pixels per CPU (-m) shou
     # combine files
     cat sc1/satsuma_summary.chained.out sc2/satsuma_summary.chained.out sc3/satsuma_summary.chained.out sc4/satsuma_summary.chained.out sc5/satsuma_summary.chained.out sc6/satsuma_summary.chained.out sc7-end/satsuma_summary.chained.out > satsuma_summary_all.chained.out
     ```
+
+<details><summary>split genome into scaffolds</summary>
+<p>
+
+**split genome: scaffolds 1-6**
+ - do this six times, one time for each scaffold
+
+```
+grep -w scaffold_1 -A 1 AnoGra1.1.fa > sc1.fa
+```
+
+**check that only that scaffold is there**
+```
+grep ">" sc1.fa                  #should return only ">scaffold_1"
+
+less sc1.fa                      #make sure that ">scaffold_1" and sequence are in the file
+```
+
+**split genome: scaffolds 7-15,847**
+```
+tail -n +13 AnoGra1.1.fa > sc7_end.fa
+```
+
+**split genome: scaffolds 7-100*
+```
+head -188 sc7_end.fa > sc7-sc100.fa
+```
+  
+</p>
+</details>
 
 
 # Output
@@ -197,4 +233,8 @@ First we need to make a file containing the scaffold name and size for each spec
 
 
 
+<details><summary>name</summary>
+<p>
 
+</p>
+</details>
