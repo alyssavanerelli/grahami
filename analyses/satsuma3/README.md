@@ -229,6 +229,33 @@ First we need to make a file containing the scaffold name and size for each spec
   samtools faidx /projects/f_geneva_1/alyssa/grahami/AnoSag2.1.fa
   cut -f1-2 /projects/f_geneva_1/alyssa/grahami/AnoSag2.1.fa.fai > AnoSag2.1.chrom.sizes
   ```
+  - also need to rename scaffolds in `AnoSag2.1.chrom.sizes` and the satsuma_synteny file so they do not have the same name as grahami scaffolds
+    ```
+    # change name in sizes file - in bash
+    sed -i 's/scaffold/sag_scaffold/g' AnoSag2.1.chrom.sizes
+    
+    # change names of sagrei scaffolds in summary file - in R
+    > 
+    ```
+
+<details><summary>car_gra_synteny.R</summary>
+<p>
+
+</p>
+</details>
+
+
+<details><summary>sag_gra_synteny.R</summary>
+<p>
+
+</p>
+</details>
+
+
+
+
+
+
 
 
 
