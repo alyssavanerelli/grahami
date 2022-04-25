@@ -405,7 +405,7 @@ This will generate A_Bsyri.out, B_Csyri.out, and C_Dsyri.out files that contain 
    #SBATCH --partition=p_ccib_1
    #SBATCH --account=general
    #SBATCH --exclude=gpuc001,gpuc002
-   #SBATCH --job-name=minimap
+   #SBATCH --job-name=SyRI
    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr/slurmout/slurm-%j-%x.out
    #SBATCH --mem=170G
    #SBATCH -n 10
@@ -531,7 +531,43 @@ plotsr \
 <p>
    
    ```
-   
+   #!/bin/bash
+   #SBATCH --partition=p_ccib_1
+   #SBATCH --account=general
+   #SBATCH --exclude=gpuc001,gpuc002
+   #SBATCH --job-name=plotsr
+   #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr/slurmout/slurm-%j-%x.out
+   #SBATCH --mem=170G
+   #SBATCH -n 10
+   #SBATCH -N 1
+   #SBATCH --time=14-00:00:00
+   #SBATCH --requeue
+   #SBATCH --mail-user=av795@rutgers.edu
+   #SBATCH --mail-type=FAIL,END,BEGIN.REQUEUE
+
+   echo "###################### load modules"
+   module purge
+
+   eval "$(conda shell.bash hook)"
+   conda activate satsuma
+
+
+   echo ""
+   echo "set variables"
+   OUTDIR="/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr"
+   INPUTDIR="/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3"
+   GRAHAMI="/projects/f_geneva_1/alyssa/grahami"
+
+   echo ""
+   echo "###################### run plotsr"
+   plotsr \
+       --sr ${OUTDIR}/sagrei_grahamisyri.out \
+       --sr ${OUTDIR}/grahami_carolinensissyri.out \
+       --genomes genomes.txt \
+       -o output_plot.png
+
+   echo ""
+   echo "###################### done"
    ```
 
 </p>
