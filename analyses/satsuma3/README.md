@@ -279,13 +279,23 @@ plotsr -h                                       #check that plotsr installed pro
 - [x] Pairwise structural annotations between genomes
    - this is needed for each connection (grahami-sagrei and grahami-carolinensis)
 
-| File Names                    | File description |
-| ----------------------------- | ---------------- |
-| `.fa`                         | fasta file       |
-| `satsuma_summary.chained.out` | Pairwise structural annotation information between genomes |
-| `genomes.txt`                 | file containing genome information |
-| `base.cfg`                    | Configuration file for adjusting visual properties of the plot |
 
+| File Names                    | File description                                               |
+| ----------------------------- | -------------------------------------------------------------- |
+| `*.fa`                        | fasta file                                                     |
+| `*syri.filtered.out`          | Pairwise structural annotation information between genomes     |
+| `genomes.txt`                 | File containing genome information                             |
+| `base.cfg`                    | Configuration file for adjusting visual properties of the plot |
+| `*.chrlen`                    | Files with chromosome lengths                                  |
+
+
+**move over chrom lengths files**
+```
+cd plotsr
+cp ../AnoCar2.0.chrom.sizes carolinensis.chrlen
+cp ../AnoGra1.1.chrom.sizes grahami.chrlen
+cp ../AnoSag2.1.chrom.sizes sagrei.chrlen
+```
 
 **3. Align all the genomes**
 - align using [minimap](https://github.com/lh3/minimap2) and index with samtools
