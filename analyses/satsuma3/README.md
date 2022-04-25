@@ -252,10 +252,283 @@ First we need to make a file containing the scaffold name and size for each spec
 </details>
 
 
+## Visualize sex chromosome synteny
+[github page](https://github.com/schneebergerlab/plotsr)
+
+- sex chrom for grahami: 11 and 12
+- sex chrom for sagrei: 7
+- sex chrom for carolinensis: LgB
+
+- We want to visualize the where the grahami sex chromsomes map to within sagrei and carolinensis
+- For this we are using the python tool `plotsr`
+
+**1. Install Plotsr**
+
+```
+conda activate satsuma
+
+conda install -c bioconda plotsr
+
+conda update -n base -c defaults conda          #update conda if needed
+
+plotsr -h                                       #check that plotsr installed properly
+```
+
+**2. Gather Materials**
+- [x] Chromosome-level assemblies for the genomes to be compared
+- [x] Pairwise structural annotations between genomes
+   - this is needed for each connection (grahami-sagrei and grahami-carolinensis)
+
+| File Names                    | File description |
+| ----------------------------- | ---------------- |
+| `.fa`                         | fasta file       |
+| `satsuma_summary.chained.out` | Pairwise structural annotation information between genomes |
+| `genomes.txt`                 | file containing genome information |
+| `base.cfg`                    | Configuration file for adjusting visual properties of the plot |
+
+
+**3. Align all the genomes**
+- align using [minimap](https://github.com/lh3/minimap2) and index with samtools
+- align sagrei to grahami and grahami to carolinensis
+- `minimap2` is an amarel module that can be loaded with `module load Minimap2/minimap2-2.14`
+
+
+align and index
+```
+# Align genomes
+minimap2 -ax asm5 -t 4 --eqx A.fa B.fa \
+ | samtools sort -O BAM - > A_B.bam
+samtools index A_B.bam
+minimap2 -ax asm5 -t 4 --eqx B.fa C.fa \
+ | samtools sort -O BAM - > B_C.bam
+samtools index B_C.bam
+```
+
+<details><summary>AlignIndex.sh</summary>
+<p>
+   
+   ```
+   #!/bin/bash
+   #SBATCH --partition=p_ccib_1
+   #SBATCH --account=general
+   #SBATCH --exclude=gpuc001,gpuc002
+   #SBATCH --job-name=minimap
+   #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr/slurmout/slurm-%j-%x.out
+   #SBATCH --mem=170G
+   #SBATCH -n 10
+   #SBATCH -N 1
+   #SBATCH --time=14-00:00:00
+   #SBATCH --requeue
+   #SBATCH --mail-user=av795@rutgers.edu
+   #SBATCH --mail-type=FAIL,END,BEGIN.REQUEUE
+
+   echo "load modules"
+   module purge
+
+   eval "$(conda shell.bash hook)"
+   conda activate satsuma
+
+   module load Minimap2/minimap2-2.14
+   module samtools
+
+   echo ""
+   echo "check modules loaded"
+   ml
+
+   echo ""
+   echo "set variables"
+   OUTDIR="/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr"
+   INPUTDIR="/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3"
+   GRAHAMI="/projects/f_geneva_1/alyssa/grahami"
+
+   echo ""
+   echo "run minimap2 and samtools"
+
+   minimap2 -ax asm5 -t 4 --eqx ${GRAHAMI}/AnoSag2.1.fa ${INPUTDIR}/AnoGra1.1.fa \
+    | samtools sort -O BAM - > ${OUTDIR}/sagrei_grahami.bam
+   samtools index sagrei_grahami.bam
+   minimap2 -ax asm5 -t 4 --eqx ${INPUTDIR}/AnoGra1.1.fa ${INPUTDIR}/AnoCar2.0.fa \
+    | samtools sort -O BAM - > ${OUTDIR}/grahami_carolinensis.bam
+   samtools index grahami_carolinensis.bam
+
+   echo ""
+   echo "done"
+   ```
+
+</p>
+</details>
 
 
 
 
+**4. Finding structural annotations between genomes**
+- Find synteny and rearrangements between genomes
+- needs to be in BEDPE format
+   ```
+   Reference chromosome name
+   Reference start position
+   Reference end position
+   Query chromosome name
+   Query start position
+   Query end position
+   Annotation type
+   ```
+   
+   valid annotations:
+   ```
+   SYN	Syntenic
+   INV	Inversion
+   TRA	Translocation
+   INVTR	Inverted translocation
+   DUP	Duplication
+   INVDP	Inverted duplication
+   ```
+- the satsuma output has everything except annotation type so we may not be able to use this file 
+- can generate this file using [SyRI](https://github.com/schneebergerlab/syri)
+
+```
+# Running syri for finding structural rearrangements between A and B
+syri -c A_B.bam -r A.fa -q B.fa -F B --prefix A_B &
+# Running syri for finding structural rearrangements between B and C
+syri -c B_C.bam -r B.fa -q C.fa -F B --prefix B_C &
+# Running syri for finding structural rearrangements between C and D
+syri -c C_D.bam -r C.fa -q D.fa -F B --prefix C_D &
+```
+
+This will generate A_Bsyri.out, B_Csyri.out, and C_Dsyri.out files that contain the structural annotations between genomes and will be used as input to plotsr.
+
+<details><summary>SyRI.sh</summary>
+<p>
+   
+   ```
+   #!/bin/bash
+   #SBATCH --partition=p_ccib_1
+   #SBATCH --account=general
+   #SBATCH --exclude=gpuc001,gpuc002
+   #SBATCH --job-name=minimap
+   #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr/slurmout/slurm-%j-%x.out
+   #SBATCH --mem=170G
+   #SBATCH -n 10
+   #SBATCH -N 1
+   #SBATCH --time=14-00:00:00
+   #SBATCH --requeue
+   #SBATCH --mail-user=av795@rutgers.edu
+   #SBATCH --mail-type=FAIL,END,BEGIN.REQUEUE
+
+   echo "###################### load modules"
+   module purge
+
+   eval "$(conda shell.bash hook)"
+   conda activate satsuma
+
+
+   echo ""
+   echo "###################### check modules loaded"
+   ml
+
+   echo ""
+   echo "set variables"
+   OUTDIR="/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr"
+   INPUTDIR="/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3"
+   GRAHAMI="/projects/f_geneva_1/alyssa/grahami"
+
+   echo ""
+   echo "###################### run SyRI"
+
+   echo "# Running syri for finding structural rearrangements between A and B"
+   syri -c ${OUTDIR}/sagrei_grahami.bam -r ${GRAHAMI}/AnoSag2.1.fa -q ${INPUTDIR}/AnoGra1.1.fa -F B --prefix sagrei_grahami &
+
+   echo "# Running syri for finding structural rearrangements between B and C"
+   syri -c ${OUTDIR}/grahami_carolinensis.bam -r ${INPUTDIR}/AnoGra1.1.fa -q ${INPUTDIR}/AnoCar2.0.fa -F B --prefix grahami_carolinensis &
+
+   echo ""
+   echo "###################### done"
+   ```
+
+</p>
+</details>
+
+
+**5. Make config file**
+
+<details><summary>base.cfg</summary>
+<p>
+   
+   ```
+   ## COLOURS and transparency for alignments (syntenic, inverted, translocated, and duplicated)
+   syncol:#CCCCCC
+   invcol:#FFA500
+   tracol:#9ACD32
+   dupcol:#00BBFF
+   alpha:0.8
+
+   ## Margins and dimensions:
+   chrmar:0.1              ## Adjusts the gap between chromosomes and tracks. Higher values leads to more gap
+   exmar:0.1               ## Extra margin at the top and bottom of plot area
+
+   ## LEGEND
+   legend:T                ## To plot legend use T, use F to not plot legend
+   genlegcol:-1            ## Number of columns for genome legend, set -1 for automatic setup
+   bbox:0,1.01,0.5,0.3		## [Left edge, bottom edge, width, height]
+   bbox_v:0,1.1,0.5,0.3	## For vertical chromosomes (using -v option)
+   bboxmar:0.5             ## Margin between genome and annotation legends
+   ```
+
+</p>
+</details>
+
+**6. Running plotsr**
+- Plotsr can be run using the following command:
+
+```
+plotsr \
+    --sr A_Bsyri.out \
+    --sr B_Csyri.out \
+    --sr C_Dsyri.out \
+    --genomes genomes.txt \
+    -o output_plot.png
+```
+
+**make `genomes.txt`**
+- this is a tab-separated file containing the path and names for the genomes. 
+- A third column can also be added to customise the visualisation of genomes.
+   - tags available
+   ```
+   ft = File type (fa/cl for fasta/chromosome_length, default = fa); cl files must be in tsv format with chromosome name in column 1 and chromosome length in column 2; using cl files is much faster than using fasta files
+   lw = line width
+   lc = line colour
+   ```
+
+example file
+```
+$genomes.txt
+#file	name	tags
+A.fa	A	lw:1.5
+B.fa	B	lw:1.5
+C.fa	C	lw:1.5
+D.fa	D	lw:1.5
+```
+
+_**NOTE:** It is required that the order of the genomes is the same as the order in which genomes are compared. For example, if the first genome annotation file uses A as a reference and B as query, and the second genome annotation file uses B as a reference and C as query, then the genomes.txt file should list the genomes in the order A, B, C._
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+module purge
+
+eval "$(conda shell.bash hook)"
+conda activate satsuma
+```
 
 
 
