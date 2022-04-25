@@ -478,16 +478,8 @@ This will generate A_Bsyri.out, B_Csyri.out, and C_Dsyri.out files that contain 
 </details>
 
 **6. Running plotsr**
-- Plotsr can be run using the following command:
+- make genome file and run plotsr
 
-```
-plotsr \
-    --sr A_Bsyri.out \
-    --sr B_Csyri.out \
-    --sr C_Dsyri.out \
-    --genomes genomes.txt \
-    -o output_plot.png
-```
 
 **make `genomes.txt`**
 - this is a tab-separated file containing the path and names for the genomes. 
@@ -511,24 +503,44 @@ D.fa	D	lw:1.5
 
 _**NOTE:** It is required that the order of the genomes is the same as the order in which genomes are compared. For example, if the first genome annotation file uses A as a reference and B as query, and the second genome annotation file uses B as a reference and C as query, then the genomes.txt file should list the genomes in the order A, B, C._
 
+<details><summary>genomes.txt</summary>
+<p>
+   
+   ```
+   #file   name    tags
+   /projects/f_geneva_1/alyssa/grahami/AnoSag2.1.fa        A	lw:1.5
+   /projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/AnoGra1.1.fa	B	lw:1.5
+   /projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/AnoCar2.0.fa	C	lw:1.5
+   ```
 
+</p>
+</details>
 
-
-
-
-
-
-
-
-
-
+**run plotsr**
 
 ```
-module purge
-
-eval "$(conda shell.bash hook)"
-conda activate satsuma
+plotsr \
+    --sr A_Bsyri.out \
+    --sr B_Csyri.out \
+    --sr C_Dsyri.out \
+    --genomes genomes.txt \
+    -o output_plot.png
 ```
+
+<details><summary>plotsr.sh</summary>
+<p>
+   
+   ```
+   
+   ```
+
+</p>
+</details>
+
+
+
+
+
 
 
 
