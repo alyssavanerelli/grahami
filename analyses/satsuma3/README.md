@@ -262,16 +262,20 @@ First we need to make a file containing the scaffold name and size for each spec
 - We want to visualize the where the grahami sex chromsomes map to within sagrei and carolinensis
 - For this we are using the python tool `plotsr`
 
-**1. Install Plotsr**
+**1. Install Plotsr and SyRI**
 
+plotsr
 ```
 conda activate satsuma
 
 conda install -c bioconda plotsr
 
-conda update -n base -c defaults conda          #update conda if needed
-
 plotsr -h                                       #check that plotsr installed properly
+```
+
+SyRI
+```
+conda create -n syri_env -c defaults -c bioconda -c conda-forge Cython=0.29.23 numpy=1.21.2 scipy=1.6.2 pandas=1.2.4 python-igraph=0.9.1 psutil=5.8.0 pysam=0.16.0.1 matplotlib=3.3.4
 ```
 
 **2. Gather Materials**
