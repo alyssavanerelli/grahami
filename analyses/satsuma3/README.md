@@ -275,7 +275,19 @@ plotsr -h                                       #check that plotsr installed pro
 
 SyRI
 ```
-conda create -n syri_env -c defaults -c bioconda -c conda-forge Cython=0.29.23 numpy=1.21.2 scipy=1.6.2 pandas=1.2.4 python-igraph=0.9.1 psutil=5.8.0 pysam=0.16.0.1 matplotlib=3.3.4
+conda create -n syri_env python=3.8
+
+conda activate syri_env
+
+conda install -c bioconda -c conda-forge Cython=0.29.23 numpy=1.21.2 scipy=1.6.2 pandas=1.2.4 python-igraph=0.9.1 psutil=5.8.0 pysam=0.16.0.1 matplotlib=3.3.4
+
+module load gcc/10.2.0-bz186
+
+git clone https://github.com/schneebergerlab/syri.git
+
+cd syri/
+
+python setup.py install
 ```
 
 **2. Gather Materials**
