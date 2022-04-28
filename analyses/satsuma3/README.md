@@ -411,6 +411,9 @@ samtools index B_C.bam
    ```
 - the satsuma output has everything except annotation type so we may not be able to use this file 
 - can generate this file using [SyRI](https://github.com/schneebergerlab/syri)
+  - **data requirements for Syri:**
+    - the molecules in two assemblies are homologous and have one-to-one mapping
+    - it is recommended to select only large chromosome-scale molecules from the reference and filter out smaller unplaced molecules as they might introduce noise and affect pseudo-chromosome generation.
 
 ```
 # Running syri for finding structural rearrangements between A and B
