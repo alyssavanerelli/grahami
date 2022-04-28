@@ -462,10 +462,10 @@ This will generate A_Bsyri.out, B_Csyri.out, and C_Dsyri.out files that contain 
    echo "###################### run SyRI"
 
    echo "# Running syri for finding structural rearrangements between A and B"
-   syri -c ${OUTDIR}/sagrei_grahami.bam -r ${GRAHAMI}/AnoSag2.1.fa -q ${INPUTDIR}/AnoGra1.1.fa -F B --prefix sagrei_grahami &
+   syri -c ${OUTDIR}/sagrei_grahami.bam -r ${GRAHAMI}/AnoSag2.1.fa -q ${INPUTDIR}/AnoGra1.1.fa -F B --prefix sagrei_grahami
 
    echo "# Running syri for finding structural rearrangements between B and C"
-   syri -c ${OUTDIR}/grahami_carolinensis.bam -r ${INPUTDIR}/AnoGra1.1.fa -q ${INPUTDIR}/AnoCar2.0.fa -F B --prefix grahami_carolinensis &
+   syri -c ${OUTDIR}/grahami_carolinensis.bam -r ${INPUTDIR}/AnoGra1.1.fa -q ${INPUTDIR}/AnoCar2.0.fa -F B --prefix grahami_carolinensis
 
    echo ""
    echo "###################### done"
