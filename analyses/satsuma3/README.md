@@ -308,10 +308,29 @@ python setup.py install
 **move over chrom lengths files**
 ```
 cd plotsr
-cp ../AnoCar2.0.chrom.sizes carolinensis.chrlen
-cp ../AnoGra1.1.chrom.sizes grahami.chrlen
-cp ../AnoSag2.1.chrom.sizes sagrei.chrlen
+head -100 ../AnoCar2.0.chrom.sizes > carolinensis.chrlen
+head -100 ../AnoGra1.1.chrom.sizes > grahami.chrlen
+head -100 ../AnoSag2.1.chrom.sizes > sagrei.chrlen
 ```
+
+**filter genomes to be scaffolds 1-100**
+```
+cd /projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/
+
+# grahami
+cat sc1.fa sc2.fa sc3.fa sc4.fa sc5.fa sc6.fa sc7-100.fa > plotsr/grahami_sc1-100.fa
+
+# sagrei
+head -200 ../../AnoSag2.1.fa > plotsr/sagrei_sc1-100.fa
+
+# carolinensis
+awk '/^>/ { print (NR==1 ? "" : RS) $0; next } { printf "%s", $0 } END { printf RS }' AnoCar_t.fa > test2.fa
+head -200 test.fa > plotsr/carolinensis_sc1-100.fa
+
+# check that this worked
+grep ">" plotsr/grahami_sc1-100.fa | tail -1
+```
+
 
 **3. Align all the genomes**
 - align using [minimap](https://github.com/lh3/minimap2) and index with samtools
@@ -340,7 +359,7 @@ samtools index B_C.bam
    #SBATCH --exclude=gpuc001,gpuc002
    #SBATCH --job-name=minimap
    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr/slurmout/slurm-%j-%x.out
-   #SBATCH --mem=170G
+   #SBATCH --mem=25G
    #SBATCH -n 10
    #SBATCH -N 1
    #SBATCH --time=14-00:00:00
@@ -370,10 +389,15 @@ samtools index B_C.bam
    echo ""
    echo "run minimap2 and samtools"
 
-   minimap2 -ax asm5 -t 4 --eqx ${GRAHAMI}/AnoSag2.1.fa ${INPUTDIR}/AnoGra1.1.fa \
+   echo ""
+   echo "sagrei and grahami"
+   minimap2 -ax asm5 -t 4 --eqx ${OUTDIR}/sagrei_sc1-100.fa ${OUTDIR}/grahami_sc1-100.fa \
     | samtools sort -O BAM - > ${OUTDIR}/sagrei_grahami.bam
    samtools index sagrei_grahami.bam
-   minimap2 -ax asm5 -t 4 --eqx ${INPUTDIR}/AnoGra1.1.fa ${INPUTDIR}/AnoCar2.0.fa \
+
+   echo ""
+   echo "grahami and carolinensis"
+   minimap2 -ax asm5 -t 4 --eqx ${OUTDIR}/grahami_sc1-100.fa ${OUTDIR}/carolinensis_sc1-100.fa \
     | samtools sort -O BAM - > ${OUTDIR}/grahami_carolinensis.bam
    samtools index grahami_carolinensis.bam
 
@@ -436,7 +460,7 @@ This will generate A_Bsyri.out, B_Csyri.out, and C_Dsyri.out files that contain 
    #SBATCH --exclude=gpuc001,gpuc002
    #SBATCH --job-name=SyRI
    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/satsuma/satsuma3/plotsr/slurmout/slurm-%j-%x.out
-   #SBATCH --mem=170G
+   #SBATCH --mem=70G
    #SBATCH -n 10
    #SBATCH -N 1
    #SBATCH --time=14-00:00:00
@@ -464,11 +488,13 @@ This will generate A_Bsyri.out, B_Csyri.out, and C_Dsyri.out files that contain 
    echo ""
    echo "###################### run SyRI"
 
+   echo ""
    echo "# Running syri for finding structural rearrangements between A and B"
-   syri -c ${OUTDIR}/sagrei_grahami.bam -r ${GRAHAMI}/AnoSag2.1.fa -q ${INPUTDIR}/AnoGra1.1.fa -F B --prefix sagrei_grahami
+   syri -c ${OUTDIR}/sagrei_grahami.bam -r ${OUTDIR}/sagrei_sc1-100.fa -q ${OUTDIR}/grahami_sc1-100.fa -F B --prefix sagrei_grahami
 
+   echo ""
    echo "# Running syri for finding structural rearrangements between B and C"
-   syri -c ${OUTDIR}/grahami_carolinensis.bam -r ${INPUTDIR}/AnoGra1.1.fa -q ${INPUTDIR}/AnoCar2.0.fa -F B --prefix grahami_carolinensis
+   syri -c ${OUTDIR}/grahami_carolinensis.bam -r ${OUTDIR}/grahami_sc1-100.fa -q ${OUTDIR}/carolinensis_sc1-100.fa -F B --prefix grahami_carolinensis
 
    echo ""
    echo "###################### done"
