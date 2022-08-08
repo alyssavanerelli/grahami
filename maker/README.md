@@ -277,7 +277,24 @@ grep -v "augustus" Agra_rnd2_AED.gff > Agra_rnd2_AED_snap.gff
 - we will need to delete intermediate files and files that we could make again (we have the scripts to do so) to save memory in our `f_geneva_1` folder
 
 
-- 
+
+
+# Problem Solving
+
+## Running maker with RNA seq from sagrei
+- We are also going to try to run maker inputting RNA seq data from _A. sagrei_ to better predict genic regions
+- These files are massive so its taking a while to run
+
+## SNAP filtering not working
+- it has come to our attention, that SNAP filtering in the first maker runs was not working, as we do have genes that are >50 aa with AED<0.25
+- to fix this, I will be manually filtering the gff files, and then running the bsh script
+
+
+**Make file with only gene models we want to keep**
+
+```
+grep "AED" Agra_rnd1.all.maker.noseq.gff | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 | head
+```
 
 
 
