@@ -285,6 +285,9 @@ grep -v "augustus" Agra_rnd2_AED.gff > Agra_rnd2_AED_snap.gff
 - We are also going to try to run maker inputting RNA seq data from _A. sagrei_ to better predict genic regions
 - These files are massive so its taking a while to run
 
+
+
+
 ## SNAP filtering not working
 - it has come to our attention, that SNAP filtering in the first maker runs was not working, as we do have genes that are >50 aa with AED<0.25
 - to fix this, I will be manually filtering the gff files, and then running the bsh script
@@ -293,8 +296,34 @@ grep -v "augustus" Agra_rnd2_AED.gff > Agra_rnd2_AED_snap.gff
 **Make file with only gene models we want to keep**
 
 ```
-grep "AED" Agra_rnd1.all.maker.noseq.gff | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 | head
+# make gff file with all scaffold IDs, AED scores, and lengths
+grep "AED" Agra_rnd1.all.maker.noseq.gff | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 > rnd1.all.aed.len.gff
+sed -i 's/;_/;/g' rnd1.all.aed.len.gff 
+sed -i 's/QI=0|/len=/g' rnd1.all.aed.len.gff 
+
+# make file without naming
+cp rnd1.all.aed.len.gff rnd1.all.aed.len.noname.gff
+sed -i 's/AED=//g' rnd1.all.aed.len.noname.gff
+sed -i 's/len=//g' rnd1.all.aed.len.noname.gff
+sed -i 's/;/ /g' rnd1.all.aed.len.noname.gff
+
+# filter file to only keep lines with AED<=0.25 and len>=50
+awk '$2 <=0.25' rnd1.all.aed.len.noname.gff > rnd1.filtered.aed.len.gff
+awk '$3 >=50 || NR==1' rnd1.filtered.aed.len.gff > len.gff ; mv len.gff rnd1.filtered.aed.len.gff 
+
+# make file with only scaffold names
+cat rnd1.filtered.aed.len.gff | cut -d " " -f 1 > rnd1.filtered.names.gff
 ```
+
+Now we want to filter the `noseq.gff` file to only include lines matching my name.gff file using grep
+
+```
+grep -f rnd1.filtered.names.gff -Fw Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
+```
+
+Next, we can give pass this `.gff` file to the `singularity exec ${MAKER_IMAGE} maker2zff` command in our `bsh.sh` file
+
+
 
 
 
