@@ -319,6 +319,14 @@ Now we want to filter the `noseq.gff` file to only include lines matching my nam
 
 ```
 grep -f rnd1.filtered.names.gff -Fw Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
+
+# make file with names of bad models
+grep -f rnd1.filtered.names.gff -Fw -v rnd1.all.names.gff > rnd1.badmodels.gff
+cp rnd1.badmodels.gff rnd1.bad.base.gff
+sed -i 's/-mRNA-1//g' rnd1.bad.base.gff
+
+# filter out bad models from noseq.gff
+grep -f rnd1.bad.base.gff -Fw -v Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
 ```
 
 Next, we can give pass this `.gff` file to the `singularity exec ${MAKER_IMAGE} maker2zff` command in our `bsh.sh` file
