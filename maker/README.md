@@ -284,6 +284,23 @@ grep -v "augustus" Agra_rnd2_AED.gff > Agra_rnd2_AED_snap.gff
 ## Running maker with RNA seq from sagrei
 - We are also going to try to run maker inputting RNA seq data from _A. sagrei_ to better predict genic regions
 - These files are massive so its taking a while to run
+**the smallest scaffold annotated is `scaffold_786`**
+
+Making a log file with a few lines to test if gff merge will work faster, then we could run this in parallel
+
+<details><summary>EXAMPLE</summary>
+<p>
+  
+  ```
+  find /projects/f_geneva_1/alyssa/grahami/annotation/test_rnd1/Agra_rnd1.maker.output/Agra_rnd1_datastore -maxdepth 2 -type f -iname "scaffold_78*.gff" > test.txt
+  
+  cat test.txt | cut -d "/" -f 10 > names.txt
+  
+  grep -f names.txt -Fw Agra_rnd1_master_datastore_index.log > test.log
+  ```
+
+</p>
+</details>
 
 
 
