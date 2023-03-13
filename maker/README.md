@@ -306,13 +306,15 @@ Making a log file with a few lines to test if gff merge will work faster, then w
 
 
 ## SNAP filtering not working
-- it has come to our attention, that SNAP filtering in the first maker runs was not working, as we do have genes that are >50 aa with AED<0.25
+- it has come to our attention, that SNAP filtering in the first maker runs was not working, as we do have genes that are <50 aa with AED>0.25
 - to fix this, I will be manually filtering the gff files, and then running the bsh script
 
 
 **Make file with only gene models we want to keep**
 
 ```
+cd Agra_rnd1.maker.output/
+
 # make gff file with all scaffold IDs, AED scores, and lengths
 grep "AED" Agra_rnd1.all.maker.noseq.gff | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 > rnd1.all.aed.len.gff
 sed -i 's/;_/;/g' rnd1.all.aed.len.gff 
@@ -332,28 +334,19 @@ awk '$3 >=50' rnd1.filtered.aed.len.gff > len.gff ; mv len.gff rnd1.filtered.aed
 # make file with only scaffold names
 cat rnd1.filtered.aed.len.gff | cut -d " " -f 1 > rnd1.filtered.names.gff
 sed -i 's/-mRNA-1//g' rnd1.filtered.names.gff
-```
 
-Now we want to filter the `noseq.gff` file to only include lines matching my name.gff file using grep
-**need to troubleshoot this** - maybe we should filter it down to the base "gene-XXXX"?
-
-```
+# filter noseq.gff file to only include lines matching the filtered names file using grep
 grep -f rnd1.filtered.names.gff -Fw Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
-
-
-
-
-
-# make file with names of bad models
-grep -f rnd1.filtered.names.gff -Fw -v rnd1.all.names.gff > rnd1.badmodels.gff
-cp rnd1.badmodels.gff rnd1.bad.base.gff
-sed -i 's/-mRNA-1//g' rnd1.bad.base.gff
-
-# filter out bad models from noseq.gff
-grep -f rnd1.bad.base.gff -Fw -v Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
 ```
 
-Next, we can give pass this `.gff` file to the `singularity exec ${MAKER_IMAGE} maker2zff` command in our `bsh.sh` file
+The 'bsh_n.sh` file needs this file to also have the fasta sequence pasted at the bottom
+```
+grep "##FASTA" -A 24000000 Agra_rnd1.all.maker.gff > rnd1.seq.gff
+
+cat Agra_rnd1.all.maker.noseq.filtered.gff rnd1.seq.gff > Agra_rnd1.all.maker.filtered.seq.gff
+```
+
+Next, we can give pass this `Agra_rnd1.all.maker.filtered.seq.gff` file to the `singularity exec ${MAKER_IMAGE} maker2zff` command in our `bsh.sh` file
 
 
 
