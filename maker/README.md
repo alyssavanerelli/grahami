@@ -316,7 +316,8 @@ Making a log file with a few lines to test if gff merge will work faster, then w
 # make gff file with all scaffold IDs, AED scores, and lengths
 grep "AED" Agra_rnd1.all.maker.noseq.gff | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 > rnd1.all.aed.len.gff
 sed -i 's/;_/;/g' rnd1.all.aed.len.gff 
-sed -i 's/QI=0|/len=/g' rnd1.all.aed.len.gff 
+sed -i 's/QI=[0-9]|/len=/g' rnd1.all.aed.len.gff 
+sed -i 's/QI=[0-9][0-9]|/len=/g' rnd1.all.aed.len.gff
 
 # make file without naming
 cp rnd1.all.aed.len.gff rnd1.all.aed.len.noname.gff
@@ -326,13 +327,14 @@ sed -i 's/;/ /g' rnd1.all.aed.len.noname.gff
 
 # filter file to only keep lines with AED<=0.25 and len>=50
 awk '$2 <=0.25' rnd1.all.aed.len.noname.gff > rnd1.filtered.aed.len.gff
-awk '$3 >=50 || NR==1' rnd1.filtered.aed.len.gff > len.gff ; mv len.gff rnd1.filtered.aed.len.gff 
+awk '$3 >=50' rnd1.filtered.aed.len.gff > len.gff ; mv len.gff rnd1.filtered.aed.len.gff 
 
 # make file with only scaffold names
 cat rnd1.filtered.aed.len.gff | cut -d " " -f 1 > rnd1.filtered.names.gff
 ```
 
 Now we want to filter the `noseq.gff` file to only include lines matching my name.gff file using grep
+**need to troubleshoot this** - maybe we should filter it down to the base "gene-XXXX"?
 
 ```
 grep -f rnd1.filtered.names.gff -Fw Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
