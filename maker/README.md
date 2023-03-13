@@ -331,6 +331,7 @@ awk '$3 >=50' rnd1.filtered.aed.len.gff > len.gff ; mv len.gff rnd1.filtered.aed
 
 # make file with only scaffold names
 cat rnd1.filtered.aed.len.gff | cut -d " " -f 1 > rnd1.filtered.names.gff
+sed -i 's/-mRNA-1//g' rnd1.filtered.names.gff
 ```
 
 Now we want to filter the `noseq.gff` file to only include lines matching my name.gff file using grep
@@ -338,6 +339,10 @@ Now we want to filter the `noseq.gff` file to only include lines matching my nam
 
 ```
 grep -f rnd1.filtered.names.gff -Fw Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
+
+
+
+
 
 # make file with names of bad models
 grep -f rnd1.filtered.names.gff -Fw -v rnd1.all.names.gff > rnd1.badmodels.gff
