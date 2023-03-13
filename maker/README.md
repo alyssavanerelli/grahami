@@ -335,8 +335,18 @@ awk '$3 >=50' rnd1.filtered.aed.len.gff > len.gff ; mv len.gff rnd1.filtered.aed
 cat rnd1.filtered.aed.len.gff | cut -d " " -f 1 > rnd1.filtered.names.gff
 sed -i 's/-mRNA-1//g' rnd1.filtered.names.gff
 
+# make file of all gene model names
+grep "ID=" Agra_rnd1.all.maker.noseq.gff > rnd1.all.names.gff
+
+# filter name file to only include the bad models
+grep -f rnd1.filtered.names.gff -Fw -v rnd1.all.names.gff > rnd1.badmodels.gff
+sed -i 's/-mRNA-1//g' rnd1.badmodels.gff
+
 # filter noseq.gff file to only include lines matching the filtered names file using grep
 grep -f rnd1.filtered.names.gff -Fw Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
+
+#filer noseq.gff file to include all lines EXCEPT these bad gene models
+grep -f rnd1.badmodels.gff -Fw -v Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.out.gff 
 ```
 
 The 'bsh_n.sh` file needs this file to also have the fasta sequence pasted at the bottom
@@ -350,7 +360,32 @@ Next, we can give pass this `Agra_rnd1.all.maker.filtered.seq.gff` file to the `
 
 
 
+**There is more information in the noseq file than just these aed lines so filtering for only these names deletes a lot of other lines (e.g. repeats)**
+
+Need to filter out the bad models instead
+
+```
+# make file of all gene model names
+grep "ID=" Agra_rnd1.all.maker.noseq.gff > rnd1.all.names.gff
+
+# filter name file to only include the bad models
+grep -f rnd1.filtered.names.gff -Fw -v rnd1.all.names.gff > rnd1.badmodels.gff
+cp rnd1.badmodels.gff rnd1.bad.base.gff
+sed -i 's/-mRNA-1//g' rnd1.bad.base.gff
+# filter out bad models from noseq.gff
+grep -f rnd1.bad.base.gff -Fw -v Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
+```
 
 
+crap
+```
+#filter file to only keep lines with AED>0.25 and len <50 (bad gene models)
+awk '$2 >0.25' rnd1.all.aed.len.noname.gff > rnd1.bad.aed.len.gff
+awk '$3 <50' rnd1.bad.aed.len.gff > len.gff ; mv len.gff rnd1.bad.aed.len.gff
+
+# make file with only scaffold names (bad gene models)
+cat rnd1.bad.aed.len.gff | cut -d " " -f 1 > rnd1.bad.names.gff
+sed -i 's/-mRNA-1//g' rnd1.bad.names.gff
+```
 
 
