@@ -492,7 +492,7 @@ awk '{ if ($2 ~ "repeat") print $0 }' Agra_rnd1.all.maker.noseq.filtered.out.gff
 #SBATCH --time=9-00:00:00                               # maximum run time days-hours:minutes:seconds
 #SBATCH --requeue                                       # restart and paused or superseeded jobs
 #SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
-#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE              # email for the following reasons
+#SBATCH --mail-type=FAIL                                # email for the following reasons
 
 
 echo "load any Amarel modules that script requires"
@@ -558,13 +558,13 @@ cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
 #SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
 #SBATCH --job-name=maker_aug1-trans                     # job name for listing in queue
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
-#SBATCH --mem=128G                                    # memory to allocate in Mb
+#SBATCH --mem=128G                                      # memory to allocate in Mb
 #SBATCH -n 16                                           # number of cores to use
 #SBATCH -N 1                                            # number of nodes the cores should be on, 1 means all cores on same node
 #SBATCH --time=3-00:00:00                               # maximum run time days-hours:minutes:seconds
 #SBATCH --requeue                                       # restart and paused or superseeded jobs
 #SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
-#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE              # email for the following reasons
+#SBATCH --mail-type=FAIL                                # email for the following reasons
 
 
 
