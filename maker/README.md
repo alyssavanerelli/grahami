@@ -525,24 +525,47 @@ busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/s
 </details>
 
 **now need to go into this directory and rename things for downstream analyses**
-```
-cd Agra_rnd1_aug/run_vertebrata_odb10/augustus_output/retraining_parameters/
 
-#rename folder
-mv BUSCO_Agra_rnd1_aug/ Anolis_grahami/
+<details><summary>rename_aug.sh</summary>
+<p>
+   
+   ```
+   #!/bin/bash
 
-#rename files within folder
-cd Anolis_grahami/
+   echo "######## define variables"
+   RND="1"
+   FOLDER="/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd${RND}_aug"
 
-rename BUSCO_Agra_rnd1_aug Anolis_grahami *
 
-#also need to rename these strings within some of the files
-sed -i 's/BUSCO_Agra_rnd1_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg
-sed -i 's/BUSCO_Agra_rnd1_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg.orig1 
+   echo "######## go into augustus folder"
+   cd ${FOLDER}/run_vertebrata_odb10/augustus_output/retraining_parameters/
 
-cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
-#now we will use this Anolis_grahami species in our augustus path as input for round 2 of maker
-```
+
+   echo "######## rename folder"
+   mv BUSCO_Agra_rnd${RND}_aug/ Anolis_grahami/
+
+
+   echo "######## rename files within folder"
+   cd Anolis_grahami/
+   rename BUSCO_Agra_rnd${RND}_aug Anolis_grahami *
+
+
+   echo "######## rename strings within 2 files"
+   sed -i 's/BUSCO_Agra_rnd${RND}_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg
+   sed -i 's/BUSCO_Agra_rnd${RND}_aug/Anolis_grahami/g' Anolis_grahami_parameters.cfg.orig1
+
+
+   echo "######## copy this folder to our augustus folder"
+   cd ${FOLDER}/run_vertebrata_odb10/augustus_output/retraining_parameters/
+   cp -R Anolis_grahami/ /home/av795/Augustus/config/species/
+
+
+   echo "done"
+
+   ```
+   
+</p>
+</details>
 
 ---
 
@@ -618,7 +641,7 @@ busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/A
 cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5 - $4) } END { print NR, sum / NR }'
 ```
 
-## Number of gene models and gene lengths for each round
+## Number of gene models and gene lengths for each round - old stats
 
 | Round   | # gene models | gene lengths |
 | :-----: | :-----------: | :----------: |
@@ -656,6 +679,9 @@ perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff> > AED_rnd
 ```
 
 Now we can look at this file in R
+<details><summary>Maker_AED.R</summary>
+<p>
+
 ```
 ###### Maker AED scores ######
 
@@ -756,6 +782,9 @@ grep -v "snap" Agra_rnd2_AED.gff > Agra_rnd2_AED_augustus.gff
 grep -v "augustus" Agra_rnd2_AED.gff > Agra_rnd2_AED_snap.gff
 ```
 
+</p>
+</details>
+
 Can visualize these files in R with the same code as above
 
 # round 2
@@ -773,7 +802,7 @@ sed -i -e 's/rnd1/rnd2/g' r2maker_bsh.sh
 **1. modify control file: `maker_opts.ctl`**
   - Copy `maker_opts.ctl` to `maker_opts_rnd1.ctl`
   - Edit `maker_opts.ctl` for round 2
-    - The code for this file is under `maker_opts_rnd2.ctl` (in github)
+
 
   **main differences**
   - removes FASTA sequences to map and replaces them with the GFF files (`est_gff`, `protein_gff`, and `rm_gff`)
@@ -817,7 +846,7 @@ prok_rm=0 #forces MAKER to repeatmask prokaryotes (no reason to change this), 1 
 softmask=1 #use soft-masking rather than hard-masking in BLAST (i.e. seg and dust filtering)
 
 #-----Gene Prediction
-snaphmm=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/snap/braker/Agra_rnd1.zff.length5_aed0.5.hmm #SNAP HMM file
+snaphmm=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/snap/braker/Agra_rnd1.zff.length5_aed0.25.hmm #SNAP HMM file
 gmhmm= #GeneMark HMM file
 augustus_species=Anolis_grahami #Augustus gene prediction species model
 fgenesh_par_file= #FGENESH parameter file
@@ -870,6 +899,69 @@ TMP= #specify a directory other than the system default temporary directory for 
 - I kept `Augustus/` in my home directory and removed the `--no-home` line from this submission script
 - the line `-base Agra_rnd2` will make any files created during this run start with that text (this is important because it will avoid maker round 2 overwriting files from round 1)
 
+   
+<details><summary>r2maker_sub.sh</summary>
+<p>
+   
+```
+#!/bin/bash
+#SBATCH --partition=p_ccib_1
+#SBATCH --account=general
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_sub2
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=0
+#SBATCH -n 20
+#SBATCH -N 2
+#SBATCH --exclusive
+#SBATCH --time=10-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
+
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation
+
+module purge
+module load singularity/3.1.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+# NOTE: empty MAKER control files can be generated using the command:
+#	singularity exec ${MAKER_IMAGE} maker -CTL
+# This will be needed at least for the maker_exe.ctl file, which has the paths to executables in the container.
+# Otherwise, existing maker_bopts.ctl and maker_opts.ctl should be usable.
+
+# Submit this job script from the directory with the MAKER control files
+
+
+# optional repeat masking (if not using RepeatMasker, comment-out these three lines)
+export SINGULARITYENV_LIBDIR=${PWD}/LIBDIR
+
+
+#Set Augustus PATH
+export SINGULARITYENV_AUGUSTUS_CONFIG_PATH=/home/av795/Augustus/config/
+export SINGULARITYENV_AUGUSTUS_SCRIPTS_PATH=/home/av795/Augustus/scripts
+
+
+#These commands need to be run once and then can be commented out for all subseqeunt MAKER RUNS
+#mkdir -p LIBDIR
+#singularity exec ${MAKER_IMAGE} sh -c 'ln -sf /usr/local/share/RepeatMasker/Libraries/* LIBDIR'
+
+# singularity options:
+# * --cleanenv : don't pass environment variables to container (except those specified in --env option-arguments)
+# * --no-home : don't mount home directory (if not current working directory) to avoid any application/language startup files
+# Add any MAKER options after the "maker" command
+# * -nodatastore is suggested for Lustre, as it reduces the number of directories created
+# * -fix_nucleotides needed for hsap_contig.fasta example data
+
+singularity exec --cleanenv ${MAKER_IMAGE} mpiexec -n 20 maker -base Agra_rnd2 -fix_nucleotides   
+```
+
+</p>
+</details>
+
+   
 ---
 
 **3. `r2maker_bsh.sh`**
@@ -879,31 +971,190 @@ TMP= #specify a directory other than the system default temporary directory for 
   - used `-n` flag still
 - main changes from rnd1: change the names to be specific for rnd2
 
+   
+<details><summary>r2maker_bsh.sh</summary>
+<p>
+
+```
+#!/bin/bash
+#SBATCH --partition=p_ccib_1                            # which partition to run the job, options are in the Amarel guide
+#SBATCH --account=general                               # allows me to submit to cmain and main
+#SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
+#SBATCH --job-name=maker_bsh2                           # job name for listing in queue
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=64000                                     # memory to allocate in Mb
+#SBATCH -n 16                                           # number of cores to use
+#SBATCH -N 1                                            # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH --time=0-10:00:00                               # maximum run time days-hours:minutes:seconds
+#SBATCH --requeue                                       # restart and paused or superseeded jobs
+#SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
+#SBATCH --mail-type=FAIL                                # email for the following reasons
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output
+
+module purge
+module load singularity/3.1.0
+module load bedtools2/2.25.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+
+echo "##### Generate GFF files with and without the sequences"
+singularity exec ${MAKER_IMAGE} gff3_merge -s -d Agra_rnd2_master_datastore_index.log > Agra_rnd2.all.maker.gff
+singularity exec ${MAKER_IMAGE} fasta_merge -d Agra_rnd2_master_datastore_index.log
+
+echo "##### GFF w/o the sequences"
+singularity exec ${MAKER_IMAGE} gff3_merge -n -s -d Agra_rnd2_master_datastore_index.log > Agra_rnd2.all.maker.noseq.gff
+
+echo "##### running SNAP"
+mkdir snap
+mkdir snap/braker
+cd snap/braker
+echo "# export 'confident' gene models from MAKER and rename to something meaningful"
+singularity exec ${MAKER_IMAGE} maker2zff -x 0.5 -l 5 -d ../../Agra_rnd2.all.maker.filtered.seq.gff
+rename genome Agra_rnd2.zff.length5_aed0.25  *
+echo "# gather some stats and validate"
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -gene-stats > gene-stats.log 2>&1
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -validate > validate.log 2>&1
+echo "# collect the training sequences and annotations, plus 1000 surrounding bp for training"
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -categorize 1000 > categorize.log 2>&1
+singularity exec ${MAKER_IMAGE} fathom uni.ann uni.dna -export 1000 -plus > uni-plus.log 2>&1
+echo "# create the training parameters"
+mkdir params
+cd params
+singularity exec ${MAKER_IMAGE} forge ../export.ann ../export.dna > ../forge.log 2>&1
+cd ..
+
+echo "##### assembly the HMM"
+singularity exec ${MAKER_IMAGE} hmm-assembler.pl Agra_rnd2.zff.length5_aed0.25 params > Agra_rnd2.zff.length5_aed0.25.hmm
+
+awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd2.all.maker.noseq.gff |   awk -v OFS="\t" '{ if ($2 < 1000) print $1, "0", $3+1000; else print $1, $2-1000, $3+1000 }' |   bedtools getfasta -fi /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa -bed - $
+```
+
+</p>
+</details>
+   
+   
+<details><summary>r2maker_bsh_n.sh</summary>
+<p>
+
+```
+#!/bin/bash
+#SBATCH --partition=p_ccib_1                            # which partition to run the job, options are in the Amarel guide
+#SBATCH --account=general                               # allows me to submit to cmain and main
+#SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
+#SBATCH --job-name=maker_bsh2                           # job name for listing in queue
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=64000                                     # memory to allocate in Mb
+#SBATCH -n 16                                           # number of cores to use
+#SBATCH -N 1                                            # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH --time=0-10:00:00                               # maximum run time days-hours:minutes:seconds
+#SBATCH --requeue                                       # restart and paused or superseeded jobs
+#SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
+#SBATCH --mail-type=FAIL                                # email for the following reasons
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output
+
+module purge
+module load singularity/3.1.0
+module load bedtools2/2.25.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+
+echo "##### Generate GFF files with and without the sequences"
+#singularity exec ${MAKER_IMAGE} gff3_merge -s -d Agra_rnd2_master_datastore_index.log > Agra_rnd2.all.maker.gff
+#singularity exec ${MAKER_IMAGE} fasta_merge -d Agra_rnd2_master_datastore_index.log
+
+echo "##### GFF w/o the sequences"
+#singularity exec ${MAKER_IMAGE} gff3_merge -n -s -d Agra_rnd2_master_datastore_index.log > Agra_rnd2.all.maker.noseq.gff
+
+echo "##### running SNAP"
+mkdir snap
+mkdir snap/braker
+cd snap/braker
+echo "# export 'confident' gene models from MAKER and rename to something meaningful"
+singularity exec ${MAKER_IMAGE} maker2zff -n ../../Agra_rnd2.all.maker.filtered.seq.gff
+rename genome Agra_rnd2.zff.length5_aed0.25  *
+echo "# gather some stats and validate"
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -gene-stats > gene-stats.log 2>&1
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -validate > validate.log 2>&1
+echo "# collect the training sequences and annotations, plus 1000 surrounding bp for training"
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -categorize 1000 > categorize.log 2>&1
+singularity exec ${MAKER_IMAGE} fathom uni.ann uni.dna -export 1000 -plus > uni-plus.log 2>&1
+echo "# create the training parameters"
+mkdir params
+cd params
+singularity exec ${MAKER_IMAGE} forge ../export.ann ../export.dna > ../forge.log 2>&1
+cd ..
+
+echo "##### assembly the HMM"
+singularity exec ${MAKER_IMAGE} hmm-assembler.pl Agra_rnd2.zff.length5_aed0.25 params > Agra_rnd2.zff.length5_aed0.25.hmm
+
+awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd2.all.maker.noseq.gff |   awk -v OFS="\t" '{ if ($2 < 1000) print $1, "0", $3+1000; else print $1, $2-1000, $3+1000 }' |   bedtools getfasta -fi /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa -bed - $
+```
+
+</p>
+</details>
 ---
 
 **4. `r2maker_gff.sh`**
 - main changes from rnd1: change the names to be specific for rnd2
+   
+   
+<details><summary>r2maker_gff.sh</summary>
+<p>
+
+```
+
+```
+
+</p>
+</details>
 ---
 
 **5. `r2maker_aug.sh`**
 - main changes from rnd1
   - change the names to be specific for rnd2
   - change species from `human` to `Anolis_grahami`
-- change file names and copy over folder again 
-  - before
-      ```
-      cd /home/av795/Augustus/config/species/
-      mv Anolis_grahami/ Anolis_grahami_rnd1/
-      ```
+   
+<details><summary>r2maker_aug.sh</summary>
+<p>
+
+```
+
+```
+
+</p>
+</details>
+   
+   
+**make sure to run `rename_aug.sh` with RND changed to 2 to update Anolis_grahami species folder in augustus**
+
 ---
 
 **6. `r2maker_trans_aug.sh`**
+   
+
+<details><summary>r2maker_trans_aug.sh</summary>
+<p>
+
+```
+
+```
+
+</p>
+</details>
 
 ---
 
+# Round 3
 
+---
+   
+# Round 4
 
-
+---
 
 
 # Files to delete after annotation is finished
@@ -912,6 +1163,17 @@ TMP= #specify a directory other than the system default temporary directory for 
 
 
 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
 # Problem Solving
 
 ## Running maker with RNA seq from sagrei
@@ -938,88 +1200,7 @@ Making a log file with a few lines to test if gff merge will work faster, then w
 
 
 
-## SNAP filtering not working
-- it has come to our attention, that SNAP filtering in the first maker runs was not working, as we do have genes that are <50 aa with AED>0.25
-- to fix this, I will be manually filtering the gff files, and then running the bsh script
 
-
-**Make file with only gene models we want to keep**
-
-```
-cd Agra_rnd1.maker.output/
-
-# make gff file with all scaffold IDs, AED scores, and lengths
-grep "AED" Agra_rnd1.all.maker.noseq.gff | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 > rnd1.all.aed.len.gff
-sed -i 's/;_/;/g' rnd1.all.aed.len.gff 
-sed -i 's/QI=[0-9]|/len=/g' rnd1.all.aed.len.gff 
-sed -i 's/QI=[0-9][0-9]|/len=/g' rnd1.all.aed.len.gff
-
-# make file without naming
-cp rnd1.all.aed.len.gff rnd1.all.aed.len.noname.gff
-sed -i 's/AED=//g' rnd1.all.aed.len.noname.gff
-sed -i 's/len=//g' rnd1.all.aed.len.noname.gff
-sed -i 's/;/ /g' rnd1.all.aed.len.noname.gff
-
-# filter file to only keep lines with AED<=0.25 and len>=50
-awk '$2 <=0.25' rnd1.all.aed.len.noname.gff > rnd1.filtered.aed.len.gff
-awk '$3 >=50' rnd1.filtered.aed.len.gff > len.gff ; mv len.gff rnd1.filtered.aed.len.gff 
-
-# make file with only scaffold names
-cat rnd1.filtered.aed.len.gff | cut -d " " -f 1 > rnd1.filtered.names.gff
-sed -i 's/-mRNA-1//g' rnd1.filtered.names.gff
-
-# make file of all gene model names
-grep "ID=" Agra_rnd1.all.maker.noseq.gff > rnd1.all.names.gff
-
-# filter name file to only include the bad models
-grep -f rnd1.filtered.names.gff -Fw -v rnd1.all.names.gff > rnd1.badmodels.gff
-sed -i 's/-mRNA-1//g' rnd1.badmodels.gff
-
-#filer noseq.gff file to include all lines EXCEPT these bad gene models
-grep -f rnd1.badmodels.gff -Fw -v Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.out.gff 
-```
-
-The 'bsh_n.sh` file needs this file to also have the fasta sequence pasted at the bottom
-```
-grep "##FASTA" -A 24000000 Agra_rnd1.all.maker.gff > rnd1.seq.gff
-
-cat Agra_rnd1.all.maker.noseq.filtered.gff rnd1.seq.gff > Agra_rnd1.all.maker.filtered.seq.gff
-```
-
-Next, we can give pass this `Agra_rnd1.all.maker.filtered.seq.gff` file to the `singularity exec ${MAKER_IMAGE} maker2zff` command in our `bsh.sh` file
-
-
-
-**There is more information in the noseq file than just these aed lines so filtering for only these names deletes a lot of other lines (e.g. repeats)**
-
-Need to filter out the bad models instead
-
-```
-# make file of all gene model names
-grep "ID=" Agra_rnd1.all.maker.noseq.gff > rnd1.all.names.gff
-
-# filter name file to only include the bad models
-grep -f rnd1.filtered.names.gff -Fw -v rnd1.all.names.gff > rnd1.badmodels.gff
-cp rnd1.badmodels.gff rnd1.bad.base.gff
-sed -i 's/-mRNA-1//g' rnd1.bad.base.gff
-# filter out bad models from noseq.gff
-grep -f rnd1.bad.base.gff -Fw -v Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
-```
-
-
-crap
-```
-#filter file to only keep lines with AED>0.25 and len <50 (bad gene models)
-awk '$2 >0.25' rnd1.all.aed.len.noname.gff > rnd1.bad.aed.len.gff
-awk '$3 <50' rnd1.bad.aed.len.gff > len.gff ; mv len.gff rnd1.bad.aed.len.gff
-
-# make file with only scaffold names (bad gene models)
-cat rnd1.bad.aed.len.gff | cut -d " " -f 1 > rnd1.bad.names.gff
-sed -i 's/-mRNA-1//g' rnd1.bad.names.gff
-
-# filter noseq.gff file to only include lines matching the filtered names file using grep
-grep -f rnd1.filtered.names.gff -Fw Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.gff 
-```
 
 
 <details><summary>name</summary>
