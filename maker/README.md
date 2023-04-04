@@ -294,18 +294,22 @@ awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd1.all.mak
 #!/bin/bash
 
 echo "######## define variables"
-FOLDER="/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output"
-OG_NOSEQ_GFF=Agra_rnd1.all.maker.noseq.gff
-OG_SEQ_GFF="Agra_rnd1.all.maker.gff"
-NEW_NOSEQ_GFF="Agra_rnd1.all.maker.noseq.filtered.out.gff"
-NEW_SEQ_GFF="Agra_rnd1.all.maker.filtered.seq.gff"
+RND="1"
+
+FOLDER="/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd${RND}.maker.output"
+OG_NOSEQ_GFF="Agra_rnd${RND}.all.maker.noseq.gff"
+OG_SEQ_GFF="Agra_rnd${RND}.all.maker.gff"
+NEW_NOSEQ_GFF="Agra_rnd${RND}.all.maker.noseq.filtered.gff"
+NEW_SEQ_GFF="Agra_rnd${RND}.all.maker.seq.filtered.gff"
 
 
 echo "######## make file only containing gene models to keep"
 cd ${FOLDER}
 
 echo "### make gff file with all scaffold IDs, AED scores, and lengths"
-grep "AED" ./${OG_NOSEQ_GFF} | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 > temp_all.aed.len.gff
+make_gff = "grep \"AED"\ ${OG_NOSEQ_GFF} | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 > temp_all.aed.len.gff"
+#echo $make_gff
+eval $make_gff
 sed -i 's/;_/;/g' temp_all.aed.len.gff
 sed -i 's/QI=[0-9]|/len=/g' temp_all.aed.len.gff
 sed -i 's/QI=[0-9][0-9]|/len=/g' temp_all.aed.len.gff
@@ -325,17 +329,17 @@ cat temp_filtered.aed.len.gff | cut -d " " -f 1 > temp_filtered.names.gff
 sed -i 's/-mRNA-1//g' temp_filtered.names.gff
 
 echo "### make file of all gene model names"
-grep "ID=" ./${OG_NOSEQ_GFF} > temp_all.names.gff
+grep "ID=" ${OG_NOSEQ_GFF} > temp_all.names.gff
 
 echo "### filter name file to only include the bad models"
 grep -f temp_filtered.names.gff -Fw -v temp_all.names.gff > temp_badmodels.gff
 sed -i 's/-mRNA-1//g' temp_badmodels.gff
 
 echo "### filer noseq.gff file to include all lines EXCEPT these bad gene models"
-grep -f temp_badmodels.gff -Fw -v ./${OG_NOSEQ_GFF} > ${NEW_NOSEQ_GFF}
+grep -f temp_badmodels.gff -Fw -v ${OG_NOSEQ_GFF} > ${NEW_NOSEQ_GFF}
 
 echo "### our bsh.sh file needs us to also have the fasta sequence pasted at the bottom"
-grep "##FASTA" -A 24000000 ./${OG_SEQ_GFF} > temp_seq.gff
+grep "##FASTA" -A 24000000 ${OG_SEQ_GFF} > temp_seq.gff
 cat ${NEW_NOSEQ_GFF} temp_seq.gff > ${NEW_SEQ_GFF}
 
 echo "### now need to delete all the temp files made"
