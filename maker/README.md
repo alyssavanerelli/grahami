@@ -601,6 +601,159 @@ busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/A
 - Now for the next round, just modify the original `maker_opts.ctl` file
 - The `maker_exe.ctl` and `maker_bopts.ctl` can remain unmodified
 
+
+# After each round
+- check stats and AED scores
+
+## Number of gene models and gene lengths for each round
+- count the number of gene models and the average gene lengths after each round
+- can assess when to stop doing more rounds
+- more rounds does not always mean better, we want to do a few but not too many
+
+```
+cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5 - $4) } END { print NR, sum / NR }'
+```
+
+## Number of gene models and gene lengths for each round
+
+| Round   | # gene models | gene lengths |
+| :-----: | :-----------: | :----------: |
+| Round 1 | 107979        |      2340.89 |
+| Round 2 | 47152         |      7430.67 |
+| Round 3 | 47810         |      5087.77 |
+| Round 4 | 52494         |      6518.57 |
+| Round 5 | 52829         |      6579.63 |
+
+### New stats with manual SNAP filtering 
+
+| Round   | # gene models | gene lengths |
+| :-----: | :-----------: | :----------: |
+| Round 1 | 27695         |      3113.21 |
+| Round 2 |               |              |
+| Round 3 |               |              |
+| Round 4 |               |              |
+| Round 5 |               |              |
+
+
+## Visualize the AED distribution
+- AED: annotation edit distance
+- AED ranges from 0 to 1 and quantifies the confidence in a gene model based on empirical evidence
+  - every gene model has an AED score
+- the lower the AED, the better a gene model is likely to be
+  - 0=great, 1=bad
+- Ideally, 95% or more of the gene models will have an AED of 0.5 or better in the case of good assemblies.
+- can use the script `AED_cdf_generator.pl` to do this
+- X axis: AED, Y axis: frequency
+- we will run this every round
+- we want to see the line increase rapidly 
+
+```
+perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff> > AED_rnd
+```
+
+Now we can look at this file in R
+```
+###### Maker AED scores ######
+
+#libraries
+library(MetBrewer)
+
+# read in data
+rnd1 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd1", header = TRUE) 
+rnd2 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd2", header = TRUE)
+rnd3 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd3", header = TRUE)
+rnd4 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd4", header = TRUE)
+rnd5 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd5", header = TRUE)
+
+# make plot
+plot(rnd1$AED, rnd1$Agra_rnd1.maker.output.Agra_rnd1.all.maker.gff, col = "#d35e17", type = "line", xlab = "AED", ylab = "Frequency", lwd=2.0)
+lines(rnd2$AED, rnd2$Agra_rnd2.maker.output.Agra_rnd2.all.maker.gff, col = "#e9b109",lwd=2.0)
+lines(rnd3$AED, rnd3$Agra_rnd3.maker.output.Agra_rnd3.all.maker.gff, col = "#829d44",lwd=2.0)
+lines(rnd4$AED, rnd4$Agra_rnd4.maker.output.Agra_rnd4.all.maker.gff, col = "blue",lwd=2.0)
+lines(rnd5$AED, rnd5$Agra_rnd5.maker.output.Agra_rnd5.all.maker.gff, col = "orange",lwd=2.0)
+legend(0.8,0.5,legend = c("rnd1", "rnd2", "rnd3", "rnd4","rnd5"), col = c("#d35e17", "#e9b109", "#829d44", "blue", "orange"), lty = 1, title = "Maker Round", lwd = 2.0)
+
+
+### ggplot 
+
+# load libraries
+library(MetBrewer)
+library(tidyverse)
+library(ggplot2)
+
+# load in data
+rnd1 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd1", header = TRUE)
+rnd2 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd2", header = TRUE)
+rnd3 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd3", header = TRUE)
+rnd4 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd4", header = TRUE)
+rnd5 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_rnd5", header = TRUE)
+aug_rnd2 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_augustus_rnd2", header = TRUE)
+snap_rnd2 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_snap_rnd2", header = TRUE)
+aug_rnd3 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_augustus_rnd3", header = TRUE)
+snap_rnd3 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_snap_rnd3", header = TRUE)
+aug_rnd4 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_augustus_rnd4", header = TRUE)
+snap_rnd4 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_snap_rnd4", header = TRUE)
+aug_rnd5 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_augustus_rnd5", header = TRUE)
+snap_rnd5 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/AED_snap_rnd5", header = TRUE)
+t_rnd1 = read.table("/projects/f_geneva_1/alyssa/grahami/annotation/test_rnd1/Agra_rnd1.maker.output/AED_test_rnd1", header = TRUE)
+
+
+
+# add column for rounds
+rnd1$Round = "rnd1"
+rnd2$Round = "rnd2"
+rnd3$Round = "rnd3"
+rnd4$Round = "rnd4"
+rnd5$Round = "rnd5"
+snap_rnd2$Round = "rnd2_snap"
+snap_rnd3$Round = "rnd3_snap"
+snap_rnd4$Round = "rnd4_snap"
+snap_rnd5$Round = "rnd5_snap"
+aug_rnd2$Round = "rnd2_aug"
+aug_rnd3$Round = "rnd3_aug"
+aug_rnd4$Round = "rnd4_aug"
+aug_rnd5$Round = "rnd5_aug"
+
+# change column names
+colnames(rnd1) = c("AED","Frequency", "Round")
+colnames(rnd2) = c("AED","Frequency", "Round")
+colnames(rnd3) = c("AED","Frequency", "Round")
+colnames(rnd4) = c("AED","Frequency", "Round")
+colnames(rnd5) = c("AED","Frequency", "Round")
+colnames(snap_rnd2) = c("AED","Frequency", "Round")
+colnames(snap_rnd3) = c("AED","Frequency", "Round")
+colnames(snap_rnd4) = c("AED","Frequency", "Round")
+colnames(snap_rnd5) = c("AED","Frequency", "Round")
+colnames(aug_rnd2) = c("AED","Frequency", "Round")
+colnames(aug_rnd3) = c("AED","Frequency", "Round")
+colnames(aug_rnd4) = c("AED","Frequency", "Round")
+colnames(aug_rnd5) = c("AED","Frequency", "Round")
+
+# combine into a single dataframe
+data_rnds_only = rbind(rnd1, rnd2,rnd3,rnd4,rnd5)
+data_snap_aug = rbind(rnd1,snap_rnd2,snap_rnd3,snap_rnd4,snap_rnd5,aug_rnd2,aug_rnd3,aug_rnd4,aug_rnd5)
+
+# plot data
+ggplot(data = data_rnds_only, aes(x=AED,y=Frequency)) + geom_line(aes(color=Round)) +
+  scale_color_manual(values = met.brewer("Signac",5))
+
+ggplot(data = data_snap_aug, aes(x=AED,y=Frequency)) + geom_line(aes(color=Round)) +
+  scale_color_manual(values = met.brewer("Signac",9))
+```
+
+## Testing snap vs augustus gene models
+create files only containing AED scores from either snap or augustus gene models (for both rounds 2 and 3)
+```
+**create file with only AED scores**
+grep "AED" Agra_rnd2.all.maker.gff > Agra_rnd2_AED.gff
+
+**create aug and snap files**
+grep -v "snap" Agra_rnd2_AED.gff > Agra_rnd2_AED_augustus.gff
+grep -v "augustus" Agra_rnd2_AED.gff > Agra_rnd2_AED_snap.gff
+```
+
+Can visualize these files in R with the same code as above
+
 # round 2
 - This round will not do the annotation via protein homology because this was completed in the first round and does not need to be done again.
 - This will train the programs to better recognize new _grahami_ genes
@@ -746,52 +899,7 @@ TMP= #specify a directory other than the system default temporary directory for 
 
 
 
-# Number of gene models and gene lengths for each round
-- count the number of gene models and gene lengths after each round
-- can assess when to stop doing more rounds
-- more rounds does not always mean better, we want to do a few but not too many
 
-```
-cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5 - $4) } END { print NR, sum / NR }'
-```
-
-## Number of gene models and gene lengths for each round
-
-| Round   | # gene models | gene lengths |
-| :-----: | :-----------: | :----------: |
-| Round 1 | 107979        |      2340.89 |
-| Round 2 | 47152         |      7430.67 |
-| Round 3 | 47810         |      5087.77 |
-| Round 4 | 52494         |      6518.57 |
-| Round 5 | 52829         |      6579.63 |
-
-
-## Visualize the AED distribution
-- AED: annotation edit distance
-- AED ranges from 0 to 1 and quantifies the confidence in a gene model based on empirical evidence
-  - every gene model has an AED score
-- the lower the AED, the better a gene model is likely to be
-  - 0=great, 1=bad
-- Ideally, 95% or more of the gene models will have an AED of 0.5 or better in the case of good assemblies.
-- can use the script `AED_cdf_generator.pl` to do this
-- X axis: AED, Y axis: frequency
-- we will run this every round
-- we want to see the line increase rapidly 
-
-```
-perl AED_cdf_generator.pl -b 0.025 <roundN.full.gff> > AED_rnd
-```
-
-# Testing snap vs augustus gene models
-create files only containing AED scores from either snap or augustus gene models (for both rounds 2 and 3)
-```
-# create file with only AED scores
-grep "AED" Agra_rnd2.all.maker.gff > Agra_rnd2_AED.gff
-
-# create aug and snap files
-grep -v "snap" Agra_rnd2_AED.gff > Agra_rnd2_AED_augustus.gff
-grep -v "augustus" Agra_rnd2_AED.gff > Agra_rnd2_AED_snap.gff
-```
 
 
 # Files to delete after annotation is finished
