@@ -611,10 +611,12 @@ conda activate busco
 export AUGUSTUS_CONFIG_PATH=/home/av795/Augustus/config
 
 
-echo "#Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database"
+echo "##### Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database"
 busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/Agra_rnd1.all.maker.transcripts.fasta \
 -o Agra_annotation_eval1 -l vertebrata_odb10 -m transcriptome -c 8 --augustus_species human \
 --augustus_parameters='--progress=true' >busco_aug_rnd1_transc.txt
+   
+echo "##### done"
 ```
 
 </p>
