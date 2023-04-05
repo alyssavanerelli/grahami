@@ -156,19 +156,18 @@ TMP= #specify a directory other than the system default temporary directory for 
 
 ```
 #!/bin/bash
-#SBATCH --partition=p_ccib_1                            # which partition to run the job, options are in the Amarel guide
-#SBATCH --account=general                               # allows me to submit to cmain and main
-#SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
-#SBATCH --job-name=maker_sub1                           # job name for listing in queue
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_sub_rnd1
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
-#SBATCH --mem=0                                         # memory to allocate in Mb
+#SBATCH --mem=0
 #SBATCH -n 20
-#SBATCH -N 2                                            # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH -N 2
 #SBATCH --exclusive
-#SBATCH --time=8-00:00:00                              # maximum run time days-hours:minutes:seconds
-#SBATCH --requeue                                       # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
-#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE              # email for the following reasons
+#SBATCH --time=8-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=END,FAIL
 
 
 cd /projects/f_geneva_1/alyssa/grahami/annotation
@@ -208,7 +207,7 @@ singularity exec --no-home --cleanenv ${MAKER_IMAGE} mpiexec -n 20 maker -base A
 
 ---
 
-**2. `r1maker_bsh_n.sh`**
+**2. `r1maker_bsh_gff.sh` and `r1maker_bsh_n.sh`**
 - This is the next script to be submitted
 - This will train the gene model software `SNAP`
 - This will make some .gff files that are needed for `r1maker_gff.sh`
@@ -218,27 +217,37 @@ singularity exec --no-home --cleanenv ${MAKER_IMAGE} mpiexec -n 20 maker -base A
   - We did not get output when using these criteria so we used the `-n` flag which means no criteria
   - **We have to do filtering manually with the code below**
 
+**Run scripts in this order**
+- `r1maker_bsh_gff.sh`
+  - this will make the gff files to be filtered
+- `snap_filtering.sh`
+  - this will manually filter the gff files to only keep gene models with AED scores of less than 0.25 and lengths of greater than 50 bp
+- `r1maker_bsh_n.sh`
+  - this will run snap with the properly filtered gff file
+
+
 
   **output**
   - `Agra_rnd1.maker.output/snap/braker`
+  - **you will need to make sure that the files in this folder are not empty!!**
+    - if they are empty, make sure you have ran the scripts in the correct order. SNAP needs to be given the properly filtered file.
 
-<details><summary>r1maker_bsh_n.sh</summary>
+<details><summary>r1maker_bsh_gff.sh</summary>
 <p>
-
+   
 ```
 #!/bin/bash
-#SBATCH --partition=p_ccib_1                            # which partition to run the job, options are in the Amarel guide
-#SBATCH --account=general                               # allows me to submit to cmain and main
-#SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
-#SBATCH --job-name=maker_bsh1                           # job name for listing in queue
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_bsh_gff_rnd1
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
-#SBATCH --mem=64000                                     # memory to allocate in Mb
-#SBATCH -n 16                                           # number of cores to use
-#SBATCH -N 1                                            # number of nodes the cores should be on, 1 means all cores on same node
-#SBATCH --time=0-10:00:00                               # maximum run time days-hours:minutes:seconds
-#SBATCH --requeue                                       # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
-#SBATCH --mail-type=FAIL                                # email for the following reasons
+#SBATCH --mem=64000
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=0-10:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
 cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output
 
@@ -249,39 +258,19 @@ module load bedtools2/2.25.0
 MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
 
 
-#Generate GFF files with and without the sequences
+echo "##### Generate GFF files with and without the sequences"
 singularity exec ${MAKER_IMAGE} gff3_merge -s -d Agra_rnd1_master_datastore_index.log > Agra_rnd1.all.maker.gff
 singularity exec ${MAKER_IMAGE} fasta_merge -d Agra_rnd1_master_datastore_index.log
-# GFF w/o the sequences
+
+echo "##### GFF w/o the sequences"
 singularity exec ${MAKER_IMAGE} gff3_merge -n -s -d Agra_rnd1_master_datastore_index.log > Agra_rnd1.all.maker.noseq.gff
 
-
-mkdir snap
-mkdir snap/braker
-cd snap/braker
-echo "# export 'confident' gene models from MAKER and rename to something meaningful"
-singularity exec ${MAKER_IMAGE} maker2zff -n ../../Agra_rnd1.all.maker.filtered.seq.gff
-rename genome Agra_rnd1.zff.length5_aed0.25  *
-echo "# gather some stats and validate"
-singularity exec ${MAKER_IMAGE} fathom Agra_rnd1.zff.length5_aed0.25.ann Agra_rnd1.zff.length5_aed0.25.dna -gene-stats > gene-stats.log 2>&1
-singularity exec ${MAKER_IMAGE} fathom Agra_rnd1.zff.length5_aed0.25.ann Agra_rnd1.zff.length5_aed0.25.dna -validate > validate.log 2>&1
-echo "# collect the training sequences and annotations, plus 1000 surrounding bp for training"
-singularity exec ${MAKER_IMAGE} fathom Agra_rnd1.zff.length5_aed0.25.ann Agra_rnd1.zff.length5_aed0.25.dna -categorize 1000 > categorize.log 2>&1
-singularity exec ${MAKER_IMAGE} fathom uni.ann uni.dna -export 1000 -plus > uni-plus.log 2>&1
-echo "# create the training parameters"
-mkdir params
-cd params
-singularity exec ${MAKER_IMAGE} forge ../export.ann ../export.dna > ../forge.log 2>&1
-cd ..
-
-echo "# assembly the HMM"
-singularity exec ${MAKER_IMAGE} hmm-assembler.pl Agra_rnd1.zff.length5_aed0.25 params > Agra_rnd1.zff.length5_aed0.25.hmm
-
-awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd1.all.maker.noseq.gff |   awk -v OFS="\t" '{ if ($2 < 1000) print $1, "0", $3+1000; else print $1, $2-1000, $3+1000 }' |   bedtools getfasta -fi /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa -bed - -fo Agra_rnd1.all.maker.transcripts1000.fasta
+echo "##### done"
 ```
 
 </p>
 </details>
+
 
 **SNAP filtering not working**
 - it has come to our attention, that SNAP filtering in the first maker runs was not working, as we do have genes that are <50 aa with AED>0.25
@@ -362,56 +351,63 @@ echo "done"
 </p>
 </details>
 
+Next, we can give pass this `Agra_rnd1.all.maker.seq.filtered.gff` file to the `singularity exec ${MAKER_IMAGE} maker2zff` command in our `bsh_n.sh` file
 
-<details><summary>messy code</summary>
+
+<details><summary>r1maker_bsh_n.sh</summary>
 <p>
-**Make file with only gene models we want to keep**
 
 ```
-cd Agra_rnd1.maker.output/
+#!/bin/bash
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_bsh_rnd1
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=64000
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=0-10:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
-# make gff file with all scaffold IDs, AED scores, and lengths
-grep "AED" Agra_rnd1.all.maker.noseq.gff | cut -f 9 | cut -d ";" -f 1,4,6 | cut -d "|" -f 1,9 > rnd1.all.aed.len.gff
-sed -i 's/;_/;/g' rnd1.all.aed.len.gff 
-sed -i 's/QI=[0-9]|/len=/g' rnd1.all.aed.len.gff 
-sed -i 's/QI=[0-9][0-9]|/len=/g' rnd1.all.aed.len.gff
+cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output
 
-# make file without naming
-cp rnd1.all.aed.len.gff rnd1.all.aed.len.noname.gff
-sed -i 's/AED=//g' rnd1.all.aed.len.noname.gff
-sed -i 's/len=//g' rnd1.all.aed.len.noname.gff
-sed -i 's/;/ /g' rnd1.all.aed.len.noname.gff
+module purge
+module load singularity/3.1.0
+module load bedtools2/2.25.0
 
-# filter file to only keep lines with AED<=0.25 and len>=50
-awk '$2 <=0.25' rnd1.all.aed.len.noname.gff > rnd1.filtered.aed.len.gff
-awk '$3 >=50' rnd1.filtered.aed.len.gff > len.gff ; mv len.gff rnd1.filtered.aed.len.gff 
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
 
-# make file with only scaffold names
-cat rnd1.filtered.aed.len.gff | cut -d " " -f 1 > rnd1.filtered.names.gff
-sed -i 's/-mRNA-1//g' rnd1.filtered.names.gff
+echo "##### running SNAP"
+mkdir snap
+mkdir snap/braker
+cd snap/braker
+echo "# export 'confident' gene models from MAKER and rename to something meaningful"
+singularity exec ${MAKER_IMAGE} maker2zff -n ../../Agra_rnd1.all.maker.seq.filtered.gff
+rename genome Agra_rnd1.zff.length5_aed0.25  *
+echo "# gather some stats and validate"
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd1.zff.length5_aed0.25.ann Agra_rnd1.zff.length5_aed0.25.dna -gene-stats > gene-stats.log 2>&1
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd1.zff.length5_aed0.25.ann Agra_rnd1.zff.length5_aed0.25.dna -validate > validate.log 2>&1
+echo "# collect the training sequences and annotations, plus 1000 surrounding bp for training"
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd1.zff.length5_aed0.25.ann Agra_rnd1.zff.length5_aed0.25.dna -categorize 1000 > categorize.log 2>&1
+singularity exec ${MAKER_IMAGE} fathom uni.ann uni.dna -export 1000 -plus > uni-plus.log 2>&1
+echo "# create the training parameters"
+mkdir params
+cd params
+singularity exec ${MAKER_IMAGE} forge ../export.ann ../export.dna > ../forge.log 2>&1
+cd ..
 
-# make file of all gene model names
-grep "ID=" Agra_rnd1.all.maker.noseq.gff > rnd1.all.names.gff
+echo "#### assemble the HMM"
+singularity exec ${MAKER_IMAGE} hmm-assembler.pl Agra_rnd1.zff.length5_aed0.25 params > Agra_rnd1.zff.length5_aed0.25.hmm
 
-# filter name file to only include the bad models
-grep -f rnd1.filtered.names.gff -Fw -v rnd1.all.names.gff > rnd1.badmodels.gff
-sed -i 's/-mRNA-1//g' rnd1.badmodels.gff
+awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd1.all.maker.noseq.gff |   awk -v OFS="\t" '{ if ($2 < 1000) print $1, "0", $3+1000; else print $1, $2-1000, $3+1000 }' |   bedtools getfasta -fi /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa -bed - $
 
-#filer noseq.gff file to include all lines EXCEPT these bad gene models
-grep -f rnd1.badmodels.gff -Fw -v Agra_rnd1.all.maker.noseq.gff > Agra_rnd1.all.maker.noseq.filtered.out.gff 
+echo "#### done"
 ```
 
-The 'bsh_n.sh` file needs this file to also have the fasta sequence pasted at the bottom
-```
-grep "##FASTA" -A 24000000 Agra_rnd1.all.maker.gff > rnd1.seq.gff
-
-cat Agra_rnd1.all.maker.noseq.filtered.gff rnd1.seq.gff > Agra_rnd1.all.maker.filtered.seq.gff
-```
 </p>
 </details>
-
-Next, we can give pass this `Agra_rnd1.all.maker.filtered.seq.gff` file to the `singularity exec ${MAKER_IMAGE} maker2zff` command in our `bsh.sh` file
-
 
 ---
 
@@ -431,28 +427,31 @@ Next, we can give pass this `Agra_rnd1.all.maker.filtered.seq.gff` file to the `
 
 ```
 #!/bin/bash
-#SBATCH --partition=p_ccib_1                            # which partition to run the job, options are in the Amarel guide
-#SBATCH --account=general                               # allows me to submit to cmain and main
-#SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
-#SBATCH --job-name=maker_gff1                           # job name for listing in queue
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_gff_rnd1
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
-#SBATCH --mem=32000                                     # memory to allocate in Mb
-#SBATCH -n 8                                            # number of cores to use
-#SBATCH -N 1                                            # number of nodes the cores should be on, 1 means all cores on same node
-#SBATCH --time=0-05:00:00                               # maximum run time days-hours:minutes:seconds
-#SBATCH --requeue                                       # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
-#SBATCH --mail-type=FAIL              # email for the following reasons
+#SBATCH --mem=32000
+#SBATCH -n 8
+#SBATCH -N 1
+#SBATCH --time=0-05:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
 
 cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output
 
-# transcript alignments
-awk '{ if ($2 == "est2genome") print $0 }' Agra_rnd1.all.maker.noseq.filtered.out.gff > Agra_rnd1.all.maker.est2genome.gff
-# protein alignments
-awk '{ if ($2 == "protein2genome") print $0 }' Agra_rnd1.all.maker.noseq.filtered.out.gff > Agra_rnd1.all.maker.protein2genome.gff
-# repeat alignments
-awk '{ if ($2 ~ "repeat") print $0 }' Agra_rnd1.all.maker.noseq.filtered.out.gff > Agra_rnd1.all.maker.repeats.gff
+echo "#### transcript alignments"
+awk '{ if ($2 == "est2genome") print $0 }' Agra_rnd1.all.maker.noseq.filtered.gff > Agra_rnd1.all.maker.est2genome.gff
+
+echo "#### protein alignments"
+awk '{ if ($2 == "protein2genome") print $0 }' Agra_rnd1.all.maker.noseq.filtered.gff > Agra_rnd1.all.maker.protein2genome.gff
+
+echo "#### repeat alignments"
+awk '{ if ($2 ~ "repeat") print $0 }' Agra_rnd1.all.maker.noseq.filtered.gff > Agra_rnd1.all.maker.repeats.gff
+
+echo "#### done"
 ```
 
 </p>
@@ -496,18 +495,17 @@ awk '{ if ($2 ~ "repeat") print $0 }' Agra_rnd1.all.maker.noseq.filtered.out.gff
 
 ```
 #!/bin/bash
-#SBATCH --partition=p_ccib_1                            # which partition to run the job, options are in the Amarel guide
-#SBATCH --account=general                               # allows me to submit to cmain and main
-#SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
-#SBATCH --job-name=maker_aug1                           # job name for listing in queue
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_aug_rnd1
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
-#SBATCH --mem=90G                               # memory to allocate in Mb
-#SBATCH -n 16                                           # number of cores to use
-#SBATCH -N 1                                            # number of nodes the cores should be on, 1 means all cores on same node
-#SBATCH --time=9-00:00:00                               # maximum run time days-hours:minutes:seconds
-#SBATCH --requeue                                       # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
-#SBATCH --mail-type=FAIL                                # email for the following reasons
+#SBATCH --mem=90G
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=9-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
 
 echo "load any Amarel modules that script requires"
@@ -517,19 +515,17 @@ module load bedtools2/2.25.0
 
 MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
 
-
-
 eval "$(conda shell.bash hook)"
 conda activate busco
 
-
 export AUGUSTUS_CONFIG_PATH=/home/av795/Augustus/config 
 
-#Train Augustus gene models through BUSCO using the vertebrata_odb10 dataset
+echo "#### Train Augustus gene models through BUSCO using the vertebrata_odb10 dataset"
 busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/snap/braker/Agra_rnd1.all.maker.transcripts1000.fasta \
 -f -o Agra_rnd1_aug --offline -l vertebrata_odb10 -m genome -c 30 --augustus --augustus_species human --long \
---augustus_parameters='--progress=true' >busco_aug_log.txt  2>&1
+--augustus_parameters='--progress=true' >busco_aug_rnd1_log.txt  2>&1
 
+echo "#### done"
 ```
 
 </p>
@@ -921,7 +917,7 @@ TMP= #specify a directory other than the system default temporary directory for 
 #SBATCH --partition=p_ccib_1
 #SBATCH --account=general
 #SBATCH --exclude=gpuc001,gpuc002
-#SBATCH --job-name=maker_sub2
+#SBATCH --job-name=maker_sub_rnd2
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
 #SBATCH --mem=0
 #SBATCH -n 20
@@ -977,31 +973,30 @@ singularity exec --cleanenv ${MAKER_IMAGE} mpiexec -n 20 maker -base Agra_rnd2 -
    
 ---
 
-**3. `r2maker_bsh.sh`**
+**3. `r2maker_bsh_n.sh`**
 - this will train snap gene models
 - want to keep AED and length requirements (`-x` and `-l`)
   - these cutoffs still did not work
   - used `-n` flag still
 - main changes from rnd1: change the names to be specific for rnd2
 
-   
-<details><summary>r2maker_bsh.sh</summary>
+<details><summary>r2maker_bsh_gff.sh</summary>
 <p>
 
 ```
 #!/bin/bash
-#SBATCH --partition=p_ccib_1                            # which partition to run the job, options are in the Amarel guide
-#SBATCH --account=general                               # allows me to submit to cmain and main
-#SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
-#SBATCH --job-name=maker_bsh2                           # job name for listing in queue
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_bsh_gff_rnd2
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
-#SBATCH --mem=64000                                     # memory to allocate in Mb
-#SBATCH -n 16                                           # number of cores to use
-#SBATCH -N 1                                            # number of nodes the cores should be on, 1 means all cores on same node
-#SBATCH --time=0-10:00:00                               # maximum run time days-hours:minutes:seconds
-#SBATCH --requeue                                       # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
-#SBATCH --mail-type=FAIL                                # email for the following reasons
+#SBATCH --mem=64000
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=0-10:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
+
 
 cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output
 
@@ -1019,52 +1014,30 @@ singularity exec ${MAKER_IMAGE} fasta_merge -d Agra_rnd2_master_datastore_index.
 echo "##### GFF w/o the sequences"
 singularity exec ${MAKER_IMAGE} gff3_merge -n -s -d Agra_rnd2_master_datastore_index.log > Agra_rnd2.all.maker.noseq.gff
 
-echo "##### running SNAP"
-mkdir snap
-mkdir snap/braker
-cd snap/braker
-echo "# export 'confident' gene models from MAKER and rename to something meaningful"
-singularity exec ${MAKER_IMAGE} maker2zff -x 0.5 -l 5 -d ../../Agra_rnd2.all.maker.filtered.seq.gff
-rename genome Agra_rnd2.zff.length5_aed0.25  *
-echo "# gather some stats and validate"
-singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -gene-stats > gene-stats.log 2>&1
-singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -validate > validate.log 2>&1
-echo "# collect the training sequences and annotations, plus 1000 surrounding bp for training"
-singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -categorize 1000 > categorize.log 2>&1
-singularity exec ${MAKER_IMAGE} fathom uni.ann uni.dna -export 1000 -plus > uni-plus.log 2>&1
-echo "# create the training parameters"
-mkdir params
-cd params
-singularity exec ${MAKER_IMAGE} forge ../export.ann ../export.dna > ../forge.log 2>&1
-cd ..
-
-echo "##### assembly the HMM"
-singularity exec ${MAKER_IMAGE} hmm-assembler.pl Agra_rnd2.zff.length5_aed0.25 params > Agra_rnd2.zff.length5_aed0.25.hmm
-
-awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd2.all.maker.noseq.gff |   awk -v OFS="\t" '{ if ($2 < 1000) print $1, "0", $3+1000; else print $1, $2-1000, $3+1000 }' |   bedtools getfasta -fi /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa -bed - $
+echo "##### done"
 ```
 
 </p>
 </details>
-   
-   
+
+**Run `snap_filtering.sh` with RND 1 changed to 2**
+
 <details><summary>r2maker_bsh_n.sh</summary>
 <p>
 
 ```
 #!/bin/bash
-#SBATCH --partition=p_ccib_1                            # which partition to run the job, options are in the Amarel guide
-#SBATCH --account=general                               # allows me to submit to cmain and main
-#SBATCH --exclude=gpuc001,gpuc002                       # exclude CCIB GPUs
-#SBATCH --job-name=maker_bsh2                           # job name for listing in queue
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_bsh_rnd2
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
-#SBATCH --mem=64000                                     # memory to allocate in Mb
-#SBATCH -n 16                                           # number of cores to use
-#SBATCH -N 1                                            # number of nodes the cores should be on, 1 means all cores on same node
-#SBATCH --time=0-10:00:00                               # maximum run time days-hours:minutes:seconds
-#SBATCH --requeue                                       # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu                   # email address to send status updates
-#SBATCH --mail-type=FAIL                                # email for the following reasons
+#SBATCH --mem=64000
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=0-10:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
 cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output
 
@@ -1074,20 +1047,12 @@ module load bedtools2/2.25.0
 
 MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
 
-
-echo "##### Generate GFF files with and without the sequences"
-#singularity exec ${MAKER_IMAGE} gff3_merge -s -d Agra_rnd2_master_datastore_index.log > Agra_rnd2.all.maker.gff
-#singularity exec ${MAKER_IMAGE} fasta_merge -d Agra_rnd2_master_datastore_index.log
-
-echo "##### GFF w/o the sequences"
-#singularity exec ${MAKER_IMAGE} gff3_merge -n -s -d Agra_rnd2_master_datastore_index.log > Agra_rnd2.all.maker.noseq.gff
-
 echo "##### running SNAP"
 mkdir snap
 mkdir snap/braker
 cd snap/braker
 echo "# export 'confident' gene models from MAKER and rename to something meaningful"
-singularity exec ${MAKER_IMAGE} maker2zff -n ../../Agra_rnd2.all.maker.filtered.seq.gff
+singularity exec ${MAKER_IMAGE} maker2zff -n ../../Agra_rnd2.all.maker.seq.filtered.gff
 rename genome Agra_rnd2.zff.length5_aed0.25  *
 echo "# gather some stats and validate"
 singularity exec ${MAKER_IMAGE} fathom Agra_rnd2.zff.length5_aed0.25.ann Agra_rnd2.zff.length5_aed0.25.dna -gene-stats > gene-stats.log 2>&1
@@ -1101,14 +1066,18 @@ cd params
 singularity exec ${MAKER_IMAGE} forge ../export.ann ../export.dna > ../forge.log 2>&1
 cd ..
 
-echo "##### assembly the HMM"
+echo "##### assemble the HMM"
 singularity exec ${MAKER_IMAGE} hmm-assembler.pl Agra_rnd2.zff.length5_aed0.25 params > Agra_rnd2.zff.length5_aed0.25.hmm
 
 awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd2.all.maker.noseq.gff |   awk -v OFS="\t" '{ if ($2 < 1000) print $1, "0", $3+1000; else print $1, $2-1000, $3+1000 }' |   bedtools getfasta -fi /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa -bed - $
+
+echo "##### done"
 ```
 
 </p>
 </details>
+   
+
 ---
 
 **4. `r2maker_gff.sh`**
@@ -1119,11 +1088,39 @@ awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd2.all.mak
 <p>
 
 ```
+#!/bin/bash
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_gff_rnd2
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=32000
+#SBATCH -n 8
+#SBATCH -N 1
+#SBATCH --time=0-05:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output
+
+echo "#### transcript alignments"
+awk '{ if ($2 == "est2genome") print $0 }' Agra_rnd2.all.maker.noseq.filtered.gff > Agra_rnd2.all.maker.est2genome.gff
+
+echo "#### protein alignments"
+awk '{ if ($2 == "protein2genome") print $0 }' Agra_rnd2.all.maker.noseq.filtered.gff > Agra_rnd2.all.maker.protein2genome.gff
+
+echo "#### repeat alignments"
+awk '{ if ($2 ~ "repeat") print $0 }' Agra_rnd2.all.maker.noseq.filtered.gff > Agra_rnd2.all.maker.repeats.gff
+
+echo "#### done"
 ```
 
 </p>
 </details>
+
+- as long as there is a 0 (no) on the est2genome line in the control file, the est2genome file will be empty
+
 ---
 
 **5. `r2maker_aug.sh`**
@@ -1135,7 +1132,38 @@ awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd2.all.mak
 <p>
 
 ```
+#!/bin/bash
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_aug_rnd2
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=90G
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=9-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
+
+echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load singularity/3.1.0
+module load bedtools2/2.25.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+eval "$(conda shell.bash hook)"
+conda activate busco
+
+export AUGUSTUS_CONFIG_PATH=/home/av795/Augustus/config
+
+echo "#### Train Augustus gene models through BUSCO using the vertebrata_odb10 dataset"
+busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output/snap/braker/Agra_rnd2.all.maker.transcripts1000.fasta \
+-f -o Agra_rnd2_aug --offline -l vertebrata_odb10 -m genome -c 30 --augustus --augustus_species Anolis_grahami --long \
+--augustus_parameters='--progress=true' >busco_aug_rnd2_log.txt  2>&1
+
+echo "#### done"
 ```
 
 </p>
