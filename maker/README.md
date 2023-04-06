@@ -1226,7 +1226,7 @@ echo "#### done"
 
 # Round 3
    
-1. `maker_opts_rnd3.ctl`
+1. **`maker_opts_rnd3.ctl`**
 - change rnd1 to rnd2 (because we are using the last round to inform this new round)
    
 <details><summary>maker_opts_rnd3.ctl</summary>
@@ -1312,20 +1312,71 @@ TMP= #specify a directory other than the system default temporary directory for 
 </p>
 </details>
 
-2. `r3maker_sub.sh` 
+2. **`r3maker_sub.sh`** 
 - change rnd2 to rnd3     
    
 <details><summary>r3maker_sub.sh</summary>
 <p>
 
 ```
+#!/bin/bash
+#SBATCH --partition=p_geneva_1
+#SBATCH --account=general
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_sub_rnd3
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=0
+#SBATCH -n 20
+#SBATCH -N 2
+#SBATCH --exclusive
+#SBATCH --time=10-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation
+
+module purge
+module load singularity/3.1.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+# NOTE: empty MAKER control files can be generated using the command:
+#	singularity exec ${MAKER_IMAGE} maker -CTL
+# This will be needed at least for the maker_exe.ctl file, which has the paths to executables in the container.
+# Otherwise, existing maker_bopts.ctl and maker_opts.ctl should be usable.
+
+# Submit this job script from the directory with the MAKER control files
+
+
+# optional repeat masking (if not using RepeatMasker, comment-out these three lines)
+export SINGULARITYENV_LIBDIR=${PWD}/LIBDIR
+
+
+#Set Augustus PATH
+export SINGULARITYENV_AUGUSTUS_CONFIG_PATH=/home/av795/Augustus/config/
+export SINGULARITYENV_AUGUSTUS_SCRIPTS_PATH=/home/av795/Augustus/scripts
+
+
+#These commands need to be run once and then can be commented out for all subseqeunt MAKER RUNS
+#mkdir -p LIBDIR
+#singularity exec ${MAKER_IMAGE} sh -c 'ln -sf /usr/local/share/RepeatMasker/Libraries/* LIBDIR'
+
+# singularity options:
+# * --cleanenv : don't pass environment variables to container (except those specified in --env option-arguments)
+# * --no-home : don't mount home directory (if not current working directory) to avoid any application/language startup files
+# Add any MAKER options after the "maker" command
+# * -nodatastore is suggested for Lustre, as it reduces the number of directories created
+# * -fix_nucleotides needed for hsap_contig.fasta example data
+
+singularity exec --cleanenv ${MAKER_IMAGE} mpiexec -n 20 maker -base Agra_rnd3 -fix_nucleotides
 ```
 
 </p>
 </details>
    
-3. `r3maker_bsh_gff.sh`, `snap_filter.sh`, and `r3maker_bsh_n.sh`   
+3. **`r3maker_bsh_gff.sh`**, **`snap_filter.sh`**, and **`r3maker_bsh_n.sh`**   
 - change rnd2 to rnd3   
  
    
@@ -1333,28 +1384,103 @@ TMP= #specify a directory other than the system default temporary directory for 
 <p>
 
 ```
+#!/bin/bash
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_bsh_gff_rnd3
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=64000
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=0-10:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd3.maker.output
+
+module purge
+module load singularity/3.1.0
+module load bedtools2/2.25.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+
+echo "##### Generate GFF files with and without the sequences"
+singularity exec ${MAKER_IMAGE} gff3_merge -s -d Agra_rnd3_master_datastore_index.log > Agra_rnd3.all.maker.gff
+singularity exec ${MAKER_IMAGE} fasta_merge -d Agra_rnd3_master_datastore_index.log
+
+echo "##### GFF w/o the sequences"
+singularity exec ${MAKER_IMAGE} gff3_merge -n -s -d Agra_rnd3_master_datastore_index.log > Agra_rnd3.all.maker.noseq.gff
+
+echo "##### done"
 ```
 
 </p>
 </details>
    
    
-`snap_filter.sh`
+`snap_filter.sh` with RND 2 changed to 3
    
    
 <details><summary>r3maker_bsh_n.sh</summary>
 <p>
 
 ```
+#!/bin/bash
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_bsh_rnd3
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=64000
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=0-10:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
+cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd3.maker.output
+
+module purge
+module load singularity/3.1.0
+module load bedtools2/2.25.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+echo "##### running SNAP"
+mkdir snap
+mkdir snap/braker
+cd snap/braker
+echo "# export 'confident' gene models from MAKER and rename to something meaningful"
+singularity exec ${MAKER_IMAGE} maker2zff -n ../../Agra_rnd3.all.maker.seq.filtered.gff
+rename genome Agra_rnd3.zff.length5_aed0.25  *
+echo "# gather some stats and validate"
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd3.zff.length5_aed0.25.ann Agra_rnd3.zff.length5_aed0.25.dna -gene-stats > gene-stats.log 2>&1
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd3.zff.length5_aed0.25.ann Agra_rnd3.zff.length5_aed0.25.dna -validate > validate.log 2>&1
+echo "# collect the training sequences and annotations, plus 1000 surrounding bp for training"
+singularity exec ${MAKER_IMAGE} fathom Agra_rnd3.zff.length5_aed0.25.ann Agra_rnd3.zff.length5_aed0.25.dna -categorize 1000 > categorize.log 2>&1
+singularity exec ${MAKER_IMAGE} fathom uni.ann uni.dna -export 1000 -plus > uni-plus.log 2>&1
+echo "# create the training parameters"
+mkdir params
+cd params
+singularity exec ${MAKER_IMAGE} forge ../export.ann ../export.dna > ../forge.log 2>&1
+cd ..
+
+echo "##### assembly the HMM"
+singularity exec ${MAKER_IMAGE} hmm-assembler.pl Agra_rnd3.zff.length5_aed0.25 params > Agra_rnd3.zff.length5_aed0.25.hmm
+
+awk -v OFS="\t" '{ if ($3 == "mRNA") print $1, $4, $5 }' ../../Agra_rnd3.all.maker.noseq.gff |   awk -v OFS="\t" '{ if ($2 < 1000) print $1, "0", $3+1000; else print $1, $2-1000, $3+1000 }' |   bedtools $
+
+echo "##### done"
 ```
 
 </p>
 </details>
    
    
-4. `r3maker_gff.sh`
+4. **`r3maker_gff.sh`**
 - change rnd2 to rnd3      
    
    
@@ -1362,37 +1488,129 @@ TMP= #specify a directory other than the system default temporary directory for 
 <p>
 
 ```
+#!/bin/bash
+#SBATCH --partition=p_ccib_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_gff_rnd3
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=32000
+#SBATCH -n 8
+#SBATCH -N 1
+#SBATCH --time=0-05:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd3.maker.output
+
+echo "#### transcript alignments"
+awk '{ if ($2 == "est2genome") print $0 }' Agra_rnd3.all.maker.noseq.filtered.gff > Agra_rnd3.all.maker.est2genome.gff
+
+echo "#### protein alignments"
+awk '{ if ($2 == "protein2genome") print $0 }' Agra_rnd3.all.maker.noseq.filtered.gff > Agra_rnd3.all.maker.protein2genome.gff
+
+echo "#### repeat alignments"
+awk '{ if ($2 ~ "repeat") print $0 }' Agra_rnd3.all.maker.noseq.filtered.gff > Agra_rnd3.all.maker.repeats.gff
+
+echo "#### done"
 ```
 
 </p>
 </details>
    
    
-5. `r3maker_aug.sh` and `rename_aug.sh`
+5. **`r3maker_aug.sh`** and **`rename_aug.sh`**
 - change rnd2 to rnd3      
 
 <details><summary>r3maker_aug.sh</summary>
 <p>
 
 ```
+#!/bin/bash
+#SBATCH --partition=p_geneva_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_aug_rnd3
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=90G
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=9-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
+
+echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load singularity/3.1.0
+module load bedtools2/2.25.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+eval "$(conda shell.bash hook)"
+conda activate busco
+
+export AUGUSTUS_CONFIG_PATH=/home/av795/Augustus/config
+
+echo "#### Train Augustus gene models through BUSCO using the vertebrata_odb10 dataset"
+busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd3.maker.output/snap/braker/Agra_rnd3.all.maker.transcripts1000.fasta \
+-f -o Agra_rnd3_aug --offline -l vertebrata_odb10 -m genome -c 30 --augustus --augustus_species Anolis_grahami --long \
+--augustus_parameters='--progress=true' >busco_aug_rnd3_log.txt  2>&1
+
+echo "#### done"
 ```
 
 </p>
 </details>
    
-`rename_aug.sh`
+
+`rename_aug.sh` with RND 2 changed to 3
    
    
-6. `r3maker_trans_aug.sh`
+6. **`r3maker_trans_aug.sh`**
 - change rnd2 to rnd3    
    
 <details><summary>r3maker_trans_aug.sh</summary>
 <p>
 
 ```
+#!/bin/bash
+#SBATCH --partition=p_geneva_1
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=maker_aug-trans_rnd3
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/slurmout/slurm-%j-%x.out
+#SBATCH --mem=128G
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=3-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
+
+echo "#### load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load singularity/3.1.0
+module load bedtools2/2.25.0
+
+MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+
+
+eval "$(conda shell.bash hook)"
+conda activate busco
+
+
+export AUGUSTUS_CONFIG_PATH=/home/av795/Augustus/config
+
+
+echo "#### Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database"
+busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd3.maker.output/Agra_rnd3.all.maker.transcripts.fasta \
+-o Agra_annotation_eval_rnd3 -l vertebrata_odb10 -m transcriptome -c 8 --augustus_species Anolis_grahami \
+--augustus_parameters='--progress=true' >busco_aug_rnd3_transc.txt
+
+echo "#### done"
 ```
 
 </p>
