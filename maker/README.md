@@ -1211,7 +1211,7 @@ export AUGUSTUS_CONFIG_PATH=/home/av795/Augustus/config
 
 echo "#### Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database"
 busco -i /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output/Agra_rnd2.all.maker.transcripts.fasta \
--o Agra_annotation_eval2 -l vertebrata_odb10 -m transcriptome -c 8 --augustus_species Anolis_grahami \
+-o Agra_annotation_eval_rnd2 -l vertebrata_odb10 -m transcriptome -c 8 --augustus_species Anolis_grahami \
 --augustus_parameters='--progress=true' >busco_aug_rnd2_transc.txt
 
 echo "#### done"
