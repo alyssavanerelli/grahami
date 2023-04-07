@@ -660,16 +660,18 @@ cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5
 
 ### New stats with manual SNAP filtering 
 
-| Round              | # gene models | gene lengths |
-| :-------------   : | :-----------: | :----------: |
-| Round 1 unfiltered | 27695         |      3113.21 |
-| *Round 1 filtered*   | 27695         |      3113.21 |
-| Round 2 unfiltered | 27695         |      3113.21 |
-| Round 2 filtered   | 16252         |      6149.11 |
-| Round 3 unfiltered |               |              |
-| Round 3 filtered   |               |              |
-| Round 4 filtered   |               |              |
-| Round 5 filtered   |               |              |
+| Round                  | # gene models | gene lengths |
+| :--------------------: | :-----------: | :----------: |
+| Round 1 unfiltered     | 107979        |      2340.89 |
+| **Round 1 filtered**   | 27695         |      3113.21 |
+| Round 2 unfiltered     | 62864         |      3275.08 |
+| **Round 2 filtered**   | 16252         |      6149.11 |
+| Round 3 unfiltered     | -----         |      ------- |
+| **Round 3 filtered**   | -----         |      ------- |
+| Round 4 unfiltered     | -----         |      ------- |
+| **Round 4 filtered**   | -----         |      ------- |
+| Round 5 unfiltered     | -----         |      ------- |
+| **Round 5 filtered**   | -----         |      ------- |
 
 
 ## Visualize the AED distribution
