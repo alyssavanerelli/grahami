@@ -1232,7 +1232,10 @@ echo "#### done"
 # Round 3
    
 1. **`maker_opts_rnd3.ctl`**
-- change rnd1 to rnd2 (because we are using the last round to inform this new round)
+- **IMPORTANT:** Leave `protein_gff` and `rm_gff` set to round 1 because we are only generating these files once (during round 1 only). We will use these same files for each subsequent round.
+- The only changes to the control file for all subsequent rounds
+  - Change the `snaphmm` file to the most recent run
+  - Make sure that you have updated the `Anolis_grahami` augustus folder (this should have been done already with the `rename_aug.sh` file
    
 <details><summary>maker_opts_rnd3.ctl</summary>
 <p>
@@ -1260,13 +1263,13 @@ altest_gff= #aligned ESTs from a closly relate species in GFF3 format
 
 #-----Protein Homology Evidence (for best results provide a file for at least one)
 protein= #protein sequence file in fasta form
-protein_gff=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output/Agra_rnd2.all.maker.protein2genome.gff #aligned protein homology evidence from an external GFF3 file
+protein_gff=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/Agra_rnd1.all.maker.protein2genome.gff #aligned protein homology evidence from an external GFF3 file
 
 #-----Repeat Masking (leave values blank to skip repeat masking)
 model_org= #select a model organism for DFam masking in RepeatMasker
 rmlib= #provide an organism specific repeat library in fasta format for RepeatMasker
 repeat_protein= #provide a fasta file of transposable element proteins for RepeatRunner
-rm_gff=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd2.maker.output/Agra_rnd2.all.maker.repeats.gff #pre-identified repeat elements from an external GFF3 file
+rm_gff=/projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd1.maker.output/Agra_rnd1.all.maker.repeats.gff #pre-identified repeat elements from an external GFF3 file
 prok_rm=0 #forces MAKER to repeatmask prokaryotes (no reason to change this), 1 = yes, 0 = no
 softmask=1 #use soft-masking rather than hard-masking in BLAST (i.e. seg and dust filtering)
 
