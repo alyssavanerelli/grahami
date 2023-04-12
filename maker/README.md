@@ -658,21 +658,22 @@ cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5
 | Round 4 | 52494         |      6518.57 |
 | Round 5 | 52829         |      6579.63 |
 
+   
 ### New stats with manual SNAP filtering 
 
-| Round                  | # gene models | gene lengths |
-| :--------------------: | :-----------: | :----------: |
-| Round 1 unfiltered     | 107979        |      2340.89 |
-| **Round 1 filtered**   | 27695         |      3113.21 |
-| Round 2 unfiltered     | 62864         |      3275.08 |
-| **Round 2 filtered**   | 16252         |      6149.11 |
-| Round 3 unfiltered     | 48964         |      4997.88 |
-| **Round 3 filtered**   | 15173         |      7185.48 |
-| Round 4 unfiltered     | -----         |      ------- |
-| **Round 4 filtered**   | -----         |      ------- |
-| Round 5 unfiltered     | -----         |      ------- |
-| **Round 5 filtered**   | -----         |      ------- |
-
+| Round   |  filtered # gene models | filtered gene lengths | unfiltered # gene models | unfiltered gene lengths | unfiltered %C |
+| :-----: | :---------------------: | :-------------------: | :----------------------: | :---------------------: | :-----------: |
+| Round 1 | 27695                   | 3113.21               | 107979                   | 2340.89                 | 58.1%         |
+| Round 2 | 16252                   | 6149.11               | 62864                    | 3275.08                 | 44.5%         |
+| Round 3 | 15173                   | 7185.48               | 48964                    | 4997.88                 | -----         |   
+| Round 4 | -----                   | -------               | ------                   | -------                 | -----         | 
+| Round 5 | -----                   | -------               | ------                   | -------                 | -----         |   
+| Round 6 | -----                   | -------               | ------                   | -------                 | -----         |   
+   
+   
+| filtered %C |
+| :---------: |
+| -----       |
 
 ## Visualize the AED distribution
 - AED: annotation edit distance
