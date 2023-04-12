@@ -1637,17 +1637,51 @@ echo "#### done"
 
 
 
+# Common Issues
+
+**Getting an Augustus error**
+
+_Some examples of errors you may get_
+```
+--Next Contig--
+
+Processing run.log file...
+MAKER WARNING: The file Agra_rnd3.maker.output/Agra_rnd3_datastore/52/6D/scaffold_6982//theVoid.scaffold_6982/scaffold_6982.abinit_masked.0.Anolis_grahami.augustus
+did not finish on the last run and must be erased
+#---------------------------------------------------------------------
+Now retrying the contig!!
+SeqID: scaffold_6982
+Length: 1589
+Tries: 4!!
+#---------------------------------------------------------------------
+```
+
+```
+/usr/local/bin/augustus: ERROR
+        Couldn't open the file with the weight matrix: BUSCO_Agra_rnd2_aug_weightmatrix.txt
+```
+
+This is indicating that there is something wrong with augustus and the files augustus is trying to find. First look to make sure that the files within `RoundX_aug/run_vertebrata_odb10/augustus_output/retraining_parameters/` were renamed correctly. Also make sure that the sed commands to rename the files within the `.cfg` files worked correctly because this is what points augustus to the correct files and they need to be properly named.
+   
+     
+**Files within `snap/braker` are empty**   
+
+This may happen because the file being input into snap is not filtered correctly. Make sure to run the `bsh` scripts in the correct order, running `snap_filter.sh` BEFORE running snap in the `bsh_n.sh` script.
    
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<details><summary>sagrei stuff</summary>
+<p>
+
 # Problem Solving
 
 ## Running maker with RNA seq from sagrei
@@ -1672,7 +1706,8 @@ Making a log file with a few lines to test if gff merge will work faster, then w
 </details>
 
 
-
+</p>
+</details>
 
 
 
