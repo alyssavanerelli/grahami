@@ -666,8 +666,8 @@ cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5
 | **Round 1 filtered**   | 27695         |      3113.21 |
 | Round 2 unfiltered     | 62864         |      3275.08 |
 | **Round 2 filtered**   | 16252         |      6149.11 |
-| Round 3 unfiltered     | -----         |      ------- |
-| **Round 3 filtered**   | -----         |      ------- |
+| Round 3 unfiltered     | 48964         |      4997.88 |
+| **Round 3 filtered**   | 15173         |      7185.48 |
 | Round 4 unfiltered     | -----         |      ------- |
 | **Round 4 filtered**   | -----         |      ------- |
 | Round 5 unfiltered     | -----         |      ------- |
