@@ -661,13 +661,13 @@ cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5
    
 ### New stats with manual SNAP filtering 
 
-| Round   |  filtered # gene models | filtered gene lengths | unfiltered # gene models | unfiltered gene lengths | %C    | %M    | %F    |
+| Round   | filtered # gene models  | filtered gene lengths | unfiltered # gene models | unfiltered gene lengths | %C    | %M    | %F    |
 | :-----: | :---------------------: | :-------------------: | :----------------------: | :---------------------: | :---: | :---: | :---: |
 | Round 1 | 27695                   | 3113.21               | 107979                   | 2340.89                 | 58.1% | 28.2% | 13.7% |
 | Round 2 | 16252                   | 6149.11               | 62864                    | 3275.08                 | 44.5% | 37.6% | 17.9% |
 | Round 3 | 15173                   | 7185.48               | 48964                    | 4997.88                 | 50.0% | 31.6% | 18.4% |
 | Round 4 | 26035                   | 7609.45               | 52458                    | 6409.13                 | 57.1% | 26.1% | 16.8% |
-| Round 5 | -----                   | -------               | ------                   | -------                 | ----- | ----- | ----- |
+| Round 5 | 15108                   | 6968.74               | 50974                    | 4867.14                 | ----- | ----- | ----- |
 | Round 6 | -----                   | -------               | ------                   | -------                 | ----- | ----- | ----- |  
    
    
