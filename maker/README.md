@@ -668,10 +668,7 @@ cat <roundN.full.gff> | awk '{ if ($3 == "gene") print $0 }' | awk '{ sum += ($5
 | Round 3 | 15173                   | 7185.48               | 48964                    | 4997.88                 | 50.0% | 31.6% | 18.4% |
 | Round 4 | 26035                   | 7609.45               | 52458                    | 6409.13                 | 57.1% | 26.1% | 16.8% |
 | Round 5 | 15108                   | 6968.74               | 50974                    | 4867.14                 | 49.2% | 32.1% | 18.7% |
-| Round 6 | 14949                   | 6820.09               | 51429                    | 4760.90                 | 48.4% | 32.5% | 19.1% |  
-| Round 7 | -----                   | -------               | -----                    | -------                 | ----- | ----- | ----- |  
-   
-   
+| Round 6 | 14949                   | 6820.09               | 51429                    | 4760.90                 | 48.4% | 32.5% | 19.1% |   
 | filtered %C |
 | :---------: |
 | -----       |
@@ -1632,11 +1629,22 @@ echo "#### done"
 
 ---
 
+# Final Filtering
+
+- We ran 6 rounds of MAKER and decided to use the annotation output from **round 4** since it was the best.
+- We will now be filtering our gene models further. This code can be found [here]()
+- In addition, we will be testing a new annotation program called TOGA. This code can be found [here]()
+
+---
+   
 
 # Files to delete after annotation is finished
 - we will need to delete intermediate files and files that we could make again (we have the scripts to do so) to save memory in our `f_geneva_1` folder
 
 
+   
+   
+   
 
 
 # Common Issues
@@ -1669,50 +1677,9 @@ This is indicating that there is something wrong with augustus and the files aug
 **Files within `snap/braker` are empty**   
 
 This may happen because the file being input into snap is not filtered correctly. Make sure to run the `bsh` scripts in the correct order, running `snap_filter.sh` BEFORE running snap in the `bsh_n.sh` script.
+
    
    
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-<details><summary>sagrei stuff</summary>
-<p>
-
-# Problem Solving
-
-## Running maker with RNA seq from sagrei
-- We are also going to try to run maker inputting RNA seq data from _A. sagrei_ to better predict genic regions
-- These files are massive so its taking a while to run
-**the smallest scaffold annotated is `scaffold_786`**
-
-Making a log file with a few lines to test if gff merge will work faster, then we could run this in parallel
-
-<details><summary>EXAMPLE</summary>
-<p>
-  
-  ```
-  find /projects/f_geneva_1/alyssa/grahami/annotation/test_rnd1/Agra_rnd1.maker.output/Agra_rnd1_datastore -maxdepth 2 -type f -iname "scaffold_78*.gff" > test.txt
-  
-  cat test.txt | cut -d "/" -f 10 > names.txt
-  
-  grep -f names.txt -Fw Agra_rnd1_master_datastore_index.log > test.log
-  ```
-
-</p>
-</details>
-
-
-</p>
-</details>
-
-
-
 
 <details><summary>name</summary>
 <p>
