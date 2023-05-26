@@ -1632,8 +1632,8 @@ echo "#### done"
 # Final Filtering
 
 - We ran 6 rounds of MAKER and decided to use the annotation output from **round 4** since it was the best.
-- We will now be filtering our gene models further. This code can be found [here]()
-- In addition, we will be testing a new annotation program called TOGA. This code can be found [here]()
+- We will now be filtering our gene models further. This code can be found [here](https://github.com/alyssavanerelli/grahami/tree/main/maker/Final%20filtering)
+- In addition, we will be testing a new annotation program called TOGA. This code can be found [here](https://github.com/alyssavanerelli/grahami/tree/main/maker/TOGA)
 
 ---
    
