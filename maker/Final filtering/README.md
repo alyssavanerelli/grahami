@@ -157,43 +157,43 @@ python3 annie.py \
 
 <details><summary>gag.sh</summary>
 <p>
-  
-  ```
-  #!/bin/bash
-  #SBATCH --partition=p_ccib_1
-  #SBATCH --exclude=gpuc001,gpuc002
-  #SBATCH --job-name=gag
-  #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
-  #SBATCH --mem=100G
-  #SBATCH -n 10
-  #SBATCH -N 1
-  #SBATCH --time=3-00:00:00
-  #SBATCH --requeue
-  #SBATCH --mail-user=av795@rutgers.edu
-  #SBATCH --mail-type=FAIL
+	
+	```
+	#!/bin/bash
+	#SBATCH --partition=p_ccib_1
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=gag
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=100G
+	#SBATCH -n 10
+	#SBATCH -N 1
+	#SBATCH --time=3-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
 
 
-  echo "load modules"
-  module purge
-  module use /projects/community/modulefiles/
-  module load python/2.7.17-gc563
-  
-  echo ""
-  echo "load variables"
-  MAKER_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
-  BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
-  OUTDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/gag"
-  
-  echo ""
-  echo "commands to run annie"
-  python gag.py \
-  --fasta organism.fasta \
-  --gff organism.gff \
-  --out ${OUTDIR}
-  
-  echo ""
-  echo "done"
-  ```
+	echo "load modules"
+	module purge
+	module use /projects/community/modulefiles/
+	module load python/2.7.17-gc563
+
+	echo ""
+	echo "load variables"
+	MAKER_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
+	ANNIE_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/annie"
+	OUTDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/gag"
+
+	echo ""
+	echo "commands to run annie"
+	python gag.py \
+	--fasta ${MAKER_DIR}/Agra_rnd4.all.maker.transcripts.fasta \
+	--gff ${ANNIE_DIR}/[GFF FILE FROM ANNIE] \
+	--out ${OUTDIR}
+
+	echo ""
+	echo "done"
+	```
 
 </p>
 </details>
@@ -223,6 +223,8 @@ python gag.py --fasta organism.fasta --gff organism.gff --out gag_output
 - The completeness will probably decrease some but we don't want to see it drastically change
 
 
+
+---
 
 
 <details><summary>name</summary>
