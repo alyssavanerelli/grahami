@@ -95,42 +95,42 @@ mv OUTPUT blast/
 
 <details><summary>annie.sh</summary>
 <p>
-  
-  ```
-  #!/bin/bash
-  #SBATCH --partition=p_ccib_1
-  #SBATCH --exclude=gpuc001,gpuc002
-  #SBATCH --job-name=annie
-  #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
-  #SBATCH --mem=100G
-  #SBATCH -n 10
-  #SBATCH -N 1
-  #SBATCH --time=3-00:00:00
-  #SBATCH --requeue
-  #SBATCH --mail-user=av795@rutgers.edu
-  #SBATCH --mail-type=FAIL
+	
+	```
+	#!/bin/bash
+	#SBATCH --partition=p_ccib_1
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=annie
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=100G
+	#SBATCH -n 10
+	#SBATCH -N 1
+	#SBATCH --time=3-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
 
 
-  echo "load modules"
-  module purge
-  module use /projects/community/modulefiles/
-  module load python/3.9.6-gc563
-  
-  echo ""
-  echo "load variables"
-  MAKER_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
-  BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
-  
-  echo ""
-  echo "commands to run annie"
-  python3 annie.py \
-	-b ${BLAST_DIR}/sample.blastout \
-  -g ${MAKER_DIR}/Agra_rnd4.all.maker.gff \
-  -db ${MAKER_DIR}/Agra_rnd4.all.maker.transcripts.fasta
-  
-  echo ""
-  echo "done"
-  ```
+	echo "load modules"
+	module purge
+	module use /projects/community/modulefiles/
+	module load python/3.9.6-gc563
+
+	echo ""
+	echo "load variables"
+	MAKER_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
+	BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
+
+	echo ""
+	echo "commands to run annie"
+	python3 annie.py \
+	-b ${BLAST_DIR}/blast.out \
+	-g ${MAKER_DIR}/Agra_rnd4.all.maker.gff \
+	-db ${MAKER_DIR}/Agra_rnd4.all.maker.transcripts.fasta
+
+	echo ""
+	echo "done"
+	```
 
 </p>
 </details>
