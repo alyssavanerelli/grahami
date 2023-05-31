@@ -61,11 +61,27 @@ Should see `Success!` at the end.
 ## Gene annotation of the reference genome
 - **Annotation file**
   - This file needs to be in [bed-12 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)
+  - Download the annotation of _Anolis carolinensis_ from [NCBI](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000090745.1/)
+  - Now we need to convert this file from `.gff` to `.bed`
+  - To do this we will use `gff2bed` from **bedops**
 
-- **Isoform data**
+**Download BEDOPS**
+```
+conda activate toga
+conda install -c "bioconda/label/cf201901" bedops
+```
+
+**Run gff2bed**
+```
+srun --partition=cmain --mem=50G --time=02:00:00 --pty bash
+conda activate toga
+gff2bed < GCF_000090745.1_AnoCar2.0_genomic.gff > car_annotation.bed
+```
+
+- _Optional but highly recommended:_**Isoform data**
   - TOGA can handle more than one isoform per gene so no need to reduce the number of transcripts to the isoform with the longest CDS
   - Isoform data increases annotation completeness and gene loss determination accuracy
-  - If there is no isoform data given, each transcript is treated as a separate gene. 
+  - If there is no isoform data given, each transcript is treated as a separate gene
   - **We do have this data for _Anolis carolinensis_**
     - Go to https://www.ensembl.org/biomart/martview
     - Choose Ensembl Genes N dataset and then **Green Anole** genes
