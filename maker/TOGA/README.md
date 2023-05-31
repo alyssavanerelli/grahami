@@ -44,7 +44,12 @@ Should see `Success!` at the end.
 - Netflow requires a configuration file defining "executors" component
 - These files for slurm are found [here](https://github.com/hillerlab/TOGA/tree/master/nextflow_config_files)
   - Contained here are three files: `call_cesar_config_template.nf`, `cesar_bigmem_config.nf`, and `extract_chain_features_config.nf`.
-
+- **IMPORTANT**
+  - Need to load a specific version of nextflow to run toga
+    ```
+    module load nextflow/22.04.0-bd387
+    ```
+    
 ---
 
 # Prepare files for TOGA
@@ -54,7 +59,8 @@ Should see `Success!` at the end.
   - Reference and query genome sequences
 
 ## Gene annotation of the reference genome
-- This file needs to be in [bed-12 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)
+- **Annotation file**
+  - This file needs to be in [bed-12 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)
 
 - **Isoform data**
   - TOGA can handle more than one isoform per gene so no need to reduce the number of transcripts to the isoform with the longest CDS
