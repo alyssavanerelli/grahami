@@ -2,6 +2,131 @@
 This is code used to filter our maker annotation output file (from round 4) and assign gene names.
 
 ---
+# Prepare MAKER files
+- First, we need to do some preparation of our maker files
+- Maker assigned gene names to the gene models but these are not intended to be the final naming scheme that will be uploaded to NCBI
+- We will use maker scripts to rename our models to gene names with NCBI style gene IDs
+- I will be doing this in a separate folder that I have made for all the final filtering
+
+```
+# Copy over GFF file
+cp /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd4.maker.output/Agra_rnd4.all.maker.gff /projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker
+
+# Copy over FASTA file
+cp /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd4.maker.output/Agra_rnd4.all.maker.transcripts.fasta /projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker
+
+# Copy over protein file
+cp /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd4.maker.output/Agra_rnd4.all.maker.proteins.fasta /projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker
+```
+
+**1. Create an ID mapping file with `maker_map_ids`**
+- This will create a two-column tab delimited file with the original gene ID in column 1 and the new gene ID in column 2
+- `--prefix` is where you enter your registered genome prefix (Mine is `AGRA_`)
+- `--justify` is the length of the number following the prefix
+  - Need to make sure this is number is long enough to fit all of the gene models that are in the annotation
+  - E.g. if you have 10,000 genes, `--justify` should be at least 5
+
+<details><summary>rename_genes_1.sh</summary>
+<p>
+	
+	```
+	#!/bin/bash
+	#SBATCH --partition=cmain
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=maker_map_id
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=20G
+	#SBATCH -n 10
+	#SBATCH -N 1
+	#SBATCH --time=3-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
+
+
+	cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker
+
+	echo "load modules"
+	module purge
+	module load singularity/3.1.0
+
+	MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+	echo ""
+	echo "map maker IDs to numerical IDs with a specified prefix"
+	singularity exec $MAKER_IMAGE  maker_map_ids --prefix AGRA_ --justify 6 \
+	Agra_rnd4.all.maker.gff > Agra_rnd4.all.maker.map
+
+	echo ""
+	echo "done"
+	```
+
+</p>
+</details>
+
+**2. Now we will change the IDs in the main files**
+- Now we will use the created map file to change all the ID names in our GFF and FASTA files
+- This uses `map_gff_ids` and `map_fasta_ids`
+- **IMPORTANT:** These scripts do an in-place edit of the file instead of creating a new file. Do NOT interrupt these processes as they run or the files may be corrupted/truncated.
+
+<details><summary>rename_genes_2.sh</summary>
+<p>
+	
+	```
+	#!/bin/bash
+	#SBATCH --partition=cmain
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=maker_change_ids
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=20G
+	#SBATCH -n 10
+	#SBATCH -N 1
+	#SBATCH --time=3-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
+
+
+	cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker
+
+	echo "load modules"
+	module purge
+	module load singularity/3.1.0
+
+	MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+	echo ""
+	echo "change IDs of a given GFF/FASTA file based off of the map file created"
+
+
+	echo "Master GFF"
+	singularity exec $MAKER_IMAGE map_gff_ids \
+	Agra_rnd4.all.maker.map Agra_rnd4.all.maker.gff
+
+
+	echo "Protein FASTA"
+	singularity exec $MAKER_IMAGE map_fasta_ids \
+	Agra_rnd4.all.maker.map Agra_rnd4.all.maker.proteins.fasta
+
+
+	echo "Transcript fasta"
+	singularity exec $MAKER_IMAGE map_fasta_ids \
+	Agra_rnd4.all.maker.map Agra_rnd4.all.maker.transcripts.fasta
+
+
+	echo ""
+	echo "done"
+	```
+
+</p>
+</details>
+
+Now check for changes in the master GFF file
+```
+less Agra_rnd4.all.maker.gff
+```
+
+---
 
 # BLAST search
 - First we will perform a blast search
@@ -15,8 +140,10 @@ This is code used to filter our maker annotation output file (from round 4) and 
   - For annie, the output needs to be in format 6: `-outfmt 6`
   - The location of the nucleotide database on amarel: `/projectsc/ccib/shain/blastdb`
     - We will use the `nt` files (for nucleotide)
+- This step took ~16 hours for me
 - **Output**
-  - The output
+  - The output will be in the slurmout file
+  - Need to copy this file over to our blast folder and edit it to remove the echoed lines (alternatively you can remove them from the slurm submission script)
 
 <details><summary>blast.sh</summary>
 <p>
@@ -63,8 +190,81 @@ This is code used to filter our maker annotation output file (from round 4) and 
 </details>
 
 ```
-mv OUTPUT blast/
+cp [slurm output file] blast/blast.out
+nano blast.out 		#this is a large file so this may take a minute
+[manually delete the echo commands]
 ```
+
+**3. We need to remove semi-colons at the end of the lines in our GFF file**
+- `map_gff_ids` erroneously adds semi-colons to the ends of the rows in our gff file
+- These will create issues downstream and need to be removed
+
+```
+sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
+```
+
+---
+
+# Now we need to rename the genes 
+- We will be using the gene names from our blastn search to change our maker gene model names
+- This will use the maker scripts `maker_functional_gff` and `maker_functional_fasta`
+- 
+
+<details><summary>rename_genes_blast.sh</summary>
+<p>
+	
+	```
+	#!/bin/bash
+	#SBATCH --partition=cmain
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=blast_rename_id
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=20G
+	#SBATCH -n 10
+	#SBATCH -N 1
+	#SBATCH --time=3-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
+
+
+	cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker
+
+	echo "load modules"
+	module purge
+	module load singularity/3.1.0
+
+	MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+
+
+	echo ""
+	echo "Append the gene names from the BLASTP results to each associated gene prediction"
+
+
+	echo "Master GFF"
+	singularity exec $MAKER_IMAGE maker_functional_gff /projectsc/ccib/shain/blastdb/nt \
+	../blast/blast.out SEMI_removed_Agra_rnd4.all.maker.gff \
+	SEMI_removed_Agra_rnd4.all.maker.functional.gff
+
+
+	echo "Protein FASTA"
+	singularity exec $MAKER_IMAGE maker_functional_fasta /projectsc/ccib/shain/blastdb/nt \
+	../blast/blast.out Agra_rnd4.all.maker.proteins.fasta \
+	Agra_rnd4.all.maker.proteins.functional.blast.fasta
+
+
+	echo "Transcript FASTA"
+	singularity exec $MAKER_IMAGE maker_functional_fasta /projectsc/ccib/shain/blastdb/nt \
+	../blast/blast.out Agra_rnd4.all.maker.transcripts.fasta \
+	Agra_rnd4.all.maker.transcripts.functional.blast.fasta
+
+
+	echo ""
+	echo "done"
+	```
+
+</p>
+</details>
 
 ---
 
