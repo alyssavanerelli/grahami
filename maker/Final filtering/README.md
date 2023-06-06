@@ -128,8 +128,71 @@ less Agra_rnd4.all.maker.gff
 
 ---
 
+# Prepare a fasta file of the BLAST database
+- For BLAST, we will be using this database that i will be creating here (version 5)
+- For the next MAKER step and annie, we will need to have the fasta file representing the BLAST nucleotide db
+  - This file is large so the downlod will take a little while
+- [Useful intructions](https://ncbi.github.io/magicblast/cook/blastdb.html)
+- Nobody else in the lab should have to do this. I will copy the results over to **`/projects/f_geneva_1/data/blastdb`**
+
+**1. Download fasta file**
+```
+cd blast/
+wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
+gunzip nt.gz
+cp nt nt.fasta
+```
+
+**2. Index and create the database**
+
+<details><summary>make_db.sh</summary>
+<p>
+	
+	```
+	#!/bin/bash
+	#SBATCH --partition=cmain
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=blastdb
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=100G
+	#SBATCH -n 10
+	#SBATCH -N 1
+	#SBATCH --time=3-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
+
+
+	echo "load modules"
+	module purge
+	module use /projects/community/modulefiles/
+	module load blast/2.10.1-zz109
+
+
+	cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast/db
+
+	echo ""
+	echo "commands to run blast"
+	makeblastdb -in nt.fasta -parse_seqids -blastdb_version 5 -parse_seqids -out nucl_db -dbtype nucl
+
+
+	echo ""
+	echo "done"
+	```
+
+</p>
+</details>
+
+**Copy over blast database**
+```
+mkdir /projects/f_geneva_1/data/blastdb
+cp db/* /projects/f_geneva_1/data/blastdb/
+```
+
+---
+
 # BLAST search
-- First we will perform a blast search
+- Now, we will perform a blast search
 - This will take our annotation file and search for already published sequences
 - This will be used to assign gene names to the genes that match
 - We can be confident that these are real genes in our annotation
@@ -138,6 +201,7 @@ less Agra_rnd4.all.maker.gff
 - Important
   - We will be using `blastn` for nucleotides
   - For annie, the output needs to be in format 6: `-outfmt 6`
+  - The location of our nucleotide database on amarel: `/projects/f_geneva_1/data/blastdb`
   - The location of the nucleotide database on amarel: `/projectsc/ccib/shain/blastdb`
     - We will use the `nt` files (for nucleotide)
 - This step took ~16 hours for me
@@ -235,28 +299,26 @@ sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 	module load singularity/3.1.0
 
 	MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
+	BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
 
 
 	echo ""
-	echo "Append the gene names from the BLASTP results to each associated gene prediction"
+	echo "Append the gene names from the BLASTN results to each associated gene prediction"
 
 
 	echo "Master GFF"
-	singularity exec $MAKER_IMAGE maker_functional_gff /projectsc/ccib/shain/blastdb/nt \
-	../blast/blast.out SEMI_removed_Agra_rnd4.all.maker.gff \
-	SEMI_removed_Agra_rnd4.all.maker.functional.gff
+	singularity exec $MAKER_IMAGE maker_functional_gff ${BLAST_DIR}/[FASTA FILE] \
+	${BLAST_DIR}/blast.out SEMI_removed_Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.functional.gff
 
 
 	echo "Protein FASTA"
-	singularity exec $MAKER_IMAGE maker_functional_fasta /projectsc/ccib/shain/blastdb/nt \
-	../blast/blast.out Agra_rnd4.all.maker.proteins.fasta \
-	Agra_rnd4.all.maker.proteins.functional.blast.fasta
+	singularity exec $MAKER_IMAGE maker_functional_fasta ${BLAST_DIR}/[FASTA FILE] \
+	${BLAST_DIR}/blast.out Agra_rnd4.all.maker.proteins.fasta > Agra_rnd4.all.maker.proteins.functional.blast.fasta
 
 
 	echo "Transcript FASTA"
-	singularity exec $MAKER_IMAGE maker_functional_fasta /projectsc/ccib/shain/blastdb/nt \
-	../blast/blast.out Agra_rnd4.all.maker.transcripts.fasta \
-	Agra_rnd4.all.maker.transcripts.functional.blast.fasta
+	singularity exec $MAKER_IMAGE maker_functional_fasta ${BLAST_DIR}/[FASTA FILE] \
+	${BLAST_DIR}/blast.out Agra_rnd4.all.maker.transcripts.fasta > Agra_rnd4.all.maker.transcripts.functional.blast.fasta
 
 
 	echo ""
