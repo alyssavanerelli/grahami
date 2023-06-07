@@ -173,7 +173,7 @@ cp nt nt.fasta
 
 	echo ""
 	echo "commands to run blast"
-	makeblastdb -in nt.fasta -parse_seqids -blastdb_version 5 -parse_seqids -out nucl_db -dbtype nucl
+	makeblastdb -in nt.fasta -parse_seqids -blastdb_version 5 -parse_seqids -out nt -dbtype nucl
 
 
 	echo ""
@@ -207,48 +207,42 @@ cp db/* /projects/f_geneva_1/data/blastdb/
 - This step took ~16 hours for me
 - **Output**
   - The output will be in the slurmout file
-  - Need to copy this file over to our blast folder and edit it to remove the echoed lines (alternatively you can remove them from the slurm submission script)
+  - Need to copy this file over to our blast folder
 
 <details><summary>blast.sh</summary>
 <p>
   
-  ```
-  #!/bin/bash
-  #SBATCH --partition=cmain
-  #SBATCH --exclude=gpuc001,gpuc002
-  #SBATCH --job-name=BLAST
-  #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
-  #SBATCH --mem=100G
-  #SBATCH -n 10
-  #SBATCH -N 1
-  #SBATCH --time=3-00:00:00
-  #SBATCH --requeue
-  #SBATCH --mail-user=av795@rutgers.edu
-  #SBATCH --mail-type=FAIL
+	```
+	#!/bin/bash
+	#SBATCH --partition=cmain
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=BLAST
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=100G
+	#SBATCH -n 10
+	#SBATCH -N 1
+	#SBATCH --time=3-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
 
 
-  echo "load modules"
-  module purge
-  module use /projects/community/modulefiles/
-  module load blast/2.10.1-zz109
-  
-  echo ""
-  echo "load variables"
-  INDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
-  OUTDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
-  
-  echo ""
-  echo "commands to run blast"
-  blastn -query ${INDIR}/Agra_rnd4.all.maker.transcripts.fasta \
-  -db /projectsc/ccib/shain/blastdb/nt \
-  -outfmt 6 
-  
-  
-  #-out ${OUTDIR}
-  
-  echo ""
-  echo "done"
-  ```
+	#load modules
+	module purge
+	module use /projects/community/modulefiles/
+	module load blast/2.10.1-zz109
+
+	#load variables
+	INDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
+	OUTDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
+	DB_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast/db"
+
+
+	#commands to run blast
+	blastn -query ${INDIR}/Agra_rnd4.all.maker.transcripts.fasta \
+	-db ${DB_DIR}/nucl_db \
+	-outfmt 6
+	```
 
 </p>
 </details>
