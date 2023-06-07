@@ -121,7 +121,15 @@ cp /projects/f_geneva_1/alyssa/grahami/annotation/Agra_rnd4.maker.output/Agra_rn
 </p>
 </details>
 
-Now check for changes in the master GFF file
+**3. We need to remove semi-colons at the end of the lines in our GFF file**
+- `map_gff_ids` erroneously adds semi-colons to the ends of the rows in our gff file
+- These will create issues downstream and need to be removed
+
+```
+sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
+```
+
+**4. Now check for changes in the master GFF file**
 ```
 less Agra_rnd4.all.maker.gff
 ```
@@ -189,6 +197,15 @@ mkdir /projects/f_geneva_1/data/blastdb
 cp db/* /projects/f_geneva_1/data/blastdb/
 ```
 
+**Make fasta file from blastdb**
+- We need a fasta file for the next maker steps and annie
+- This step will only be done once
+
+```
+blastdbcmd -entry all -db /projectsc/ccib/shain/blastdb/nt -out nt.fasta
+cp nt.fasta /projectsc/ccib/shain/blastdb/
+```
+
 ---
 
 # BLAST search
@@ -235,12 +252,12 @@ cp db/* /projects/f_geneva_1/data/blastdb/
 	#load variables
 	INDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
 	OUTDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
-	DB_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast/db"
+	DB_DIR="/projectsc/ccib/shain/blastdb"
 
 
 	#commands to run blast
 	blastn -query ${INDIR}/Agra_rnd4.all.maker.transcripts.fasta \
-	-db ${DB_DIR}/nucl_db \
+	-db ${DB_DIR}/nt \
 	-outfmt 6
 	```
 
@@ -249,16 +266,6 @@ cp db/* /projects/f_geneva_1/data/blastdb/
 
 ```
 cp [slurm output file] blast/blast.out
-nano blast.out 		#this is a large file so this may take a minute
-[manually delete the echo commands]
-```
-
-**3. We need to remove semi-colons at the end of the lines in our GFF file**
-- `map_gff_ids` erroneously adds semi-colons to the ends of the rows in our gff file
-- These will create issues downstream and need to be removed
-
-```
-sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 ```
 
 ---
@@ -294,6 +301,7 @@ sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 
 	MAKER_IMAGE=/projects/f_geneva_1/programs/maker:2.31.11-repbase.sif
 	BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
+	DB_DIR="/projectsc/ccib/shain/blastdb"
 
 
 	echo ""
@@ -301,17 +309,17 @@ sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 
 
 	echo "Master GFF"
-	singularity exec $MAKER_IMAGE maker_functional_gff ${BLAST_DIR}/[FASTA FILE] \
-	${BLAST_DIR}/blast.out SEMI_removed_Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.functional.gff
+	singularity exec $MAKER_IMAGE maker_functional_gff ${DB_DIR}/nt.fasta \
+	${BLAST_DIR}/blast.out SEMI_removed_Agra_rnd4.all.maker.gff > Agra_rnd4.all.maker.functional.blast.gff
 
 
 	echo "Protein FASTA"
-	singularity exec $MAKER_IMAGE maker_functional_fasta ${BLAST_DIR}/[FASTA FILE] \
+	singularity exec $MAKER_IMAGE maker_functional_fasta ${DB_DIR}/nt.fasta \
 	${BLAST_DIR}/blast.out Agra_rnd4.all.maker.proteins.fasta > Agra_rnd4.all.maker.proteins.functional.blast.fasta
 
 
 	echo "Transcript FASTA"
-	singularity exec $MAKER_IMAGE maker_functional_fasta ${BLAST_DIR}/[FASTA FILE] \
+	singularity exec $MAKER_IMAGE maker_functional_fasta ${DB_DIR}/nt.fasta \
 	${BLAST_DIR}/blast.out Agra_rnd4.all.maker.transcripts.fasta > Agra_rnd4.all.maker.transcripts.functional.blast.fasta
 
 
@@ -331,9 +339,9 @@ sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 - Uses `python3`
 - Input
   - The blast output 6 
-  - Transcript fasta file
+  - BLAST database fasta file
   - Transcript gff file
-- Copy `annie.py` script from [here](https://github.com/genomeannotation/annie/blob/master/annie.py)
+- Download `.zip` file from [here](http://genomeannotation.github.io/annie/), upload it to amarel, and unzip.
 - **Output**
   - Product annotation in the form `<mrna_id> product <product>`
     - Use the blast file to get the dbxref for the associated mrna 
@@ -376,13 +384,14 @@ sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 	echo "load variables"
 	MAKER_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
 	BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
+	DB_DIR="/projectsc/ccib/shain/blastdb"
 
 	echo ""
 	echo "commands to run annie"
 	python3 annie.py \
 	-b ${BLAST_DIR}/blast.out \
-	-g ${MAKER_DIR}/Agra_rnd4.all.maker.gff \
-	-db ${MAKER_DIR}/Agra_rnd4.all.maker.transcripts.fasta
+	-g ${MAKER_DIR}/Agra_rnd4.all.maker.functional.blast.gff \
+	-db ${DB_DIR}/nt.fasta
 
 	echo ""
 	echo "done"
