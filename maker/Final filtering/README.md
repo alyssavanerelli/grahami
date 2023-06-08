@@ -7,6 +7,7 @@ This is code used to filter our maker annotation output file (from round 4) and 
 - Maker assigned gene names to the gene models but these are not intended to be the final naming scheme that will be uploaded to NCBI
 - We will use maker scripts to rename our models to gene names with NCBI style gene IDs
 - I will be doing this in a separate folder that I have made for all the final filtering
+- This [website](http://weatherby.genetics.utah.edu/MAKER/wiki/index.php/MAKER_Tutorial_for_WGS_Assembly_and_Annotation_Winter_School_2018) is helpful for these maker steps.
 
 ```
 # Copy over GFF file
@@ -137,69 +138,9 @@ less Agra_rnd4.all.maker.gff
 ---
 
 # Prepare a fasta file of the BLAST database
-- For BLAST, we will be using this database that i will be creating here (version 5)
-- For the next MAKER step and annie, we will need to have the fasta file representing the BLAST nucleotide db
-  - This file is large so the downlod will take a little while
-- [Useful intructions](https://ncbi.github.io/magicblast/cook/blastdb.html)
-- Nobody else in the lab should have to do this. I will copy the results over to **`/projects/f_geneva_1/data/blastdb`**
-
-**1. Download fasta file**
-```
-cd blast/
-wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
-gunzip nt.gz
-cp nt nt.fasta
-```
-
-**2. Index and create the database**
-
-<details><summary>make_db.sh</summary>
-<p>
-	
-	```
-	#!/bin/bash
-	#SBATCH --partition=cmain
-	#SBATCH --exclude=gpuc001,gpuc002
-	#SBATCH --job-name=blastdb
-	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
-	#SBATCH --mem=100G
-	#SBATCH -n 10
-	#SBATCH -N 1
-	#SBATCH --time=3-00:00:00
-	#SBATCH --requeue
-	#SBATCH --mail-user=av795@rutgers.edu
-	#SBATCH --mail-type=FAIL
-
-
-	echo "load modules"
-	module purge
-	module use /projects/community/modulefiles/
-	module load blast/2.10.1-zz109
-
-
-	cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast/db
-
-	echo ""
-	echo "commands to run blast"
-	makeblastdb -in nt.fasta -parse_seqids -blastdb_version 5 -parse_seqids -out nt -dbtype nucl
-
-
-	echo ""
-	echo "done"
-	```
-
-</p>
-</details>
-
-**Copy over blast database**
-```
-mkdir /projects/f_geneva_1/data/blastdb
-cp db/* /projects/f_geneva_1/data/blastdb/
-```
-
-**Make fasta file from blastdb**
-- We need a fasta file for the next maker steps and annie
-- This step will only be done once
+- For BLAST, we will be using the database already on amarel
+- For the next MAKER step and annie, we will need to have a fasta file representing the BLAST nucleotide db
+- I will be creating this file and copying it over into the blastdb
 
 ```
 blastdbcmd -entry all -db /projectsc/ccib/shain/blastdb/nt -out nt.fasta
@@ -210,6 +151,7 @@ cp nt.fasta /projectsc/ccib/shain/blastdb/
 
 # BLAST search
 - Now, we will perform a blast search
+- The program BLAST is already installed into our geneva lab path
 - This will take our annotation file and search for already published sequences
 - This will be used to assign gene names to the genes that match
 - We can be confident that these are real genes in our annotation
@@ -218,13 +160,13 @@ cp nt.fasta /projectsc/ccib/shain/blastdb/
 - Important
   - We will be using `blastn` for nucleotides
   - For annie, the output needs to be in format 6: `-outfmt 6`
-  - The location of our nucleotide database on amarel: `/projects/f_geneva_1/data/blastdb`
   - The location of the nucleotide database on amarel: `/projectsc/ccib/shain/blastdb`
     - We will use the `nt` files (for nucleotide)
 - This step took ~16 hours for me
 - **Output**
   - The output will be in the slurmout file
   - Need to copy this file over to our blast folder
+  - See information about output table [here](https://www.metagenomics.wiki/tools/blast/blastn-output-format-6)
 
 <details><summary>blast.sh</summary>
 <p>
@@ -246,8 +188,6 @@ cp nt.fasta /projectsc/ccib/shain/blastdb/
 
 	#load modules
 	module purge
-	module use /projects/community/modulefiles/
-	module load blast/2.10.1-zz109
 
 	#load variables
 	INDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
@@ -273,7 +213,6 @@ cp [slurm output file] blast/blast.out
 # Now we need to rename the genes 
 - We will be using the gene names from our blastn search to change our maker gene model names
 - This will use the maker scripts `maker_functional_gff` and `maker_functional_fasta`
-- 
 
 <details><summary>rename_genes_blast.sh</summary>
 <p>
@@ -281,6 +220,7 @@ cp [slurm output file] blast/blast.out
 	```
 	#!/bin/bash
 	#SBATCH --partition=cmain
+	#SBATCH --constraint=oarc
 	#SBATCH --exclude=gpuc001,gpuc002
 	#SBATCH --job-name=blast_rename_id
 	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
@@ -341,7 +281,7 @@ cp [slurm output file] blast/blast.out
   - The blast output 6 
   - BLAST database fasta file
   - Transcript gff file
-- Download `.zip` file from [here](http://genomeannotation.github.io/annie/), upload it to amarel, and unzip.
+- **To install Annie:** Download `.zip` file from [here](http://genomeannotation.github.io/annie/), upload it to amarel, and unzip.
 - **Output**
   - Product annotation in the form `<mrna_id> product <product>`
     - Use the blast file to get the dbxref for the associated mrna 
@@ -382,6 +322,8 @@ cp [slurm output file] blast/blast.out
 
 	echo ""
 	echo "load variables"
+	cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/annie
+	
 	MAKER_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
 	BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
 	DB_DIR="/projectsc/ccib/shain/blastdb"
@@ -390,7 +332,7 @@ cp [slurm output file] blast/blast.out
 	echo "commands to run annie"
 	python3 annie.py \
 	-b ${BLAST_DIR}/blast.out \
-	-g ${MAKER_DIR}/Agra_rnd4.all.maker.functional.blast.gff \
+	-g ${MAKER_DIR}/Agra_rnd4.all.maker.gff \
 	-db ${DB_DIR}/nt.fasta
 
 	echo ""
@@ -494,6 +436,85 @@ python gag.py --fasta organism.fasta --gff organism.gff --out gag_output
 
 <details><summary>name</summary>
 <p>
+
+</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+<details><summary>stuff unused</summary>
+<p>
+
+
+# Prepare a fasta file of the BLAST database
+- For BLAST, we will be using the database already on amarel
+- For the next MAKER step and annie, we will need to have the fasta file representing the BLAST nucleotide db
+  - This file is large so the downlod will take a little while
+- [Useful intructions](https://ncbi.github.io/magicblast/cook/blastdb.html)
+- Nobody else in the lab should have to do this. I will copy the results over to **`/projects/f_geneva_1/data/blastdb`**
+
+**1. Download fasta file**
+```
+cd blast/
+wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
+gunzip nt.gz
+cp nt nt.fasta
+```
+
+**2. Index and create the database**
+
+<details><summary>make_db.sh</summary>
+<p>
+	
+	```
+	#!/bin/bash
+	#SBATCH --partition=cmain
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=blastdb
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=100G
+	#SBATCH -n 10
+	#SBATCH -N 1
+	#SBATCH --time=3-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
+
+
+	echo "load modules"
+	module purge
+	module use /projects/community/modulefiles/
+	module load blast/2.10.1-zz109
+
+
+	cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast/db
+
+	echo ""
+	echo "commands to run blast"
+	makeblastdb -in nt.fasta -parse_seqids -blastdb_version 5 -parse_seqids -out nt -dbtype nucl
+
+
+	echo ""
+	echo "done"
+	```
+
+</p>
+</details>
+
+**Copy over blast database**
+```
+mkdir /projects/f_geneva_1/data/blastdb
+cp db/* /projects/f_geneva_1/data/blastdb/
+```
 
 </p>
 </details>
