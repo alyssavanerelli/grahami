@@ -143,8 +143,8 @@ less Agra_rnd4.all.maker.gff
 - I will be creating this file and copying it over into the blastdb
 
 ```
-blastdbcmd -entry all -db /projectsc/ccib/shain/blastdb/nt -out nt.fasta
-cp nt.fasta /projectsc/ccib/shain/blastdb/
+blastdbcmd -entry all -db /projectsc/ccib/shain/blastdb/nr -out nr.fasta
+cp nr.fasta /projectsc/ccib/shain/blastdb/
 ```
 
 ---
@@ -158,14 +158,13 @@ cp nt.fasta /projectsc/ccib/shain/blastdb/
 - Resources:
   - https://open.oregonstate.education/computationalbiology/chapter/command-line-blast/
 - Important
-  - We will be using `blastn` for nucleotides
+  - We will be using `blastp` for proteins
   - For annie, the output needs to be in format 6: `-outfmt 6`
   - The location of the nucleotide database on amarel: `/projectsc/ccib/shain/blastdb`
-    - We will use the `nt` files (for nucleotide)
+    - We will use the `nr` files (for protein)
 - This step took ~16 hours for me
 - **Output**
-  - The output will be in the slurmout file
-  - Need to copy this file over to our blast folder
+  - Need to have a separate output file than the slurmout (so we can see any errors in the slurmout): use the `-out` flag
   - See information about output table [here](https://www.metagenomics.wiki/tools/blast/blastn-output-format-6)
 
 <details><summary>blast.sh</summary>
@@ -186,27 +185,34 @@ cp nt.fasta /projectsc/ccib/shain/blastdb/
 	#SBATCH --mail-type=FAIL
 
 
-	#load modules
+	echo "load modules"
 	module purge
 
-	#load variables
+	echo ""
+	echo "load variables"
 	INDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
 	OUTDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast"
 	DB_DIR="/projectsc/ccib/shain/blastdb"
 
-
-	#commands to run blast
-	blastn -query ${INDIR}/Agra_rnd4.all.maker.transcripts.fasta \
-	-db ${DB_DIR}/nt \
-	-outfmt 6
+	echo ""
+	echo "commands to run blast"
+	blastp -query ${INDIR}/Agra_rnd4.all.maker.transcripts.fasta \
+	-db ${DB_DIR}/nr \
+	-outfmt 6 \
+	-out ${OUTDIR}/blast.out \
+	-evalue .000001 \
+	-num_alignments 1 \
+	-seg yes \
+	-soft_masking true \
+	-lcase_masking \
+	-max_hsps 1
+	
+	echo ""
+	echo "done"
 	```
 
 </p>
 </details>
-
-```
-cp [slurm output file] blast/blast.out
-```
 
 ---
 
@@ -245,7 +251,7 @@ cp [slurm output file] blast/blast.out
 
 
 	echo ""
-	echo "Append the gene names from the BLASTN results to each associated gene prediction"
+	echo "Append the gene names from the BLASTP results to each associated gene prediction"
 
 
 	echo "Master GFF"
