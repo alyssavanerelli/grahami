@@ -103,13 +103,18 @@ either need to be in /home/av795/bin or add downloaded folder to path in `.bash_
       - submission script for busco_phylogenomics
 
 ## Gather Genomes
-download genome sequence files from NCBI (or other places) in FASTA format
+download genome sequence files from [NCBI](https://www.ncbi.nlm.nih.gov/genome) (or other places) in FASTA format (i searched for squamata in the NCBI search bar)
 ```
 cd /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes
-wget [link]
-```
 
-Proceed to unzip files and rename
+# with the update of the NCBI website, you can no longer do wget [link to genome download]
+
+# find the genome you want to download and click on the link under the reference genome section
+
+curl command
+
+# unzip folder and genome will be the .fna file within ncbi_dataset/data/[GCA#######_specific to species]
+```
 
 ## run BUSCO on all genomes
 
@@ -168,6 +173,14 @@ to submit this job: `./run_busco.sh`
 
 - In addition, move over BUSCO analysis ran on final assembly to this folder: `busco_out`
 
+## Gzip files
+- now all genome files can be gzipped
+
+```
+cd /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes
+
+gzip *.fa
+```
 
 ## Running busco_phylogenomics
 1. activate conda busco environment or make new conda environment
@@ -175,17 +188,61 @@ to submit this job: `./run_busco.sh`
 conda activate busco
 ```
 2. move results from busco to new input directory
-```
-cd /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics
-mkdir phy_input
-cp busco_out/*.fa phy_input/
-```
+- we need to extract the `run_vertebrata_odb10/` folder for each species and format it to `run_species/`
+
+  
+<details><summary>move.sh</summary>
+<p>
+
+  ```
+  #!/bin/bash
+  #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+  #SBATCH --account=general
+  #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+  #SBATCH --job-name=move                     # job name for listing in queue
+  #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurm-%j-%x.out
+  #SBATCH --mem=40G                              # memory to allocate in Mb
+  #SBATCH -n 1                                   # number of cores to use
+  #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+  #SBATCH --time=0-02:00:00                       # maximum run time days-hours:minutes:seconds
+  #SBATCH --requeue                               # restart and paused or superseeded jobs
+  #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
+  #SBATCH --mail-type=FAIL
+  
+  
+  SPECIES=$1
+  
+  cp /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/${SPECIES}/run_vertebrata_odb10 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/phy_input/run_${SPECIES}
+
+  ```
+
+</p>
+</details>
+
+<details><summary>run_move.sh</summary>
+<p>
+
+  ```
+  #!/bin/bash
+  FILES=$(ls -d -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/*.fa | cut -d "/" -f 9 | sort)
+  for FILE in $FILES
+  do
+    #sbatch move.sh "$FILE"
+    #sleep 0.25
+    echo "$FILE"
+  done
+  ```
+
+</p>
+</details>
+
 3. create output directory
 ```
 mkdir phy_output
 ```
 4. run busco_phylogenomics on BUSCO results
 <details><summary>general code</summary>
+<p>
 
 ```
 python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatrix --threads 20
