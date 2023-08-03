@@ -135,6 +135,22 @@ sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 less Agra_rnd4.all.maker.gff
 ```
 
+**5. We need to split `protein.fasta` file into multiple smaller files**
+- BLAST takes a long time to run with the protein database so we need to split our input file into multiple smaller files
+- First, we need to **reformat the file** by changing the line wrapping so the file is header, seq, header, seq, etc.
+  ```
+  # Remove carriage returns from fasta file
+  awk '!/^>/ { printf "%s", $0; n = "\n" } /^>/ { print n $0; n = "" } END { printf "%s", n } ' Agra_rnd4.all.maker.proteins.fasta > Agra_rnd4.all.maker.proteins.unwrapped.fasta
+  ```
+- Then, we need to **split the file** into multiple smaller files (i split mine into files of 20,000 lines each so 10,000 sequences)
+  ```
+  split -l 20000 Agra_rnd4.all.maker.proteins.unwrapped.fasta Agra_rnd4_proteins_
+  ```
+- I also renamed my split files
+  ```
+  mv Agra_rnd4_proteins_aa Agra_rnd4_proteins_1.fasta
+  ```
+
 ---
 
 # Prepare a fasta file of the BLAST database
@@ -167,7 +183,7 @@ cp nr.fasta /projectsc/ccib/shain/blastdb/
   - Need to have a separate output file than the slurmout (so we can see any errors in the slurmout): use the `-out` flag
   - See information about output table [here](https://www.metagenomics.wiki/tools/blast/blastn-output-format-6)
 
-<details><summary>blast.sh</summary>
+<details><summary>blast.sh (full version)</summary>
 <p>
   
 	```
@@ -213,6 +229,55 @@ cp nr.fasta /projectsc/ccib/shain/blastdb/
 
 </p>
 </details>
+
+
+<details><summary>blast.sh (split version)</summary>
+<p>
+  
+	```
+	#!/bin/bash
+	#SBATCH --partition=p_ccib_1
+	#SBATCH --exclude=gpuc001,gpuc002
+	#SBATCH --job-name=BLAST_2
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=50G
+	#SBATCH -n 32
+	#SBATCH -N 1
+	#SBATCH --time=11-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=FAIL
+	
+	
+	#load modules
+	module purge
+	
+	#load variables
+	INDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker/split"
+	OUTDIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast/split"
+	DB_DIR="/projectsc/ccib/shain/blastdb"
+	
+	
+	#commands to run blast
+	blastp -query ${INDIR}/Agra_rnd4_proteins_2.fasta \
+	-num_threads 32 \
+	-db ${DB_DIR}/nr \
+	-outfmt 6 \
+	-out ${OUTDIR}/blast_2.out \
+	-evalue .000001 \
+	-num_alignments 1 \
+	-seg yes \
+	-soft_masking true \
+	-lcase_masking \
+	-max_hsps 1
+	
+	#-mt_mode 1
+	#blastp -query ${INDIR}/Agra_rnd4.all.maker.proteins.fasta \
+	```
+
+</p>
+</details>
+
 
 ---
 
