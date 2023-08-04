@@ -103,7 +103,8 @@ either need to be in /home/av795/bin or add downloaded folder to path in `.bash_
       - submission script for busco_phylogenomics
 
 ## Gather Genomes
-download genome sequence files from [NCBI](https://www.ncbi.nlm.nih.gov/genome) (or other places) in FASTA format (i searched for squamata in the NCBI search bar)
+- we now have a shared lab folder to store previously ran busco results. this folder contains the zipped genome files and the busco results (path: `/projects/f_geneva_1/busco`).
+- download genome sequence files from [NCBI](https://www.ncbi.nlm.nih.gov/genome) (or other places) in FASTA format (i searched for squamata in the NCBI search bar)
 ```
 cd /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes
 
@@ -118,32 +119,35 @@ curl command
 
 ## run BUSCO on all genomes
 
-<details><summary>busco.sh file</summary>
+<details><summary>busco.sh</summary>
 <p>
   
 ```
 #!/bin/bash
-#SBATCH --partition=cmain                    # which partition to run the job, options are in the Amarel guide
-#SBATCH --account=general
-#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
-#SBATCH --job-name=busco                     # job name for listing in queue
-#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/slurmout/slurm-%j-%x.out
-#SBATCH --mem=150G                              # memory to allocate in Mb
-#SBATCH -n 1                                   # number of cores to use
-#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
-#SBATCH --time=3-00:00:00                       # maximum run time days-hours:minutes:seconds
-#SBATCH --requeue                               # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
-#SBATCH --mail-type=FAIL,END                    # email for the following reasons
+#SBATCH --partition=main
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=busco
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
+#SBATCH --mem=160G
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=3-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
 
 
+echo "load conda environment"
 eval "$(conda shell.bash hook)"
 conda activate busco
 
+echo "load variables"
 FASTA=$1
 
-echo "Bash commands for the analysis you are going to run"
-busco -i /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/${FASTA} -c 16 -l vertebrata_odb10 -o ${FASTA} -m genome
+echo "run busco"
+busco -i /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/new/${FASTA} -c 16 -l vertebrata_odb10 -o ${FASTA} -m genome
+
+echo "done"
 ```
 
 <p>
@@ -152,17 +156,18 @@ busco -i /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/$
 then create a loop.sh to cycle through all the genome fasta files in a folder
 
 
-<details><summary>run_busco.sh file</summary>
+<details><summary>run_busco.sh</summary>
 <p>
 
 ```
 #!/bin/bash
-FILES=$(ls -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/*.fa | cut -d "/" -f 9 | sort)
+FILES=$(ls -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/genomes/new/*.fa | cut -d "/" -f 10 | sort)
 for FILE in $FILES
-do
-  sbatch busco.sh "$FILE"
-  sleep 0.25
-  #echo "$FILE"
+        do
+	CMD="sbatch busco.sh ${FILE}"
+        echo $CMD
+        #eval $CMD
+        sleep 0.25
 done
 ```
 
@@ -171,7 +176,7 @@ done
 
 to submit this job: `./run_busco.sh`
 
-- In addition, move over BUSCO analysis ran on final assembly to this folder: `busco_out`
+- In addition, move over BUSCO analysis ran on the final grahami assembly to this folder: `busco_out`
 
 ## Gzip files
 - now all genome files can be gzipped
@@ -183,10 +188,12 @@ gzip *.fa
 ```
 
 ## Running busco_phylogenomics
+
 1. activate conda busco environment or make new conda environment
 ```
 conda activate busco
 ```
+
 2. move results from busco to new input directory
 - we need to extract the `run_vertebrata_odb10/` folder for each species and format it to `run_species/`
 
@@ -197,14 +204,13 @@ conda activate busco
   ```
   #!/bin/bash
   #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
-  #SBATCH --account=general
   #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
   #SBATCH --job-name=move                     # job name for listing in queue
   #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurm-%j-%x.out
-  #SBATCH --mem=40G                              # memory to allocate in Mb
+  #SBATCH --mem=10G                              # memory to allocate in Mb
   #SBATCH -n 1                                   # number of cores to use
   #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
-  #SBATCH --time=0-02:00:00                       # maximum run time days-hours:minutes:seconds
+  #SBATCH --time=1-00:00:00                       # maximum run time days-hours:minutes:seconds
   #SBATCH --requeue                               # restart and paused or superseeded jobs
   #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
   #SBATCH --mail-type=FAIL
@@ -212,7 +218,8 @@ conda activate busco
   
   SPECIES=$1
   
-  cp /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/${SPECIES}/run_vertebrata_odb10 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/phy_input/run_${SPECIES}
+  cp -R /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/passing/${SPECIES}/run_vertebrata_odb10 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/phy_input/run_${SPECIES}
+  
 
   ```
 
@@ -224,23 +231,20 @@ conda activate busco
 
   ```
   #!/bin/bash
-  FILES=$(ls -d -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/*.fa | cut -d "/" -f 9 | sort)
+  FILES=$(ls -d -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/passing/*.fa | cut -d "/" -f 10 | sort)
   for FILE in $FILES
-  do
-    #sbatch move.sh "$FILE"
-    #sleep 0.25
-    echo "$FILE"
+          do
+  	CMD="sbatch move.sh ${FILE}"
+          echo $CMD
+          eval $CMD
+          sleep 0.25
   done
   ```
 
 </p>
 </details>
 
-3. create output directory
-```
-mkdir phy_output
-```
-4. run busco_phylogenomics on BUSCO results
+3. run busco_phylogenomics on BUSCO results
 <details><summary>general code</summary>
 <p>
 
@@ -262,32 +266,42 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 - `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually processing/filtering the alignments further when running IQ-Tree, etc..
 
 
-**_Anolis grahami_ code**
-```
-python BUSCO_Phylogenomics.py -d phy_input -o phy_output --supermatrix --threads 20
-```
-_remember that busco conda environment must be activated before submitting submission script_
-
 <details><summary>phy_sub.sh</summary>
   <p>
     
     ```
     #!/bin/bash
-    #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
-    #SBATCH --account=general
-    #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
-    #SBATCH --job-name=buscophy                     # job name for listing in queue
+    #SBATCH --partition=cmain
+    #SBATCH --exclude=gpuc001,gpuc002
+    #SBATCH --constraint=oarc
+    #SBATCH --job-name=buscophy_supermatrix
     #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
-    #SBATCH --mem=160G                              # memory to allocate in Mb
-    #SBATCH -n 20                                   # number of cores to use
-    #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
-    #SBATCH --time=3-00:00:00                       # maximum run time days-hours:minutes:seconds
-    #SBATCH --requeue                               # restart and paused or superseeded jobs
-    #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
-    #SBATCH --mail-type=BEGIN,REQUEUE, FAIL,END     # email for the following reasons
-
+    #SBATCH --mem=170G
+    #SBATCH -n 20
+    #SBATCH -N 1
+    #SBATCH --time=3-00:00:00
+    #SBATCH --requeue
+    #SBATCH --mail-user=av795@rutgers.edu
+    #SBATCH --mail-type=BEGIN,REQUEUE,FAIL,END
     
-    python BUSCO_Phylogenomics.py -d phy_input -o phy_output --supermatrix --threads 20
+    
+    echo "load modules"
+    
+    eval "$(conda shell.bash hook)"
+    conda activate busco
+    
+    
+    echo "run busco supermatrix"
+    
+    python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc100 --supermatrix --threads 20
+    #python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75 --supermatrix --threads 20 -psc 75
+    
+    
+    #python BUSCO_Phylogenomics.py -d phy_input -o supertree_phy_output_test --supertree --threads 20
+    #python BUSCO_Phylogenomics.py -d phy_input -o big_phy_output_psc75 --supermatrix --threads 20 -psc 75
+    #python BUSCO_Phylogenomics.py -d phy_input -o phy_output_psc100_ALL --supermatrix --threads 20
+    
+    echo "done"
     ```
     
   </p>
@@ -303,7 +317,7 @@ A file named `SUPERMATRIX.aln.treefile` will be created in the `phy_out` directo
 ## Output
 
 ### Supermatrix
-
+- When submitting script, use `--supermatrix`
 
 ### Supertree
 
