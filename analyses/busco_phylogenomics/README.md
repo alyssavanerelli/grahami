@@ -263,125 +263,136 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 
 **Optional Parameters**
 - `-psc`: BUSCO families that are present and single-copy in N% of species will be included in supermatrix analysis (default = 100%). Families that are missing for a species will be replaced with missing characters ("?").
-- `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually processing/filtering the alignments further when running IQ-Tree, etc..
+- `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually process/filter the alignments further when running IQ-Tree, etc..
 
 
 <details><summary>phy_sub.sh</summary>
   <p>
     
-    ```
-    #!/bin/bash
-    #SBATCH --partition=cmain
-    #SBATCH --exclude=gpuc001,gpuc002
-    #SBATCH --constraint=oarc
-    #SBATCH --job-name=buscophy_supermatrix
-    #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
-    #SBATCH --mem=170G
-    #SBATCH -n 20
-    #SBATCH -N 1
-    #SBATCH --time=3-00:00:00
-    #SBATCH --requeue
-    #SBATCH --mail-user=av795@rutgers.edu
-    #SBATCH --mail-type=BEGIN,REQUEUE,FAIL,END
-    
-    
-    echo "load modules"
-    
-    eval "$(conda shell.bash hook)"
-    conda activate busco
-    
-    
-    echo "run busco supermatrix"
-    
-    python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc100 --supermatrix --threads 20
-    #python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75 --supermatrix --threads 20 -psc 75
-    
-    
-    #python BUSCO_Phylogenomics.py -d phy_input -o supertree_phy_output_test --supertree --threads 20
-    #python BUSCO_Phylogenomics.py -d phy_input -o big_phy_output_psc75 --supermatrix --threads 20 -psc 75
-    #python BUSCO_Phylogenomics.py -d phy_input -o phy_output_psc100_ALL --supermatrix --threads 20
-    
-    echo "done"
-    ```
+    	```
+    	#!/bin/bash
+	#SBATCH --partition=p_geneva_1
+	#SBATCH --exclude=halc068
+	#SBATCH --job-name=buscophy_supermatrix_psc75
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=200G
+	#SBATCH -n 20
+	#SBATCH -N 1
+	#SBATCH --time=7-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=BEGIN,REQUEUE,FAIL,END
+	
+	
+	echo "load modules"
+	
+	eval "$(conda shell.bash hook)"
+	conda activate busco
+	
+	
+	echo "run busco supermatrix"
+	
+	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc100 --supermatrix --threads 20
+	python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75 --supermatrix --threads 20 -psc 75
+	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75_stopearly --supermatrix --threads 20 -psc 75 --stop_early
+	
+	echo "run busco supertree"
+	
+	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supertree_psc100 --supertree --threads 20
+	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supertree_psc75 --supertree --threads 20 -psc 75
+	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supertree_psc75_stopearly --supertree --threads 20 -psc 75 --stop_early
+	
+	echo "done"
+	
+	
+	
+	###### job names ######
+	
+	#buscophy_supermatrix_psc100
+	#buscophy_supermatrix_psc75
+	#buscophy_supermatrix_psc75_stopearly
+	
+	#buscophy_supertree_psc100
+	#buscophy_supertree_psc75
+    	```
     
   </p>
   </details>
-  
-
-
-5. visualize results
-
-A file named `SUPERMATRIX.aln.treefile` will be created in the `phy_out` directory. The results of this file can be copied and pasted into [iTOL](https://itol.embl.de/) to visualize your tree!
 
 
 ## Output
 
 ### Supermatrix
 - When submitting script, use `--supermatrix`
+- Can visualize the completed tree by inputing the `.iqtree` file into FigTree or the `.treefile` file into [iTOL](https://itol.embl.de/)
 
 ### Supertree
 
-1. When submitting script, use `--supertree`
+1. When submitting `phy_sub.sh` script, use `--supertree`
 2. Download ASTRAL
   - [ASTRAL github page](https://github.com/smirarab/ASTRAL)
   - [ASTRAL github tutorial page](https://github.com/smirarab/ASTRAL/blob/master/astral-tutorial.md)
   - I installed via git clone, then unzipped the jar file, moved all of astral download to bin
 3. For astral help (display options)
-  ```
-  java -jar /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar
-  ```
+   ```
+   java -jar /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar
+   ```
 
-**Path to jar file**
-```
-/home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar
-```
-
-3. The output file that we will use from supertree analysis in busco_phylogenomics: `ALL.trees`
+   **Path to my jar file**
+   ```
+   /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar
+   ```
 
 4. Make `astral.sh` to submit species tree analysis
+- The input file will be the `ALL.trees` file from busco_phylogenomics
+- Make the astral output directory before running
 
 
 <details><summary>astral.sh</summary>
 <p>
   
-  ```
-  #!/bin/bash
-
-#SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
-#SBATCH --account=general
-#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
-#SBATCH --job-name=astral                       # job name for listing in queue
-#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/astral/slurmout/slurm-%j-%x.out
-#SBATCH --mem=160G                              # memory to allocate in Mb
-#SBATCH -n 20                                   # number of cores to use
-#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
-#SBATCH --time=3-00:00:00                       # maximum run time days-hours:minutes:seconds
-#SBATCH --requeue                               # restart and paused or superseeded jobs
-#SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
-#SBATCH --mail-type=BEGIN,REQUEUE, FAIL,END     # email for the following reasons
-
-
-echo "########### load any modules needed"
-module purge
-module load java
-
-
-
-echo ""
-echo "########### commands for analysis you are going to run"
-
-phylogeny="/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/"
-
-java -jar /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar -i ${phylogeny}phy_output_psc100_supertree/ALL.trees -o out.tree 2>out.log
-  
-echo ""
-echo "########### change group access"
-chgrp -R g_geneva_1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/astral          
-
-
-echo ""
-echo "done"
-  ```
+  	```
+	#!/bin/bash
+	#SBATCH --partition=p_geneva_1
+	#SBATCH --exclude=halc068
+	#SBATCH --job-name=astral
+	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/astral/slurmout/slurm-%j-%x.out
+	#SBATCH --mem=180G
+	#SBATCH -n 20
+	#SBATCH -N 1
+	#SBATCH --time=4-00:00:00
+	#SBATCH --requeue
+	#SBATCH --mail-user=av795@rutgers.edu
+	#SBATCH --mail-type=BEGIN,REQUEUE,FAIL,END
+	
+	
+	echo "########### load any modules needed"
+	module purge
+	module load java
+	
+	
+	echo ""
+	echo "load variables"
+	
+	phylogeny="/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics"
+	INDIR="/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/phy_out_supertree_psc75"
+	OUTDIR="/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/astral/run_supertree_psc75"
+	
+	
+	echo ""
+	echo "run astral"
+	
+	java -jar /home/av795/bin/ASTRAL/Astral/astral.5.7.8.jar -i ${INDIR}/ALL.trees -o ${OUTDIR}/out.tree 2>out.log
+	
+	
+	echo ""
+	echo "########### change group access"
+	chgrp -R g_geneva_1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/astral
+	
+	
+	echo ""
+	echo "done"
+  	```
 
 </p>
 </details>
