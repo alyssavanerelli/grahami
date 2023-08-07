@@ -260,6 +260,11 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 - `-o --output`: output directory
 - `-t --threads`: number of threads to use
 - `--supermatrix` and/or `--supertree`: choose to run supermatrix and/or supertree methods
+  - **IMPORTANT:** when running in `--supertree` mode, you need to hard-code the number of species you want the genes to be present and single copy in.
+  - By default, the supertree methods choose BUSCOs that are present in 4 species
+  - I copied the `BUSCO_Phylogenomics.py` to `BUSCO_Phylogenomics_supertree.py` and changed the minimum number to 75% of my speices
+    - I set mine to **64** out of the 86 species I am using in my tree
+  - I also made a copy `BUSCO_Phylogenomics_supertree_psc100.py` where I set the number to **86** so i can see trees built on buscos present in all of my species 
 
 **Optional Parameters**
 - `-psc`: BUSCO families that are present and single-copy in N% of species will be included in supermatrix analysis (default = 100%). Families that are missing for a species will be replaced with missing characters ("?").
