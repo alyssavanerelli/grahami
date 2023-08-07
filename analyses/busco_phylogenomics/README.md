@@ -278,7 +278,7 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
     	#!/bin/bash
 	#SBATCH --partition=p_geneva_1
 	#SBATCH --exclude=halc068
-	#SBATCH --job-name=buscophy_supermatrix_psc75
+	#SBATCH --job-name=buscophy_supertree_psc100
 	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
 	#SBATCH --mem=200G
 	#SBATCH -n 20
@@ -298,14 +298,14 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 	echo "run busco supermatrix"
 	
 	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc100 --supermatrix --threads 20
-	python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75 --supermatrix --threads 20 -psc 75
+	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75 --supermatrix --threads 20 -psc 75
 	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75_stopearly --supermatrix --threads 20 -psc 75 --stop_early
 	
 	echo "run busco supertree"
 	
-	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supertree_psc100 --supertree --threads 20
-	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supertree_psc75 --supertree --threads 20 -psc 75
-	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supertree_psc75_stopearly --supertree --threads 20 -psc 75 --stop_early
+	python BUSCO_Phylogenomics_supertree_psc100.py -d phy_input -o phy_out_supertree_psc100 --supertree --threads 20
+	#python BUSCO_Phylogenomics_supertree.py -d phy_input -o phy_out_supertree_psc75 --supertree --threads 20 -psc 75
+	#python BUSCO_Phylogenomics_supertree.py -d phy_input -o phy_out_supertree_psc75_stopearly --supertree --threads 20 -psc 75 --stop_early
 	
 	echo "done"
 	
@@ -328,8 +328,8 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 ## Output
 
 ### Supermatrix
-- When submitting script, use `--supermatrix`
-- Can visualize the completed tree by inputing the `.iqtree` file into FigTree or the `.treefile` file into [iTOL](https://itol.embl.de/)
+- When submitting `phy_sub.sh` script, use `--supermatrix`
+- Can visualize the completed tree by inputting the `.iqtree` file into FigTree or the `.treefile` file into [iTOL](https://itol.embl.de/)
 
 ### Supertree
 
