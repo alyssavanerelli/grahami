@@ -190,139 +190,128 @@ gzip *.fa
 ## Running busco_phylogenomics
 
 1. activate conda busco environment or make new conda environment
-```
-conda activate busco
-```
+   ```
+   conda activate busco
+   ```
 
 2. move results from busco to new input directory
-- we need to extract the `run_vertebrata_odb10/` folder for each species and format it to `run_species/`
+  - we need to extract the `run_vertebrata_odb10/` folder for each species and format it to `run_species/`
 
   
-<details><summary>move.sh</summary>
-<p>
+	<details><summary>move.sh</summary>
+	<p>
+	
+	  ```
+	  #!/bin/bash
+	  #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+	  #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+	  #SBATCH --job-name=move                     # job name for listing in queue
+	  #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurm-%j-%x.out
+	  #SBATCH --mem=10G                              # memory to allocate in Mb
+	  #SBATCH -n 1                                   # number of cores to use
+	  #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+	  #SBATCH --time=1-00:00:00                       # maximum run time days-hours:minutes:seconds
+	  #SBATCH --requeue                               # restart and paused or superseeded jobs
+	  #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
+	  #SBATCH --mail-type=FAIL
+	  
+	  
+	  SPECIES=$1
+	  
+	  cp -R /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/passing/${SPECIES}/run_vertebrata_odb10 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/phy_input/run_${SPECIES}
+	  
+	
+	  ```
+	
+	</p>
+	</details>
 
-  ```
-  #!/bin/bash
-  #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
-  #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
-  #SBATCH --job-name=move                     # job name for listing in queue
-  #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurm-%j-%x.out
-  #SBATCH --mem=10G                              # memory to allocate in Mb
-  #SBATCH -n 1                                   # number of cores to use
-  #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
-  #SBATCH --time=1-00:00:00                       # maximum run time days-hours:minutes:seconds
-  #SBATCH --requeue                               # restart and paused or superseeded jobs
-  #SBATCH --mail-user=av795@rutgers.edu           # email address to send status updates
-  #SBATCH --mail-type=FAIL
-  
-  
-  SPECIES=$1
-  
-  cp -R /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/passing/${SPECIES}/run_vertebrata_odb10 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/phy_input/run_${SPECIES}
-  
-
-  ```
-
-</p>
-</details>
-
-<details><summary>run_move.sh</summary>
-<p>
-
-  ```
-  #!/bin/bash
-  FILES=$(ls -d -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/passing/*.fa | cut -d "/" -f 10 | sort)
-  for FILE in $FILES
-          do
-  	CMD="sbatch move.sh ${FILE}"
-          echo $CMD
-          eval $CMD
-          sleep 0.25
-  done
-  ```
-
-</p>
-</details>
+	<details><summary>run_move.sh</summary>
+	<p>
+	
+	  ```
+	  #!/bin/bash
+	  FILES=$(ls -d -1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/busco_out/passing/*.fa | cut -d "/" -f 10 | sort)
+	  for FILE in $FILES
+	          do
+	  	CMD="sbatch move.sh ${FILE}"
+	          echo $CMD
+	          eval $CMD
+	          sleep 0.25
+	  done
+	  ```
+	
+	</p>
+	</details>
 
 3. run busco_phylogenomics on BUSCO results
-<details><summary>general code</summary>
-<p>
-
-```
-python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatrix --threads 20
-```
-
-</p>
-</details>
-
-**Required Parameters**
-- `-d --directory`: input directory containing BUSCO runs
-- `-o --output`: output directory
-- `-t --threads`: number of threads to use
-- `--supermatrix` and/or `--supertree`: choose to run supermatrix and/or supertree methods
-  - **IMPORTANT:** when running in `--supertree` mode, you need to hard-code the number of species you want the genes to be present and single copy in.
-  - By default, the supertree methods choose BUSCOs that are present in 4 species
-  - I copied the `BUSCO_Phylogenomics.py` to `BUSCO_Phylogenomics_supertree.py` and changed the minimum number to 75% of my speices
-    - I set mine to **64** out of the 86 species I am using in my tree
-  - I also made a copy `BUSCO_Phylogenomics_supertree_psc100.py` where I set the number to **86** so i can see trees built on buscos present in all of my species 
-
-**Optional Parameters**
-- `-psc`: BUSCO families that are present and single-copy in N% of species will be included in supermatrix analysis (default = 100%). Families that are missing for a species will be replaced with missing characters ("?").
-- `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually process/filter the alignments further when running IQ-Tree, etc..
+- **Required Parameters**
+  - `-d --directory`: input directory containing BUSCO runs
+  - `-o --output`: output directory
+  - `-t --threads`: number of threads to use
+  - `--supermatrix` and/or `--supertree`: choose to run supermatrix and/or supertree methods
+    - **IMPORTANT:** when running in `--supertree` mode, you need to hard-code the number of species you want the genes to be present and single copy in.
+    - By default, the supertree methods choose BUSCOs that are present in 4 species
+    - I copied the `BUSCO_Phylogenomics.py` to `BUSCO_Phylogenomics_supertree.py` and changed the minimum number to 75% of my species
+      - I set mine to **64** out of the 86 species I am using in my tree
+    - I also made a copy `BUSCO_Phylogenomics_supertree_psc100.py` where I set the number to **86** so i can see trees built on buscos present in all of my species 
+- **Optional Parameters**
+  - `-psc`: BUSCO families that are present and single-copy in N% of species will be included in supermatrix analysis (default = 100%). Families that are missing for a species will be replaced with missing characters ("?").
+  - `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually process/filter the alignments further when running IQ-Tree, etc..
 
 
-<details><summary>phy_sub.sh</summary>
-  <p>
-    
-    	```
+	<details><summary>phy_sub.sh</summary>
+	  <p>
+	    
+	   ```
     	#!/bin/bash
-	#SBATCH --partition=p_geneva_1
-	#SBATCH --exclude=halc068
-	#SBATCH --job-name=buscophy_supertree_psc100
-	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
-	#SBATCH --mem=200G
-	#SBATCH -n 20
-	#SBATCH -N 1
-	#SBATCH --time=7-00:00:00
-	#SBATCH --requeue
-	#SBATCH --mail-user=av795@rutgers.edu
-	#SBATCH --mail-type=BEGIN,REQUEUE,FAIL,END
-	
-	
-	echo "load modules"
-	
-	eval "$(conda shell.bash hook)"
-	conda activate busco
-	
-	
-	echo "run busco supermatrix"
-	
-	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc100 --supermatrix --threads 20
-	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75 --supermatrix --threads 20 -psc 75
-	#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75_stopearly --supermatrix --threads 20 -psc 75 --stop_early
-	
-	echo "run busco supertree"
-	
-	python BUSCO_Phylogenomics_supertree_psc100.py -d phy_input -o phy_out_supertree_psc100 --supertree --threads 20
-	#python BUSCO_Phylogenomics_supertree.py -d phy_input -o phy_out_supertree_psc75 --supertree --threads 20 -psc 75
-	#python BUSCO_Phylogenomics_supertree.py -d phy_input -o phy_out_supertree_psc75_stopearly --supertree --threads 20 -psc 75 --stop_early
-	
-	echo "done"
-	
-	
-	
-	###### job names ######
-	
-	#buscophy_supermatrix_psc100
-	#buscophy_supermatrix_psc75
-	#buscophy_supermatrix_psc75_stopearly
-	
-	#buscophy_supertree_psc100
-	#buscophy_supertree_psc75
-    	```
-    
-  </p>
-  </details>
+		#SBATCH --partition=p_geneva_1
+		#SBATCH --exclude=halc068
+		#SBATCH --job-name=buscophy_supertree_psc100
+		#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
+		#SBATCH --mem=200G
+		#SBATCH -n 20
+		#SBATCH -N 1
+		#SBATCH --time=7-00:00:00
+		#SBATCH --requeue
+		#SBATCH --mail-user=av795@rutgers.edu
+		#SBATCH --mail-type=BEGIN,REQUEUE,FAIL,END
+		
+		
+		echo "load modules"
+		
+		eval "$(conda shell.bash hook)"
+		conda activate busco
+		
+		
+		echo "run busco supermatrix"
+		
+		#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc100 --supermatrix --threads 20
+		#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75 --supermatrix --threads 20 -psc 75
+		#python BUSCO_Phylogenomics.py -d phy_input -o phy_out_supermatrix_psc75_stopearly --supermatrix --threads 20 -psc 75 --stop_early
+		
+		echo "run busco supertree"
+		
+		python BUSCO_Phylogenomics_supertree_psc100.py -d phy_input -o phy_out_supertree_psc100 --supertree --threads 20
+		#python BUSCO_Phylogenomics_supertree.py -d phy_input -o phy_out_supertree_psc75 --supertree --threads 20 -psc 75
+		#python BUSCO_Phylogenomics_supertree.py -d phy_input -o phy_out_supertree_psc75_stopearly --supertree --threads 20 -psc 75 --stop_early
+		
+		echo "done"
+		
+		
+		
+		###### job names ######
+		
+		#buscophy_supermatrix_psc100
+		#buscophy_supermatrix_psc75
+		#buscophy_supermatrix_psc75_stopearly
+		
+		#buscophy_supertree_psc100
+		#buscophy_supertree_psc75
+	   ```
+	    
+	  </p>
+	  </details>
 
 
 ## Output
@@ -402,8 +391,59 @@ python BUSCO_Phylogenomics.py -d INPUT_DIRECTORY -o OUTPUT_DIRECTORY --supermatr
 </p>
 </details>
 
+## Renaming shortened names to full species names
+- Now, we want to change the abbreviated species names out for the full species names
+- We can run a quick command after the analyses are finished to rename the species to their full species name
+- Most of the species (all the NCBI published genomes) have the full species name in the same format on the first line of the fasta file
 
+	**make abbreviated names text file**
+  	- I listed the genomes from our genome folder and then got rid of the `.gz`
+  	- Alternatively, you could list the directory names in `phy_input` and then remove the `run_`
+  	```
+	ls -1 /projects/f_geneva_1/busco/genomes/*.gz | cut -d "/" -f 6  > abbr_names.txt
+   	sed -i 's/.gz//g' abbr_names.txt 
 
+   	# Then, I manually deleted the lines that I did not need
+   	```
+
+	<details><summary>run_rename.sh</summary>
+	<p>
+
+ 	```
+	#!/bin/bash
+	SAMPLES=$(cut -f 1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/abbr_names.txt)
+	for SAMPLE in $SAMPLES
+	        do
+		FULL=$(zcat /projects/f_geneva_1/busco/genomes/"${SAMPLE}".gz | head -n 1 | cut -d " " -f 2-3)
+	        CMD="sed -i 's/${SAMPLE}/${FULL}/g' /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/old/phy_out_supermatrix_psc75/renamed_tree.aln"
+	        echo $CMD
+	        #eval $CMD
+	        sleep 0.25
+	done
+  	```
+
+   	</p>
+	</details>
+
+	<details><summary>manual renaming</summary>
+	<p>
+
+ 	```
+	sed -i 's/AnoApl1.1.fa/Anolis apletophallus/g'
+	sed -i 's/AnoAur1.0.fa/Anolis auratus/g'
+	sed -i 's/AnoFre1.0.fa/Anolis frenatus/g'
+	sed -i 's/AnoGra1.1.fa/Anolis grahami/g'
+	sed -i 's/AnoSag2.1.fa/Anolis sagrei/g'
+	sed -i 's/BoaCon1.fa/Boa constrictor/g'
+	sed -i 's/BraPum1.0.fa/Bradypodion pumilum/g'
+	sed -i 's/BraVen1.1.fa/Bradypodion ventrale/g'
+	sed -i 's/ShinCroc.fa/Shinisaurus crocodilurus/g'
+  	```
+
+   	</p>
+	</details>
+
+ 
 
 ## Visualizing species trees in R
 
