@@ -71,11 +71,17 @@
 
 
 ## Output
-- This will return a couple different files
+- This will return a couple of different files
   - `busco_figure.png`
-    - This was empty for me so we ran the R script using R studio to generate the figure
+    - This file will most likely be empty 
   - `busco_figure.R`
     - Script to open in R and generate plot
+    - **Important:** If you have many species (~80 or above) you will need to split `my_species` object in R into 2 separate lists with half the species names each and then merge
+      ```
+      my_species_1 <- c()
+      my_species_2 <- c()
+      my_species <- c(my_species_1,my_species_2)
+      ```
    
 Can next use Adobe Illustrator to edit the figure!
    
