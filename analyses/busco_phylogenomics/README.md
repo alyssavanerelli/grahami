@@ -10,11 +10,11 @@ this pipeline runs directly on the output from BUSCO
 - [x] [BioPython](https://biopython.org/)
   - [github page](https://github.com/biopython/biopython)
   - use `pip` to install 
-  ```
-  pip install biopython
-  pip install --upgrade biopython
-  pip uninstall biopython
-  ```
+     ```
+     pip install biopython
+     pip install --upgrade biopython
+     pip uninstall biopython
+     ```
 - [x] [MUSCLE](https://www.drive5.com/muscle/)
   - [download links here](https://github.com/rcedgar/muscle/releases/tag/v5.0.1428)
   - NEED TO USE VERSION 3
@@ -30,7 +30,6 @@ this pipeline runs directly on the output from BUSCO
       ```
     </p>
     </details>
-    
 - [x] [trimAl](http://trimal.cgenomics.org/)
   - [download links here](http://trimal.cgenomics.org/downloads)
     <details><summary>code</summary>
@@ -52,11 +51,8 @@ this pipeline runs directly on the output from BUSCO
     ```
     </p>
     </details>
-    
 - [x] [IQ-TREE](http://www.iqtree.org/)
   - [download links here](http://www.iqtree.org/)
-  - 
-    
     <details><summary>code</summary>
     <p>
     
@@ -67,8 +63,7 @@ this pipeline runs directly on the output from BUSCO
     
     </p>
     </details>
-
-`muscle`, `trimal`, and `iqtree` should be in `$PATH`
+- [x] `muscle`, `trimal`, and `iqtree` should be in `$PATH`
 
 **to check for these programs**
 
