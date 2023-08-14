@@ -201,7 +201,7 @@ gzip *.fa
 	  #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
 	  #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
 	  #SBATCH --job-name=move                     # job name for listing in queue
-	  #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurm-%j-%x.out
+	  #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
 	  #SBATCH --mem=10G                              # memory to allocate in Mb
 	  #SBATCH -n 1                                   # number of cores to use
 	  #SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
