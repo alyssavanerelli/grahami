@@ -462,6 +462,60 @@ gzip *.fa
   - `phangorn`
     - program densiTree
 
+## DensiTree
+- This program allows you to visualize all the gene trees stacked on top of one another
+- This makes it easy to see where there is agreement and discordance among gene trees
+- The darker the branches, the more gene trees support that relationship
+- [**Website**](https://www.cs.auckland.ac.nz/~remco/DensiTree/)
+
+### Installation
+- Install the `.jar` file from GitHub
+  ```
+  cd
+  wget https://github.com/rbouckaert/DensiTree/releases/download/v3.0.0/DensiTree.v3.0.2.jar
+  mv DensiTree.v3.0.2.jar bin/
+  ```
+### Usage
+- To run DensiTree, from the command line use java -jar DensiTree.jar from the directory where you saved the DensiTree jar file.
+- DensiTree requires **java 8**
+- [**Manual**](https://www.cs.auckland.ac.nz/~remco/DensiTree/DensiTreeManual.v2.2.pdf)
+
+<details><summary>name</summary>
+<p>
+
+```
+#!/bin/bash
+#SBATCH --partition=p_geneva_1
+#SBATCH --exclude=halc068
+#SBATCH --job-name=astral_psc100
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/astral/slurmout/slurm-%j-%x.out
+#SBATCH --mem=180G
+#SBATCH -n 20
+#SBATCH -N 1
+#SBATCH --time=14-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=REQUEUE,FAIL,END
+
+
+echo "load any modules needed"
+module purge
+module load java/11.0.18
+
+echo ""
+echo "load variables"
+
+
+echo ""
+echo "run DensiTree"
+java -Xmx3g -jar /home/av795/bin/DensiTree.v3.0.2.jar
+
+echo ""
+echo "done"
+```
+
+</p>
+</details>
 
 
 
@@ -469,6 +523,15 @@ gzip *.fa
 
 
 
+
+
+
+
+<details><summary>name</summary>
+<p>
+
+</p>
+</details>
 
 
 
