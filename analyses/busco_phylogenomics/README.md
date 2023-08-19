@@ -253,6 +253,7 @@ gzip *.fa
 - **Optional Parameters**
   - `-psc`: BUSCO families that are present and single-copy in N% of species will be included in supermatrix analysis (default = 100%). Families that are missing for a species will be replaced with missing characters ("?").
   - `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually process/filter the alignments further when running IQ-Tree, etc..
+  - Do **NOT** make the output directory before running the script. The script will make this directory, you just need to name it in the script.
 
 
 	<details><summary>phy_sub.sh</summary>
@@ -335,6 +336,7 @@ gzip *.fa
 4. Make `astral.sh` to submit species tree analysis
 - The input file will be the `ALL.trees` file from busco_phylogenomics
 - Make the astral output directory before running
+- **IMPORTANT:** you need to make the output directory before submitting the script.
 
 
 <details><summary>astral.sh</summary>
