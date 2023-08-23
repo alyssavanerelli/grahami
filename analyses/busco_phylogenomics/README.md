@@ -426,15 +426,17 @@ gzip *.fa
 	<p>
 
  	```
-	sed -i 's/AnoApl1.1.fa/Anolis apletophallus/g'
-	sed -i 's/AnoAur1.0.fa/Anolis auratus/g'
-	sed -i 's/AnoFre1.0.fa/Anolis frenatus/g'
-	sed -i 's/AnoGra1.1.fa/Anolis grahami/g'
-	sed -i 's/AnoSag2.1.fa/Anolis sagrei/g'
-	sed -i 's/BoaCon1.fa/Boa constrictor/g'
-	sed -i 's/BraPum1.0.fa/Bradypodion pumilum/g'
-	sed -i 's/BraVen1.1.fa/Bradypodion ventrale/g'
-	sed -i 's/ShinCroc.fa/Shinisaurus crocodilurus/g'
+  	cd astral/run_supertree_psc75/
+  
+	sed -i 's/AnoApl1.1.fa/Anolis apletophallus/g' out_renamed.tree
+	sed -i 's/AnoAur1.0.fa/Anolis auratus/g' out_renamed.tree
+	sed -i 's/AnoFre1.0.fa/Anolis frenatus/g' out_renamed.tree
+	sed -i 's/AnoGra1.1.fa/Anolis grahami/g' out_renamed.tree
+	sed -i 's/AnoSag2.1.fa/Anolis sagrei/g' out_renamed.tree
+	sed -i 's/BoaCon1.fa/Boa constrictor/g' out_renamed.tree
+	sed -i 's/BraPum1.0.fa/Bradypodion pumilum/g' out_renamed.tree
+	sed -i 's/BraVen1.1.fa/Bradypodion ventrale/g' out_renamed.tree
+	sed -i 's/ShinCroc.fa/Shinisaurus crocodilurus/g' out_renamed.tree
   	```
 
    	</p>
