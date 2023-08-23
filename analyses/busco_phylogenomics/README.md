@@ -442,37 +442,31 @@ gzip *.fa
    	</p>
 	</details>
 
- 
+---
 
 ## Visualizing species trees in R
 - Resources
   - [R Phylogenetic Trees](https://yulab-smu.top/treedata-book/chapter4.html)
   - [Visulaizing and annotating trees in ggtree](https://4va.github.io/biodatasci/r-ggtree.html)
+  - [Visualization and annotation of phylogenetic trees: ggtree](https://guangchuangyu.github.io/ggtree-book/chapter-ggtree.html)
 
+### Prepare tree file
+- Download the Newick tree from amarel onto your desktop (running this locally because you can't install ggtree on the amarel version of R)
+- Open tree in FigTree and **reroot** with outgroup. Then export this tree as shown to a new `.tre` file
 
+### ggtree in R
 
+<details><summary>ggtree.R</summary>
+<p>
 
+```
 
+```
 
+</p>
+</details>
 
-
-
-
-- update R and RStudio
-- packages needed
-  - `tidyverse`
-  - `ggtree`
-    - To install this package (need an updated version of R)
-      ```
-      if (!require("BiocManager", quietly = TRUE))
-      install.packages("BiocManager")
-
-      BiocManager::install("ggtree")
-      ```
-  - `treeio`
-    - used to parse the tree file into R
-  - `phangorn`
-    - program densiTree
+---
 
 ## DensiTree
 - This program allows you to visualize all the gene trees stacked on top of one another
@@ -506,83 +500,7 @@ densiTree(psc75.phy, type = "cladogram", direction = "rightwards", width = 1, lt
 
 
 
-
-
-
-
-### Installation
-- Install the `.jar` file from GitHub
-  ```
-  cd
-  wget https://github.com/rbouckaert/DensiTree/releases/download/v3.0.0/DensiTree.v3.0.2.jar
-  mv DensiTree.v3.0.2.jar bin/
-  ```
-### Usage
-- To run DensiTree, from the command line use java -jar DensiTree.jar from the directory where you saved the DensiTree jar file.
-- DensiTree requires **java 8**
-- [**Manual**](https://www.cs.auckland.ac.nz/~remco/DensiTree/DensiTreeManual.v2.2.pdf)
-- useful flags: (more are found in the pdf)
-  - `-b 100`: burn-in, default 0 (this is not the number of samples in the MCMC run that are
-ignored, but the actual number of trees.)
-  - `-t <int nr>`: number of threads used for drawing tree set, default 2
-  - `-w <int nr>`: width of consensus tree lines, default 4
-  - `-v <int nr>`: width of tree lines, default 1
-  - `-scalemode [none|short|full]`: set the grid. Should be one of ’none’ for no grid (default), ’short’ to show a scale or ’full’ to show lines throughout image
-  - `-li <float nr>`: sets up label indent, default 0
-  - `-o <file>`: sets output file. The tree set specified through the command line is drawn and exported in png format to the specified file name. This can be useful for batch image processing.
-  - `-bd <BranchDrawer class>`: sets the method for drawing branches. Available methods are ”viz.graphics.BranchDrawer” for lines (default), ”viz.graphics.ArcBranchDrawer” for arcs, and ”viz.graphics.SteepArcBranchDrawer” for steep arcs.
-
-**basic usage**
-```
-java [vmoptions] -jar DensiTree [options] [file]
-```
-
-<details><summary>densitree.sh</summary>
-<p>
-
-```
-#!/bin/bash
-#SBATCH --partition=p_geneva_1
-#SBATCH --exclude=halc068
-#SBATCH --job-name=densitree_psc75
-#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/densitree/slurmout/slurm-%j-%x.out
-#SBATCH --mem=180G
-#SBATCH -n 20
-#SBATCH -N 1
-#SBATCH --time=14-00:00:00
-#SBATCH --requeue
-#SBATCH --mail-user=av795@rutgers.edu
-#SBATCH --mail-type=REQUEUE,FAIL,END
-
-
-echo "load any modules needed"
-module purge
-module load java/11.0.18
-
-echo ""
-echo "load variables"
-
-
-echo ""
-echo "run DensiTree"
-java -Xmx180g -jar /home/av795/bin/DensiTree.v3.0.2.jar -t 20 psc75.trees
-
-echo ""
-echo "done"
-```
-
-</p>
-</details>
-
-
-
-
-
-
-
-
-
-
+--- 
 
 <details><summary>name</summary>
 <p>
