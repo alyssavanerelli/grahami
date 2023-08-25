@@ -248,8 +248,8 @@ gzip *.fa
     - **IMPORTANT:** when running in `--supertree` mode, you need to hard-code the number of species you want the genes to be present and single copy in.
     - By default, the supertree methods choose BUSCOs that are present in 4 species
     - I copied the `BUSCO_Phylogenomics.py` to `BUSCO_Phylogenomics_supertree.py` and changed the minimum number to 75% of my species
-      - I set mine to **64** out of the 86 species I am using in my tree
-    - I also made a copy `BUSCO_Phylogenomics_supertree_psc100.py` where I set the number to **86** so i can see trees built on buscos present in all of my species 
+      - I set mine to **64** out of the 85 species I am using in my tree
+    - I also made a copy `BUSCO_Phylogenomics_supertree_psc100.py` where I set the number to **85** so i can see trees built on buscos present in all of my species 
 - **Optional Parameters**
   - `-psc`: BUSCO families that are present and single-copy in N% of species will be included in supermatrix analysis (default = 100%). Families that are missing for a species will be replaced with missing characters ("?").
   - `--stop_early`: stop pipeline early before phylogenetic inference (i.e., for the supermatrix approach this will stop after generating the concatenated alignment). This is **recommended** so you can manually choose your own parameters (e.g., bootstrapping/model selection methods) or manually process/filter the alignments further when running IQ-Tree, etc..
