@@ -309,6 +309,57 @@ gzip *.fa
 	  </p>
 	  </details>
 
+4. run `iqtree` if using the stop early flag
+- stopping early allows you to customize the iqtree run
+- this might be useful for setting the outgroup
+
+
+<details><summary>iqtree.sh</summary>
+<p>
+
+```
+#!/bin/bash
+#SBATCH --partition=cmem
+#SBATCH --exclude=memc001
+#SBATCH --job-name=iqtree_psc75
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/slurmout/slurm-%j-%x.out
+#SBATCH --mem=300G
+#SBATCH -n 35
+#SBATCH -N 1
+#SBATCH --time=14-00:00:00
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
+
+
+echo "load conda environment"
+eval "$(conda shell.bash hook)"
+conda activate iqtree
+
+
+echo ""
+echo "load variables"
+INDIR="/projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/phy_out_supermatrix_psc75_all_stopearly"
+PREFIX="run01"
+
+cd ${INDIR}
+
+echo ""
+echo "run iqtree"
+iqtree -s SUPERMATRIX.aln -bb 1000 -alrt 1000 -nt 35 -pre ${PREFIX} -o "SphenPunct1.fa" -mem 300G
+
+
+#-nt AUTO -ntmax 35
+
+echo ""
+echo "done
+```
+
+</p>
+</details>
+
+
+
+
 
 ## Output
 
