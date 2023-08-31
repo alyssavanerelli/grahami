@@ -488,6 +488,42 @@ echo "done
 	sed -i 's/BraPum1.0.fa/Bradypodion pumilum/g' out_renamed.tree
 	sed -i 's/BraVen1.1.fa/Bradypodion ventrale/g' out_renamed.tree
 	sed -i 's/ShinCroc.fa/Shinisaurus crocodilurus/g' out_renamed.tree
+
+  	sed -i 's/AchJin1.0.fa/Achalinus jinggangensis/g'
+	sed -i 's/AniBit1.0.fa/Anilios bituberculatus/g'
+	sed -i 's/AnoAlli1.0.fa/Anolis allisoni/g'
+	sed -i 's/AnoAllo1.0.fa/Anolis allogus/g'
+	sed -i 's/AnoHomo1.0.fa/Anolis homolechis/g'
+	sed -i 's/AnoIso1.0.fa/Anolis isolepis/g'
+	sed -i 's/AnoPor1.0.fa/Anolis porcatus/g'
+	sed -i 's/ArgDia1.0.fa/Argyrophis diardii/g'
+	sed -i 's/BoaeFul1.0.fa/Boaedon fuliginosus/g'
+	sed -i 's/CalaSept1.0.fa/Calamaria septentrionalis/g'
+	sed -i 's/CalVers1.0.fa/Calotes versicolor/g'
+	sed -i 's/CrotOre1.0.fa/Crotalus oreganus/g'
+	sed -i 's/CycPin1.0.fa/Cyclura pinguis/g'
+	sed -i 's/CylRuf1.0.fa/Cylindrophis ruffus/g'
+	sed -i 's/DeinAcut1.0.fa/Deinagkistrodon acutus/g'
+	sed -i 's/EreArg1.0.fa/Eremias argus/g'
+	sed -i 's/EryxTat1.0.fa/Eryx tataricus/g'
+	sed -i 's/EupPer1.0.fa/Euprepiophis perlacea/g'
+	sed -i 's/GloyShed1.0.fa/Gloydius shedaoensis/g'
+	sed -i 's/HeloSusp1.0.fa/Heloderma suspectum/g'
+	sed -i 's/HypPlu1.0.fa/Hypsiscopus plumbea/g'
+	sed -i 's/IntLes1.0.fa/Intellagama lesueurii/g'
+	sed -i 's/LaudSac1.0.fa/Laudakia sacra/g'
+	sed -i 's/LepNig1.0.fa/Leptotyphlops nigroterminus/g'
+	sed -i 's/LerEdw1.0.fa/Lerista edwardsae/g'
+	sed -i 's/NatNat1.0.fa/Natrix natrix/g'
+	sed -i 's/OphGra1.0.fa/Ophisaurus gracilis/g'
+	sed -i 's/PareBerd1.0.fa/Pareas berdmorei/g'
+	sed -i 's/PhrPrz1.0.fa/Phrynocephalus przewalskii/g'
+	sed -i 's/PhrVla1.0.fa/Phrynocephalus vlangalii/g'
+	sed -i 's/PodCret1.0.fa/Podarcis cretensis/g'
+	sed -i 's/RhiFlo1.0.fa/Rhineura floridana/g'
+	sed -i 's/TropDor1.0.fa/Tropidonophis doriae/g'
+	sed -i 's/UtaStan1.0.fa/Uta stansburiana/g'
+	sed -i 's/XenoUni1.0.fa/Xenopeltis unicolor/g'
   	```
 
    	</p>
