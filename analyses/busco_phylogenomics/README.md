@@ -443,91 +443,155 @@ echo "done
 - Now, we want to change the abbreviated species names out for the full species names
 - We can run a quick command after the analyses are finished to rename the species to their full species name
 - Most of the species (all the NCBI published genomes) have the full species name in the same format on the first line of the fasta file
+- I made a tab-delimited text file with abbreviated names and full names using `grep`, `cat`, `sed`, and bbedit (i did quite a bit of this semi-manually).
 
-	**make abbreviated names text file**
-  	- I listed the genomes from our genome folder and then got rid of the `.gz`
-  	- Alternatively, you could list the directory names in `phy_input` and then remove the `run_`
-  	```
-	ls -1 /projects/f_geneva_1/busco/genomes/*.gz | cut -d "/" -f 6  > abbr_names.txt
-   	sed -i 's/.gz//g' abbr_names.txt 
 
-   	# Then, I manually deleted the lines that I did not need
-   	```
+<details><summary>full_names.txt</summary>
+<p>
 
-	<details><summary>run_rename.sh</summary>
-	<p>
+```
+AhaPra1.0.fa    Ahaetulla prasina
+AnnSte1.0.fa    Anniella stebbinsi
+AnoCar2.0.fa    Anolis carolinensis
+AriEle1.0.fa    Arizona elegans
+AspMar1.0.fa    Aspidoscelis marmoratus
+AspTig1.0.fa    Aspidoscelis tigris
+AzeFeae1.0.fa   Azemiops feae
+BothJara1.0.fa  Bothrops jararaca
+BungMult1.0.fa  Bungarus multicinctus
+CalypSin1.0.fa  Calyptommatus sinebrachiatus
+ChaBot1.0.fa    Charina bottae
+CrotAdam.fa     Crotalus adamanteus
+CrotTig1.0.fa   Crotalus tigris
+CrotVir3.0.fa   Crotalus viridis
+CryEge1.0.fa    Cryptoblepharus egeriae
+CteBak1.0.fa    Ctenosaura bakeri
+DabSia1.0.fa    Daboia siamensis
+DarVal1.0.fa    Darevskia valentini
+DiaPun1.0.fa    Diadophis punctatus
+ElgMul1.0.fa    Elgaria multicarinata
+EubMac1.0.fa    Eublepharis macularius
+EulEur1.0.fa    Euleptes europaea
+FurPar1.0.fa    Furcifer pardalis
+GekGec1.0.fa    Gekko gecko
+GekJap1.1.fa    Gekko japonicus
+HeloChar1.0.fa  Heloderma charlesbogerti
+HemCap1.1.fa    Hemicordylus capensis
+HydCur2.0.fa    Hydrophis curtus
+HydCyan2.0.fa   Hydrophis cyanocinctus
+HydMel1.0.fa    Hydrophis melanocephalus
+IguDel1.0.fa    Iguana delicatissima
+LacAgi1.0.fa    Lacerta agilis
+LacBil.fa       Lacerta bilineata
+LacVir1.fa      Lacerta viridis
+LatCol2.0.fa    Laticauda colubrina
+LatLat1.0.fa    Laticauda laticaudata
+LepLis1.0.fa    Lepidodactylus listeri
+MorVir1.0.fa    Morelia viridis
+NajaNaja5.fa    Naja naja
+NatHel1.0.fa    Natrix helvetica
+NotScut2.0.fa   Notechis scutatus
+OphHan1.0.fa    Ophiophagus hannah
+PanAll1.0.fa    Pantherophis alleghaniensis
+PanGut3.0.fa    Pantherophis guttatus
+PanObs1.0.fa    Pantherophis obsoletus
+ParPicta2.0.fa  Paroedura picta
+PhrBla1.0.fa    Phrynosoma blainvillii
+PhrFor1.0.fa    Phrynocephalus forsythii
+PhrPlat1.1.fa   Phrynosoma platyrhinos
+PhrVer1.0.fa    Phrynocephalus versicolor
+PitCat1.0.fa    Pituophis catenifer
+PleGil1.0.fa    Plestiodon gilberti
+PodMur1.0.fa    Podarcis muralis
+PodRaf1.0.fa    Podarcis raffonei
+PogVit1.1.fa    Pogona vitticeps
+ProtoFlav1.0.fa Protobothrops flavoviridis
+ProtoMucro1.0.fa        Protobothrops mucrosquamatus
+PsamPulv1.0.fa  Psammodynastes pulverulentus
+PseudText2.0.fa Pseudonaja textilis
+PtyMuc1.0.fa    Ptyas mucosa
+PythBiv5.0.2.fa Python bivittatus
+RhiFlo1.0.fa    Rhineura floridana
+SalMer.fa       Salvator merianae
+SceTri1.fa      Sceloporus tristichus
+SceUnd1.1.fa    Sceloporus undulatus
+SphenPunct1.fa  Sphenodon punctatus
+SphTown2.3.fa   Sphaerodactylus townsendi
+ThaEle1.pri.fa  Thamnophis elegans
+TherBail1.0.fa  Thermophis baileyi
+TretOrix1.0.fa  Tretioscincus oriximinensis
+VarKomo1.fa     Varanus komodoensis
+VarSal1.0.fa    Varanus salvator
+VipBer1.0.fa    Vipera berus
+VipLat1.0.fa    Vipera latastei
+VipUrs1.1.fa    Vipera ursinii
+ZooViv1.fa      Zootoca vivipara
+AnoApl1.1.fa    Anolis apletophallus
+AnoAur1.0.fa    Anolis auratus
+AnoFre1.0.fa    Anolis frenatus
+AnoGra1.1.fa    Anolis grahami
+AnoSag2.1.fa    Anolis sagrei
+BoaCon1.fa      Boa constrictor
+BraPum1.0.fa    Bradypodion pumilum
+BraVen1.1.fa    Bradypodion ventrale
+ShinCroc.fa     Shinisaurus crocodilurus
+AchJin1.0.fa    Achalinus jinggangensis
+AnoAlli1.0.fa   Anolis allisoni
+AnoAllo1.0.fa   Anolis allogus
+AnoHomo1.0.fa   Anolis homolechis
+AnoIso1.0.fa    Anolis isolepis
+AnoPor1.0.fa    Anolis porcatus
+ArgDia1.0.fa    Argyrophis diardii
+BoaeFul1.0.fa   Boaedon fuliginosus
+CalaSept1.0.fa  Calamaria septentrionalis
+CalVers2.0.fa   Calotes versicolor
+CrotOre1.0.fa   Crotalus oreganus
+CycPin1.0.fa    Cyclura pinguis
+CylRuf1.0.fa    Cylindrophis ruffus
+DeinAcut1.0.fa  Deinagkistrodon acutus
+EreArg1.0.fa    Eremias argus
+EryxTat1.0.fa   Eryx tataricus
+EupPer1.0.fa    Euprepiophis perlacea
+GloyShed1.0.fa  Gloydius shedaoensis
+HeloSusp1.0.fa  Heloderma suspectum
+HypPlu1.0.fa    Hypsiscopus plumbea
+IntLes1.0.fa    Intellagama lesueurii
+LaudSac1.0.fa   Laudakia sacra
+LepNig1.0.fa    Leptotyphlops nigroterminus
+LerEdw1.0.fa    Lerista edwardsae
+NatNat1.0.fa    Natrix natrix
+OphGra1.0.fa    Ophisaurus gracilis
+PareBerd1.0.fa  Pareas berdmorei
+PhrPrz1.0.fa    Phrynocephalus przewalskii
+PhrVla1.0.fa    Phrynocephalus vlangalii
+PodCret1.0.fa   Podarcis cretensis
+UtaStan1.0.fa   Uta stansburiana
+XenoUni1.0.fa   Xenopeltis unicolor
+```
 
- 	```
-	#!/bin/bash
-	SAMPLES=$(cut -f 1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/abbr_names.txt)
-	for SAMPLE in $SAMPLES
-	        do
-		FULL=$(zcat /projects/f_geneva_1/busco/genomes/"${SAMPLE}".gz | head -n 1 | cut -d " " -f 2-3)
-	        CMD="sed -i 's/${SAMPLE}/${FULL}/g' /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/old/phy_out_supermatrix_psc75/renamed_tree.aln"
-	        echo $CMD
-	        #eval $CMD
-	        sleep 0.25
-	done
-  	```
+</p>
+</details>
 
-   	</p>
-	</details>
 
-	<details><summary>manual renaming</summary>
-	<p>
+<details><summary>run_fullname.sh</summary>
+<p>
 
- 	```
-  	cd astral/run_supertree_psc75/
-  
-	sed -i 's/AnoApl1.1.fa/Anolis apletophallus/g' out_renamed.tree
-	sed -i 's/AnoAur1.0.fa/Anolis auratus/g' out_renamed.tree
-	sed -i 's/AnoFre1.0.fa/Anolis frenatus/g' out_renamed.tree
-	sed -i 's/AnoGra1.1.fa/Anolis grahami/g' out_renamed.tree
-	sed -i 's/AnoSag2.1.fa/Anolis sagrei/g' out_renamed.tree
-	sed -i 's/BoaCon1.fa/Boa constrictor/g' out_renamed.tree
-	sed -i 's/BraPum1.0.fa/Bradypodion pumilum/g' out_renamed.tree
-	sed -i 's/BraVen1.1.fa/Bradypodion ventrale/g' out_renamed.tree
-	sed -i 's/ShinCroc.fa/Shinisaurus crocodilurus/g' out_renamed.tree
+```
+#!/bin/bash
+SAMPLES=$(cut -f 1 /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/full_names.txt)
+for SAMPLE in $SAMPLES
+        do 
+        ABBR=${SAMPLE}
+        FULL=$(grep ${SAMPLE} /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/full_names.txt | cut -f 2)
+        CMD="sed -i 's/${ABBR}/${FULL}/g' /projects/f_geneva_1/alyssa/grahami/busco/busco_phylogenomics/phy_out_supermatrix_psc100_all/psc100_all_renamed.tre"
+        echo $CMD
+        eval $CMD
+        sleep 0.25
+done
+```
 
-  	sed -i 's/AchJin1.0.fa/Achalinus jinggangensis/g'
-	sed -i 's/AniBit1.0.fa/Anilios bituberculatus/g'
-	sed -i 's/AnoAlli1.0.fa/Anolis allisoni/g'
-	sed -i 's/AnoAllo1.0.fa/Anolis allogus/g'
-	sed -i 's/AnoHomo1.0.fa/Anolis homolechis/g'
-	sed -i 's/AnoIso1.0.fa/Anolis isolepis/g'
-	sed -i 's/AnoPor1.0.fa/Anolis porcatus/g'
-	sed -i 's/ArgDia1.0.fa/Argyrophis diardii/g'
-	sed -i 's/BoaeFul1.0.fa/Boaedon fuliginosus/g'
-	sed -i 's/CalaSept1.0.fa/Calamaria septentrionalis/g'
-	sed -i 's/CalVers1.0.fa/Calotes versicolor/g'
-	sed -i 's/CrotOre1.0.fa/Crotalus oreganus/g'
-	sed -i 's/CycPin1.0.fa/Cyclura pinguis/g'
-	sed -i 's/CylRuf1.0.fa/Cylindrophis ruffus/g'
-	sed -i 's/DeinAcut1.0.fa/Deinagkistrodon acutus/g'
-	sed -i 's/EreArg1.0.fa/Eremias argus/g'
-	sed -i 's/EryxTat1.0.fa/Eryx tataricus/g'
-	sed -i 's/EupPer1.0.fa/Euprepiophis perlacea/g'
-	sed -i 's/GloyShed1.0.fa/Gloydius shedaoensis/g'
-	sed -i 's/HeloSusp1.0.fa/Heloderma suspectum/g'
-	sed -i 's/HypPlu1.0.fa/Hypsiscopus plumbea/g'
-	sed -i 's/IntLes1.0.fa/Intellagama lesueurii/g'
-	sed -i 's/LaudSac1.0.fa/Laudakia sacra/g'
-	sed -i 's/LepNig1.0.fa/Leptotyphlops nigroterminus/g'
-	sed -i 's/LerEdw1.0.fa/Lerista edwardsae/g'
-	sed -i 's/NatNat1.0.fa/Natrix natrix/g'
-	sed -i 's/OphGra1.0.fa/Ophisaurus gracilis/g'
-	sed -i 's/PareBerd1.0.fa/Pareas berdmorei/g'
-	sed -i 's/PhrPrz1.0.fa/Phrynocephalus przewalskii/g'
-	sed -i 's/PhrVla1.0.fa/Phrynocephalus vlangalii/g'
-	sed -i 's/PodCret1.0.fa/Podarcis cretensis/g'
-	sed -i 's/RhiFlo1.0.fa/Rhineura floridana/g'
-	sed -i 's/TropDor1.0.fa/Tropidonophis doriae/g'
-	sed -i 's/UtaStan1.0.fa/Uta stansburiana/g'
-	sed -i 's/XenoUni1.0.fa/Xenopeltis unicolor/g'
-  	```
-
-   	</p>
-	</details>
+</p>
+</details>
 
 ---
 
