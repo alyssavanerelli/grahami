@@ -413,7 +413,7 @@ python gag.py --fasta organism.fasta --gff organism.gff --out gag_output
 ---
 
 # Manual filtering
-- We will also be doing manual filtering on the gene models that didnt match to anything during our blast search
+- We will also be doing manual filtering on the gene models that didn't match to anything during our blast search
 - During BLAST, our gene models will really only be matching with _A. carolinensis_ genes which is pretty divergent from _A. grahami_
 - By manually filtering our other gene models on certain criteria we can be pretty confident that these are genes that _A. grahami_ has that _A. carolinensis_ doesn't
 - Filtering criteria:
@@ -422,6 +422,50 @@ python gag.py --fasta organism.fasta --gff organism.gff --out gag_output
 - Determining criteria:
   - Make a histogram of AED scores
   - Make a histogram of # of exons
+
+## Preparing files
+- I will need to prepare a file of "done" genes that have a name from Annie and a file of genes that need further filtering
+- I think that I will make the `gff` files and then paste the genome sequence at the bottom of the file
+
+Total genes: 52458
+Good genes: 20706
+"Bad" genes: 31752
+
+**Make files of base gene names**
+```
+# all gene names
+grep "\sgene\s" genome.gff | cut -f 9 | cut -d ";" -f 1 | cut -d "-" -f 1 | uniq > base_all_genes.txt
+
+# passed gene names
+grep "\sgene\s" genome.gff | grep "Name=" | cut -f 9 | cut -d ";" -f 1 |  cut -d "-" -f 1 | uniq > base_good_genes.txt
+
+# need more filtering gene names
+grep -f base_good_genes.txt -Fw -v base_all_genes.txt > base_bad_genes.txt
+```
+
+**Subset `genome.gff` file**
+```
+# gff of passed genes
+grep -f base_good_genes.txt -Fw genome.gff > passed.gff
+
+# gff of genes that need more filtering
+grep -f base_bad_genes.txt -Fw genome.gff > filter.gff
+```
+
+## Filtering based on the number of exons
+- Now i will filter the unnamed genes further (the genes in `filter.gff`)
+- I will be keeping genes that have more than **2**
+
+```
+
+```
+
+
+
+
+## Filtering based on AED score
+
+
 
 ---
 
