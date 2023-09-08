@@ -456,16 +456,70 @@ grep -f base_bad_genes.txt -Fw genome.gff > filter.gff
 - Now i will filter the unnamed genes further (the genes in `filter.gff`)
 - I will be keeping genes that have more than **2**
 
-```
+<details><summary>exon.sh</summary>
+<p>
 
 ```
+#!/bin/bash
+NAMES=$(cut -f 1 base_bad_genes.txt)
+for NAME in $NAMES
+        do
+	BASE=${NAME}
+        COUNT=$(grep -E "${BASE}|${BASE}-*" filter.gff | grep "\sexon\s" | wc -l)
+        CMD="echo -e '${BASE}\t${COUNT}' >> exon_counts.txt"
+        #echo $CMD
+        eval $CMD
+done
+
+# only keep genes with exon counts over or equal to 2
+awk '$2 >=3' exon_counts.txt > filtered_exons_names.txt
+
+# make a file with only gene IDs for the filtered genes (drop exon counts)
+cut -f 1 filtered_exons_names.txt > temp_filter.txt ; mv temp_filter.txt filtered_exons_names.txt
+```
+
+</p>
+</details>
 
 
 
 
 ## Filtering based on AED score
 
+<details><summary>aed.sh</summary>
+<p>
 
+```
+#!/bin/bash
+NAMES=$(cut -f 1 filtered_exons_names.txt)
+for NAME in $NAMES
+        do
+	BASE=${NAME}
+	AED=$(grep -E "${BASE}|${BASE}-*" Agra_rnd4.all.maker.functional.nosemi.blast.gff | grep "_AED" | cut -f 9 | cut -d ";" -f 5 | cut -d "=" -f 2)
+	CMD="echo -e '${BASE}\t${AED}' >> aed_scores.txt"
+	echo $CMD
+	#eval $CMD
+done
+```
+
+</p>
+</details>
+
+
+
+
+
+
+## Gene Stats
+
+| Step                 | # gene models |
+| :------------------: | :-----------: |
+| Maker rnd4           | 52458         |
+| **Named from annie** | **20706**     |
+| Unfiltered           | 31752         |
+| Exon filtering       | 12976         |
+| AED filtering        | -----         |
+| **Final**            | **-----**     |
 
 ---
 
