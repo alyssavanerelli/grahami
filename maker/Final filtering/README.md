@@ -580,8 +580,8 @@ grep -f all_good_genes.txt -Fw genome.gff > all_passed_filtered.gff
 | **Named from annie** | **20706**     |
 | Unfiltered           | 31752         |
 | Exon filtering       | 12976         |
-| AED filtering        | -----         |
-| **Final**            | **-----**     |
+| AED filtering        | 11157         |
+| **Final**            | **31863**     |
 
 ---
 
