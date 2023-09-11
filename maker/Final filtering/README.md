@@ -165,7 +165,7 @@ sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 	#SBATCH --exclude=halc068
 	#SBATCH --job-name=BLAST
 	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
-	#SBATCH --mem=50G
+	#SBATCH --mem=10G
 	#SBATCH -n 32
 	#SBATCH -N 1
 	#SBATCH --time=14-00:00:00
@@ -306,7 +306,7 @@ python3 annie.py \
 	#SBATCH --exclude=gpuc001,gpuc002
 	#SBATCH --job-name=annie
 	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
-	#SBATCH --mem=100G
+	#SBATCH --mem=10G
 	#SBATCH -n 10
 	#SBATCH -N 1
 	#SBATCH --time=3-00:00:00
@@ -369,7 +369,7 @@ python gag.py --fasta organism.fasta --gff organism.gff --out gag_output
 	#SBATCH --exclude=gpuc001,gpuc002
 	#SBATCH --job-name=gag
 	#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
-	#SBATCH --mem=100G
+	#SBATCH --mem=10G
 	#SBATCH -n 10
 	#SBATCH -N 1
 	#SBATCH --time=3-00:00:00
@@ -395,7 +395,7 @@ python gag.py --fasta organism.fasta --gff organism.gff --out gag_output
 	GEN_DIR="/projects/f_geneva_1/alyssa/grahami"
 	
 	echo ""
-	echo "commands to run annie"
+	echo "commands to run gag"
 	python2.7 gag.py \
 	-f ${GEN_DIR}/AnoGra1.1.fa \
 	-g ${MAKER_DIR}/Agra_rnd4.all.maker.functional.nosemi.blast.gff \
@@ -567,10 +567,14 @@ cat base_good_genes.txt filtered_aed_names.txt > all_good_genes.txt
 
 **Filter `genome.gff` file to only include filtered and named gene models**
 ```
-grep -f all_good_genes.txt -Fw genome.gff > all_passed_filtered.gff
+grep -f all_good_genes.txt -Fw genome.gff > final_genome.gff
 ```
 
-
+**Make final mRNA fasta file**
+```
+cp gag/gag_grahami/genome.mrna.fasta final/genome.mrna.fasta
+grep -f all_good_genes.txt -Fw genome.mrna.fasta > final_genome.mrna.fasta
+```
 
 ## Gene Stats
 
@@ -585,10 +589,108 @@ grep -f all_good_genes.txt -Fw genome.gff > all_passed_filtered.gff
 
 ---
 
-# Final BUSCO analysis
+# Final Stats
+
+## GAG
+- GAG produces a nice table of gene model statistics
+- So we will run this analysis once more on the final gff file
+
+<details><summary>final_gag.sh</summary>
+<p>
+
+```
+#!/bin/bash
+#SBATCH --partition=cmain
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=gag_final
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+#SBATCH --mem=10G
+#SBATCH -n 10
+#SBATCH -N 1
+#SBATCH --time=3-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
+
+
+echo "load modules"
+module purge
+module use /projects/community/modulefiles/
+module load python/2.7.17-gc563
+
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/gag
+
+
+echo ""
+echo "load variables"
+MAKER_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
+BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast/uniprot"
+ANNIE_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/annie"
+GEN_DIR="/projects/f_geneva_1/alyssa/grahami"
+FINAL_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/final"
+
+echo ""
+echo "commands to run gag"
+python2.7 gag.py \
+-f ${GEN_DIR}/AnoGra1.1.fa \
+-g ${FINAL_DIR}/final_genome.gff \
+-a ${ANNIE_DIR}/annie_output.tsv \
+-o final_gag
+
+
+echo ""
+echo "done"
+```
+
+</p>
+</details>
+
+
+**BUSCO**
 - Now we want to run BUSCO again to see our completeness scores after all of our filtering
 - The completeness will probably decrease some but we don't want to see it drastically change
+- We will run BUSCO in transcriptome mode
 
+<details><summary>final_busco.sh</summary>
+<p>
+
+```
+#!/bin/bash
+#SBATCH --partition=cmain
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=final_busco
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+#SBATCH --mem=10G
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH --time=3-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
+
+
+echo "load modules"
+module purge
+module load singularity/3.1.0
+module load bedtools2/2.25.0
+
+echo "activate conda environment"
+eval "$(conda shell.bash hook)"
+conda activate busco
+
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/final
+
+echo "Evaluate gene predictions via BUSCO by comparing the transcript FASTA to the vertebrata_odb10 transcript database"
+busco -i /projects/f_geneva_1/alyssa/grahami/annotation/filtering/final/final_genome.mrna.fasta \
+-o final_busco -l vertebrata_odb10 -m transcriptome -c 16
+
+echo "done"
+```
+
+</p>
+</details>
 
 
 ---
