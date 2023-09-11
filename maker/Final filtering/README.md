@@ -485,7 +485,10 @@ cut -f 1 filtered_exons_names.txt > temp_filter.txt ; mv temp_filter.txt filtere
 
 
 ## Filtering based on AED score
+- Need to make a file with IDs and AED scores (using the original maker file)
+- Then will look at the distribution of AED scores and filter accordingly
 
+**Make AED scores file**
 <details><summary>aed.sh</summary>
 <p>
 
@@ -505,8 +508,67 @@ done
 </p>
 </details>
 
+**Make distribution of AED scores**
 
+<details><summary>manual_filtering.R</summary>
+<p>
 
+```
+###### Maker AED scores ######
+
+#libraries
+library(MetBrewer)
+library(tidyverse)
+library(ggplot2)
+
+# set working directory
+setwd("~/Desktop/grahami/annotation/annotation filtering/")
+
+# load in data
+aed = read.table("aed_scores.txt", header = FALSE)
+colnames(aed) = c("ID", "AED")
+
+# make histogram
+ggplot(data = aed, aes(x=AED)) + geom_histogram(color = "darkblue", fill = "lightblue") + 
+  ggtitle("AED Scores") +
+  ylab("Frequency") + 
+  geom_vline(xintercept = c(0.25, 0.40, 0.50), size = 0.8, color = "firebrick4") +
+  theme_bw() +
+  geom_text(x = 0.75, y = 1250, label = "Lines at 0.25, 0.40, and 0.50")
+
+ggsave(
+  "aed_histogram.png",
+  plot = last_plot(),
+  width = 10,
+  height = 8,
+  units = "in"
+)
+```
+
+</p>
+</details>
+
+**Filter by AED**
+
+```
+# only keep genes with AED scores less than or equal to XXXX
+awk '$2 <=0.50' aed_scores.txt > filtered_aed_names.txt
+
+# make a file with only gene IDs for the filtered genes (drop exon counts)
+cut -f 1 filtered_aed_names.txt > temp_filter.txt ; mv temp_filter.txt filtered_aed_names.txt
+```
+
+## Make final `genome.gff` file
+
+**Combine filtered files of gene names**
+```
+cat base_good_genes.txt filtered_aed_names.txt > all_good_genes.txt
+```
+
+**Filter `genome.gff` file to only include filtered and named gene models**
+```
+grep -f all_good_genes.txt -Fw genome.gff > all_passed_filtered.gff
+```
 
 
 
