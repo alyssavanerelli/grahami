@@ -572,8 +572,7 @@ grep -f all_good_genes.txt -Fw genome.gff > final_genome.gff
 
 **Make final mRNA fasta file**
 ```
-cp gag/gag_grahami/genome.mrna.fasta final/genome.mrna.fasta
-grep -f all_good_genes.txt -Fw genome.mrna.fasta > final_genome.mrna.fasta
+gffread -w transcripts.fa -g /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa final_genome.gff
 ```
 
 ## Gene Stats
