@@ -645,8 +645,59 @@ echo "done"
 </p>
 </details>
 
+<details><summary>gag_named.sh</summary>
+<p>
 
-**BUSCO**
+```
+#!/bin/bash
+#SBATCH --partition=cmain
+#SBATCH --exclude=gpuc001,gpuc002
+#SBATCH --job-name=gag_final
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/annotation/filtering/slurmout/slurm-%j-%x.out
+#SBATCH --mem=10G
+#SBATCH -n 10
+#SBATCH -N 1
+#SBATCH --time=3-00:00:00
+#SBATCH --requeue
+#SBATCH --mail-user=av795@rutgers.edu
+#SBATCH --mail-type=FAIL
+
+
+echo "load modules"
+module purge
+module use /projects/community/modulefiles/
+module load python/2.7.17-gc563
+
+
+cd /projects/f_geneva_1/alyssa/grahami/annotation/filtering/gag
+
+
+echo ""
+echo "load variables"
+MAKER_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/maker"
+BLAST_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/blast/uniprot"
+ANNIE_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/annie"
+GEN_DIR="/projects/f_geneva_1/alyssa/grahami"
+FINAL_DIR="/projects/f_geneva_1/alyssa/grahami/annotation/filtering/final"
+
+echo ""
+echo "commands to run gag"
+python2.7 gag.py \
+-f ${GEN_DIR}/AnoGra1.1.fa \
+-g ${FINAL_DIR}/passed.gff \
+-a ${ANNIE_DIR}/annie_output.tsv \
+-o named_genes_gag
+
+
+echo ""
+echo "done"
+```
+
+</p>
+</details>
+
+
+## BUSCO
 - Now we want to run BUSCO again to see our completeness scores after all of our filtering
 - The completeness will probably decrease some but we don't want to see it drastically change
 - We will run BUSCO in transcriptome mode
@@ -692,6 +743,40 @@ echo "done"
 </details>
 
 
+### Compare BUSCO scores pre- and post-filtering
+- We need to make sure that the annotation completeness did not decrease dramatically after filtering out gene models
+
+**Pre-filtering**
+- Results from MAKER round 4
+
+```
+C:57.1%[S:56.1%,D:1.0%],F:16.8%,M:26.1%,n:3354
+    
+1914    Complete BUSCOs (C)                        
+1881    Complete and single-copy BUSCOs (S)        
+33      Complete and duplicated BUSCOs (D)         
+562     Fragmented BUSCOs (F)                      
+878     Missing BUSCOs (M)                         
+3354    Total BUSCO groups searched 
+```
+
+**Post-filtering**
+- final genome annotation
+
+```
+C:57.1%[S:56.1%,D:1.0%],F:16.7%,M:26.2%,n:3354     
+        
+1913    Complete BUSCOs (C)                        
+1880    Complete and single-copy BUSCOs (S)        
+33      Complete and duplicated BUSCOs (D)         
+561     Fragmented BUSCOs (F)                      
+880     Missing BUSCOs (M)                         
+3354    Total BUSCO groups searched
+```
+
+
+
+
 ---
 
 
@@ -700,6 +785,25 @@ echo "done"
 
 </p>
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
