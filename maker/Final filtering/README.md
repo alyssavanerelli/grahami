@@ -134,9 +134,10 @@ sed 's/;$//' Agra_rnd4.all.maker.gff > SEMI_removed_Agra_rnd4.all.maker.gff
 # Uniprot database
 - We need a uniprot database as well as a fasta file representing the database
 - Jody has already made this and the path is below
+- We will add this path to our blast search script below
 
 ```
-/projects/f_geneva_1/
+/projects/f_geneva_1/jody/annotation/ANNIE
 ```
 
 ---
