@@ -20,19 +20,21 @@ module load GATK/4.2.2.0-yc759
 
 
 echo "load variables"
-SAMPLE=$1
-BAM=$2
-PU=$3
-READ=$4
-CORE=$5
+# SAMPLE=$1
+# BAM=$2
+# PU=$3
+# READ=$4
+# CORE=$5
+SAMPLE='DTG-SG-149'
+PU='GW1807131241:4:1101'
 OUTDIR="/projects/f_geneva_1/alyssa/grahami/gatk/add_replace"
 BAM_DIR="/projects/f_geneva_1/alyssa/grahami/gatk/bam"
 
 echo "run add or replace groups"
 gatk AddOrReplaceReadGroups \
--I ${BAM_DIR}/${BAM} \
+-I ${BAM_DIR}/${SAMPLE}_bwa_aligned.bam \
 -O ${OUTDIR}/${SAMPLE}.addGP.bam \
--LB library1 -PL illumina -PU ${PU} -SM ${CORE}
+-LB library1 -PL illumina -PU ${PU} -SM ${SAMPLE}
 
 
 echo "index reads"
