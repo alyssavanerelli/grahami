@@ -21,7 +21,6 @@ module load bwa
 #NAME=$1
 NAME="DTG-SG-149"
 READS_OUTDIR="/projects/f_geneva_1/alyssa/grahami"
-DATA_DIR="/projects/f_geneva_1/data/sagrei_populations"
 BAM_OUTDIR="/projects/f_geneva_1/alyssa/grahami/gatk/bam"
 
 echo ""
@@ -29,8 +28,8 @@ echo "##################### index and align with BWA"
 bwa index /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa
 
 bwa mem -t 10 /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa \
-${READS_OUTDIR}/${NAME}_filtered.R1.fq \
-${READS_OUTDIR}/${NAME}_filtered.R2.fq \
+${READS_OUTDIR}/${NAME}_filtered.R1.fq.gz \
+${READS_OUTDIR}/${NAME}_filtered.R2.fq.gz \
 | samtools sort -@10 -o ${BAM_OUTDIR}/${NAME}_bwa_aligned.bam -
 
 
