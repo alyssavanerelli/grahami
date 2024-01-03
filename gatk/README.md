@@ -22,6 +22,10 @@
 
 [run_trim_bwa.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/run_trim_bwa.sh)
 
+**my reads were already filtered so all I needed to run was bwa**
+
+[bwa.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/bwa.sh)
+
 ---
 
 # Calculate depth and breadth stats
