@@ -88,6 +88,8 @@
 
 [add_replace.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/add_replace.sh)
 
+[run_add_replace](https://github.com/alyssavanerelli/grahami/blob/main/gatk/run_add_replace.sh)
+
 ---
 ## Mark Duplicates
 - Duplicates are marked, but not removed.
