@@ -20,6 +20,7 @@ module load GATK/4.2.2.0-yc759
 module load bedtools2/2.25.0
 module load gcc/7.3.0-gc56
 
+echo ""
 echo "create file"
 gatk CreateSequenceDictionary -R /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa
 
