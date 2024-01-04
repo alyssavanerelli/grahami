@@ -146,7 +146,12 @@
 
 
 ```
-I did not run HC in the correct mode at first, which led to a problem downstream of not retaining my invariant sites. The invariant sites file was quite literally empty and had no sites in it. There is a different mode that HC should be run in (BP_RESOLUTION), as well as the flag -EMIT-ALL-CONFIDENT-SITES, which makes sure that every site is put into the file. Elsewise, the homozygous regions get put into the header and then they get lost during the combineGVCF step. This is because GATK is typically used for population genomics, to find the SNP and indel sites so it doesn't really matter about the invariant sites.
+I did not run HC in the correct mode at first, which led to a problem downstream of not retaining my invariant sites.
+The invariant sites file was quite literally empty and had no sites in it. There is a different mode that HC should be
+run in (BP_RESOLUTION), as well as the flag -EMIT-ALL-CONFIDENT-SITES, which makes sure that every site is put into
+the file. Elsewise, the homozygous regions get put into the header and then they get lost during the combineGVCF step.
+This is because GATK is typically used for population genomics, to find the SNP and indel sites so it doesn't really
+matter about the invariant sites.
 ```
 
 [run_hap_call.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/run_hap_call.sh)
