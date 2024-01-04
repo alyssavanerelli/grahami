@@ -1,6 +1,5 @@
 #!/bin/bash
 #SBATCH --partition=cmain
-#SBATCH --account=general
 #SBATCH --exclude=gpuc001,gpuc002
 #SBATCH --job-name=dict
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/gatk/slurmout/slurm-%j-%x.out
