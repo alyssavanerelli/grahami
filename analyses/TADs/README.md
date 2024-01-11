@@ -50,6 +50,7 @@ After a corrected Hi-C matrix is created other tools can be used to visualize it
     - this is set to no penalty.
 
 [map_reads.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/map_reads.sh)
+
 [run_map_reads.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/run_map_reads.sh)
 
 
