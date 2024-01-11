@@ -40,8 +40,26 @@ After a corrected Hi-C matrix is created other tools can be used to visualize it
   - for either `bowtie2` or `hisat2` use the `–reorder parameter` which tells `bowtie2` or `hisat2` to output the sam files in the exact same order as in the .fastq files.
   - use local mapping, in contrast to end-to-end. A fraction of Hi-C reads are chimeric and will not map end-to-end thus, local mapping is important to increase the number of mapped reads.
   - Tune the aligner parameters to penalize deletions and insertions. This is important to avoid aligned reads with gaps if they happen to be chimeric.
+- **bwa mem mapping options:**
+  - `-A` INT: score for a sequence match, which scales options -TdBOELU unless overridden `[1]`
+  - `-B` INT: penalty for a mismatch `[4]`
+  - `-O` INT[,INT]: gap open penalties for deletions and insertions `[6,6]`
+  - `-E` INT[,INT]: gap extension penalty; a gap of size k cost `{-O} + {-E}*k` `[1,1]`
+    - this is set very high to avoid gaps at restriction sites. Setting the gap extension penalty high, produces better results as the sequences left and right of a restriction site are mapped independently.
+  - `-L` INT[,INT]: penalty for 5'- and 3'-end clipping `[5,5]`
+    - this is set to no penalty.
 
 [map_reads.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/map_reads.sh)
+[run_map_reads.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/run_map_reads.sh)
+
+
+
+
+
+
+
+
+
 
 
 
