@@ -27,12 +27,12 @@ echo "##################### index and align with BWA"
 
 echo ""
 echo "R1 files"
-bwa mem -A1 -B4  -E50 -L0 -t 10 /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa \
+bwa mem -A1 -B4  -E50 -L0 /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa \
 ${READS_OUTDIR}/${NAME}_R1_001.fastq.gz 2>>${BAM_OUTDIR}/${NAME}_R1.log | samtools view -Shb - > ${BAM_OUTDIR}/${NAME}_R1.bam
 
 echo ""
 echo "R2 files"
-bwa mem -A1 -B4  -E50 -L0 -t 10 /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa \
+bwa mem -A1 -B4  -E50 -L0 /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa \
 ${READS_OUTDIR}/${NAME}_R2_001.fastq.gz 2>>${BAM_OUTDIR}/${NAME}_R2.log | samtools view -Shb - > ${BAM_OUTDIR}/${NAME}_R2.bam
 
 echo ""
