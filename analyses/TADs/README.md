@@ -7,3 +7,42 @@
 - [HiCExplorer Tools](https://hicexplorer.readthedocs.io/en/latest/content/list-of-tools.html)
 - [hicPlotMatrix](https://hicexplorer.readthedocs.io/en/latest/content/tools/hicPlotMatrix.html#hicplotmatrix): Creates a heatmap of a Hi-C matrix.
 - [hicPlotTADs](https://hicexplorer.readthedocs.io/en/latest/content/tools/hicPlotTADs.html#usage-example): The hicPlotTADs output is similar to a genome browser screenshot that besides the usual genes and score data (like bigwig or bedgraph files) also contains Hi-C data.
+
+---
+
+## Installation
+```
+conda create --name hicexplorer hicexplorer=3.6 python=3.8 -c bioconda -c conda-forge
+conda activate hicexplorer
+```
+
+---
+
+## Data
+
+The _grahami_ HiC reads are here: `/projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/`
+
+---
+
+## Usage
+
+**Generate a Hi-C contact matrix**
+1. Map the Hi-C reads to the reference genome
+2. Filter the aligned reads to create a contact matrix
+3. Filter matrix bins with low or zero read coverage
+4. Remove biases from the Hi-C contact matrices
+
+After a corrected Hi-C matrix is created other tools can be used to visualize it, call TADS or compare it with other matrices.
+
+### Mapping Reads
+- Mates have to be mapped individually to avoid mapper specific heuristics designed for standard paired-end libraries.
+- We have used the HiCExplorer successfully with `bwa`, `bowtie2`, and `hisat2`. However, it is important to:
+  - for either `bowtie2` or `hisat2` use the `–reorder parameter` which tells `bowtie2` or `hisat2` to output the sam files in the exact same order as in the .fastq files.
+  - use local mapping, in contrast to end-to-end. A fraction of Hi-C reads are chimeric and will not map end-to-end thus, local mapping is important to increase the number of mapped reads.
+  - Tune the aligner parameters to penalize deletions and insertions. This is important to avoid aligned reads with gaps if they happen to be chimeric.
+
+[map_reads.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/map_reads.sh)
+
+
+
+
