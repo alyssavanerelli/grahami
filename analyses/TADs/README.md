@@ -53,8 +53,17 @@ After a corrected Hi-C matrix is created other tools can be used to visualize it
 
 [run_map_reads.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/run_map_reads.sh)
 
+### Find Restriction Sites
+[`hicFindRestSite`](https://hicexplorer.readthedocs.io/en/latest/content/tools/hicFindRestSite.html)
 
+### Create HiC Matrix
 
+- Once the reads have been mapped the Hi-C matrix can be built. 
+- For this, the minimal extra information required is the **binSize** used for the matrix. 
+  - Is it best to enter a low number like 10,000 because lower resolution matrices (larger bins) can be easily constructed using `hicMergeMatrixBins`
+  - Matrices at restriction fragment resolution can be created by providing a file containing the restriction sites, this file can be created with the tool `hicFindRestSites`
+
+[create_matrix.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/create_matrix.sh)
 
 
 
