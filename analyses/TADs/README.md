@@ -54,7 +54,12 @@ After a corrected Hi-C matrix is created other tools can be used to visualize it
 [run_map_reads.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/run_map_reads.sh)
 
 ### Find Restriction Sites
-[`hicFindRestSite`](https://hicexplorer.readthedocs.io/en/latest/content/tools/hicFindRestSite.html)
+- Omni-C sequencing uses a non-specific endonuclease (DNase 1) so we will not have a restriction sequence
+- Here is a [github issues](https://github.com/deeptools/HiCExplorer/issues/599) page that deals with this
+- We will need to specify random sequences and ignore the quality report
+- [`hicFindRestSite`](https://hicexplorer.readthedocs.io/en/latest/content/tools/hicFindRestSite.html)
+
+[find_rest_site.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/find_rest_site.sh)
 
 ### Create HiC Matrix
 
