@@ -15,6 +15,18 @@ echo "load conda environment"
 eval "$(conda shell.bash hook)"
 conda activate hicexplorer
 
+echo ""
+echo "load variables"
 NAME=$1
+FASTA_DIR='/projects/f_geneva_1/alyssa/grahami'
 BAM_OUTDIR="/projects/f_geneva_1/alyssa/grahami/tads/mapped_reads"
 OUTDIR='/projects/f_geneva_1/alyssa/grahami/tads/matrix'
+
+echo ""
+echo "run commands"
+hicFindRestSite --fasta ${FASTA_DIR}/AnoGra1.1.fa --searchPattern ACGT -o ${OUTDIR}/rest_site_positions.bed
+
+echo""
+echo "done"
+
+
