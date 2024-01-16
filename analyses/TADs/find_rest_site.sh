@@ -17,7 +17,6 @@ conda activate hicexplorer
 
 echo ""
 echo "load variables"
-NAME=$1
 FASTA_DIR='/projects/f_geneva_1/alyssa/grahami'
 BAM_OUTDIR="/projects/f_geneva_1/alyssa/grahami/tads/mapped_reads"
 OUTDIR='/projects/f_geneva_1/alyssa/grahami/tads/matrix'
