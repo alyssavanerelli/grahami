@@ -15,11 +15,15 @@ echo "load conda environment"
 eval "$(conda shell.bash hook)"
 conda activate hicexplorer
 
+echo ""
+echo "load variables"
 NAME='DTG-HiC-103'
 FASTA_DIR='/projects/f_geneva_1/alyssa/grahami'
 BAM_OUTDIR="/projects/f_geneva_1/alyssa/grahami/tads/mapped_reads"
 OUTDIR='/projects/f_geneva_1/alyssa/grahami/tads/matrix'
 
+echo ""
+echo "run commands"
 hicBuildMatrix --samFiles ${BAM_OUTDIR}/${NAME}_R1.bam ${BAM_OUTDIR}/${NAME}_R2.bam \
 --binSize 10000 \
 --restrictionSequence ACGT \
