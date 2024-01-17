@@ -15,15 +15,16 @@ echo "load conda environment"
 eval "$(conda shell.bash hook)"
 conda activate hicexplorer
 
-NAME=$1
+NAME='DTG-HiC-103'
+FASTA_DIR='/projects/f_geneva_1/alyssa/grahami'
 BAM_OUTDIR="/projects/f_geneva_1/alyssa/grahami/tads/mapped_reads"
 OUTDIR='/projects/f_geneva_1/alyssa/grahami/tads/matrix'
 
 hicBuildMatrix --samFiles ${BAM_OUTDIR}/${NAME}_R1.bam ${BAM_OUTDIR}/${NAME}_R2.bam \
 --binSize 10000 \
---restrictionSequence GATC \
---danglingSequence GATC \
---restrictionCutFile cut_sites.bed \
+--restrictionSequence ACGT \
+--danglingSequence ACGT \
+--restrictionCutFile ${OUTDIR}/rest_site_positions.bed \
 --threads 4 \
 --inputBufferSize 100000 \
 --outBam ${OUTDIR}/${NAME}_hic.bam \
