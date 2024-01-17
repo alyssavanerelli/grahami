@@ -25,7 +25,7 @@ echo ""
 echo "run commands"
 hicFindRestSite --fasta ${FASTA_DIR}/AnoGra1.1.fa --searchPattern ACGT -o ${OUTDIR}/rest_site_positions.bed
 
-echo""
+echo ""
 echo "done"
 
 
