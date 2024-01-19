@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --partition=cmain
 #SBATCH --exclude=gpuc001,gpuc002
-#SBATCH --job-name=find_tads
+#SBATCH --job-name=plot_tads
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/tads/slurmout/slurm-%j-%x.out
 #SBATCH --mem=100G
 #SBATCH -n 16
