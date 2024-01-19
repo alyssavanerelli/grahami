@@ -23,8 +23,8 @@ OUTDIR='/projects/f_geneva_1/alyssa/grahami/tads/matrix'
 
 echo ""
 echo "run commands"
-hicCorrectMatrix diagnostic_plot -m ${OUTDIR}/DTG-HiC-103_hic_matrix.h5 -o ${OUTDIR}/DTG-HiC-103_hic_matrix.png
-# hicCorrectMatrix correct -m ${OUTDIR}/DTG-HiC-103_hic_matrix.h5 --filterThreshold -1.5 5 -o ${OUTDIR}/DTG-HiC-103_hic_corrected.h5
+# hicCorrectMatrix diagnostic_plot -m ${OUTDIR}/DTG-HiC-103_hic_matrix.h5 -o ${OUTDIR}/DTG-HiC-103_hic_matrix.png
+# hicCorrectMatrix correct -m ${OUTDIR}/DTG-HiC-103_hic_matrix.h5 --filterThreshold -2 4 -o ${OUTDIR}/DTG-HiC-103_hic_corrected.h5
 
 echo ""
 echo "done"
