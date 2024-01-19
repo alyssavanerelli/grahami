@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --partition=cmain
 #SBATCH --exclude=gpuc001,gpuc002
-#SBATCH --job-name=correct_matrix
+#SBATCH --job-name=find_tads
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/tads/slurmout/slurm-%j-%x.out
 #SBATCH --mem=100G
-#SBATCH -n 15
+#SBATCH -n 16
 #SBATCH -N 1
 #SBATCH --time=3-00:00:00
 #SBATCH --requeue
@@ -19,12 +19,12 @@ echo ""
 echo "load variables"
 FASTA_DIR='/projects/f_geneva_1/alyssa/grahami'
 BAM_OUTDIR="/projects/f_geneva_1/alyssa/grahami/tads/mapped_reads"
-OUTDIR='/projects/f_geneva_1/alyssa/grahami/tads/matrix'
+INDIR='/projects/f_geneva_1/alyssa/grahami/tads/matrix'
+OUTDIR='/projects/f_geneva_1/alyssa/grahami/tads/tads'
 
 echo ""
 echo "run commands"
-hicCorrectMatrix diagnostic_plot -m ${OUTDIR}/DTG-HiC-103_hic_matrix.h5 -o ${OUTDIR}/DTG-HiC-103_hic_matrix.png
-# hicCorrectMatrix correct -m ${OUTDIR}/DTG-HiC-103_hic_matrix.h5 --filterThreshold -1.5 5 -o ${OUTDIR}/DTG-HiC-103_hic_corrected.h5
+hicFindTADs -m ${INDIR}/DTG-HiC-103_hic_corrected.h5 --outPrefix ${OUTDIR}/DTG-HiC-103_corrected --numberOfProcessors 16
 
 echo ""
 echo "done"
