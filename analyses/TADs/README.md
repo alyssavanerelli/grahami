@@ -109,7 +109,12 @@ After a corrected Hi-C matrix is created other tools can be used to visualize it
 
 
 ### Plot TADs
+- Now we will plot our TADs with [hicPlotTADs](https://hicexplorer.readthedocs.io/en/latest/content/tools/hicPlotTADs.html#usage-example)
+- For this, we will need to make a configuration track file
 
+[DTG_HiC_103_tracks.ini](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/DTG_HiC_103_tracks.ini)
+
+[plot_tads.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/plot_tads.sh)
 
 
 
