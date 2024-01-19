@@ -24,7 +24,7 @@ OUTDIR='/projects/f_geneva_1/alyssa/grahami/tads/tads'
 
 echo ""
 echo "run commands"
-hicFindTADs -m ${INDIR}/DTG-HiC-103_hic_corrected.h5 --outPrefix ${OUTDIR}/DTG-HiC-103_corrected --numberOfProcessors 16
+hicFindTADs -m ${INDIR}/DTG-HiC-103_hic_corrected.h5 --outPrefix ${OUTDIR}/DTG-HiC-103_corrected --numberOfProcessors 16 --correctForMultipleTesting None
 
 echo ""
 echo "done"
