@@ -3,8 +3,8 @@
 #SBATCH --exclude=gpuc001,gpuc002
 #SBATCH --job-name=correct_matrix
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/tads/slurmout/slurm-%j-%x.out
-#SBATCH --mem=100G
-#SBATCH -n 15
+#SBATCH --mem=10G
+#SBATCH -n 2
 #SBATCH -N 1
 #SBATCH --time=3-00:00:00
 #SBATCH --requeue
