@@ -93,6 +93,10 @@ After a corrected Hi-C matrix is created other tools can be used to visualize it
 
 [correct_matrix.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/correct_matrix.sh)
 
+### Plot Matrix
+- This creates a heatmap of our HiC matrix using [hicPlotMatrix](https://hicexplorer.readthedocs.io/en/latest/content/tools/hicPlotMatrix.html#hicplotmatrix)
+
+[plot_matrix.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/TADs/plot_matrix.sh)
 
 ### TAD Calling
 - Now that we have a corrected matrix, we can call TADs with [hicFindTADs](https://hicexplorer.readthedocs.io/en/latest/content/tools/hicFindTADs.html)
