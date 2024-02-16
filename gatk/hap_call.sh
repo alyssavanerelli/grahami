@@ -34,13 +34,13 @@ echo ""
 echo "run haplotype caller"
 gatk --java-options "-Xms58G -Xmx60g -XX:ParallelGCThreads=2" HaplotypeCaller --native-pair-hmm-threads 2 \
 -I ${INDIR}/${SAMPLE}.marked.bam \
--O ${OUTDIR}/${SAMPLE}.g.vcf.gz \
+-O ${OUTDIR}/${SAMPLE}.${LIST}.g.vcf.gz \
 -R ${GEN_DIR}/AnoGra1.1.fa \
 -ERC BP_RESOLUTION \
 --output-mode EMIT_ALL_CONFIDENT_SITES \
 --max-reads-per-alignment-start 0 \
 -RF NotDuplicateReadFilter \
--L ${BASE_DIR}/${LIST}
+-L ${BASE_DIR}/${LIST}.list
 
 echo ""
 echo "done"
