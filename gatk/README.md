@@ -64,9 +64,9 @@
 - Resource: [Github page for _Bradypodion_ by Jody Taft](https://github.com/lizardroom/Bradypodion-Pop.Gen)
 
 **Steps:**
-- [ ] [AddOrReplaceReadGroups](https://github.com/alyssavanerelli/grahami/blob/main/gatk#add-or-replace-read-groups) (10-15 minutes)
-- [ ] [MarkDuplicates](https://github.com/alyssavanerelli/grahami/blob/main/gatk#mark-duplicates) (60 minutes)
-- [ ] [Index and Dictionary](https://github.com/alyssavanerelli/grahami/blob/main/gatk#index-and-dictionary) (5 minutes)
+- [x] [AddOrReplaceReadGroups](https://github.com/alyssavanerelli/grahami/blob/main/gatk#add-or-replace-read-groups) (10-15 minutes)
+- [x] [MarkDuplicates](https://github.com/alyssavanerelli/grahami/blob/main/gatk#mark-duplicates) (60 minutes)
+- [x] [Index and Dictionary](https://github.com/alyssavanerelli/grahami/blob/main/gatk#index-and-dictionary) (5 minutes)
 - [ ] [HaplotypeCaller](https://github.com/alyssavanerelli/grahami/blob/main/gatk#haplotype-caller) (3-14 days)
 - [ ] [CombineGVCFs](https://github.com/alyssavanerelli/grahami/blob/main/gatk#combine-gcvfs) (~5 hrs)
 - [ ] [GenotypeGVCFs](https://github.com/alyssavanerelli/grahami/blob/main/gatk#genotype-gcvfs) (~2 days)
