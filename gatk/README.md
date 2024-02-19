@@ -68,7 +68,7 @@
 - [x] [MarkDuplicates](https://github.com/alyssavanerelli/grahami/blob/main/gatk#mark-duplicates) (60 minutes)
 - [x] [Index and Dictionary](https://github.com/alyssavanerelli/grahami/blob/main/gatk#index-and-dictionary) (5 minutes)
 - [x] [HaplotypeCaller](https://github.com/alyssavanerelli/grahami/blob/main/gatk#haplotype-caller) (3-14 days)
-- [ ] [CombineGVCFs](https://github.com/alyssavanerelli/grahami/blob/main/gatk#combine-gcvfs) (~5 hrs)
+- [x] [CombineGVCFs](https://github.com/alyssavanerelli/grahami/blob/main/gatk#combine-gcvfs) (~5 hrs)
 - [ ] [GenotypeGVCFs](https://github.com/alyssavanerelli/grahami/blob/main/gatk#genotype-gcvfs) (~2 days)
 - [ ] [SelectVariants](https://github.com/alyssavanerelli/grahami/blob/main/gatk#select-variants) (~2 hrs)
 - [ ] [VariantsToTable](https://github.com/alyssavanerelli/grahami/blob/main/gatk#variant-to-table) (~1 hr)
