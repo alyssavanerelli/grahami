@@ -72,7 +72,7 @@
 - [x] [GenotypeGVCFs](https://github.com/alyssavanerelli/grahami/blob/main/gatk#genotype-gcvfs) (~2 days)
 - [ ] [SelectVariants](https://github.com/alyssavanerelli/grahami/blob/main/gatk#select-variants) (~2 hrs)
 - [ ] [VariantsToTable](https://github.com/alyssavanerelli/grahami/blob/main/gatk#variant-to-table) (~1 hr)
-- [ ] [VariantFiltration GATK](https://github.com/alyssavanerelli/grahami/blob/main/gatk#filter-snps-and-invariant-sites---gatk)
+- [ ] [VariantFiltration GATK](https://github.com/alyssavanerelli/grahami/tree/main/gatk#filter-snps-indels-and-invariant-sites---gatk)
 - [ ] [VariantFiltration vcftools](https://github.com/alyssavanerelli/grahami/blob/main/gatk#filter-snps-and-invariant-sites---vcftools)
 
 ---
