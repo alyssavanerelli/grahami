@@ -88,8 +88,6 @@
 
 [add_replace.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/add_replace.sh)
 
-[run_add_replace](https://github.com/alyssavanerelli/grahami/blob/main/gatk/run_add_replace.sh)
-
 ---
 ## Mark Duplicates
 - Duplicates are marked, but not removed.
@@ -100,31 +98,6 @@
   - If not done, each lane will be treated as a different individual which we do not want
 
 [mark_dup.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/mark_dup.sh)
-
-[run_mark_dup.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/run_mark_dup.sh)
-
-
-<details><summary>make text files with names to submit</summary>
-<p>
-	
-	```
-	# text file for samples ran on 4 lanes
-	ls -1 /projects/f_geneva_1/alyssa/sagrei/bam/*.bam | cut -d "/" -f 7 | cut -d "_" -f 3 | cut -d "." -f 2 | sort | uniq > all_names.txt 
-	grep "Alut" all_names.txt > temp_alut.txt
-	grep "Anel" all_names.txt > temp_anel.txt
-	grep "Asord" all_names.txt > temp_asord.txt 
-	cat temp_alut.txt temp_anel.txt temp_asord.txt > 4_lanes.txt
-	
-	# text file for samples ran on 2 lanes
-	grep "Aoph" all_names.txt > temp_aoph.txt
-	grep "Asag" all_names.txt > temp_asag.txt
-	grep "Asmay" all_names.txt > temp_asmay.txt
-	cat temp_aoph.txt temp_asag.txt temp_asmay.txt > 2_lanes.txt
-	```
-
-</p>
-</details>
-
 
 ---
 
