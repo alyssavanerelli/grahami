@@ -6,7 +6,7 @@
 #SBATCH --mem=10G
 #SBATCH -n 2
 #SBATCH -N 1
-#SBATCH --time=0-18:00:00
+#SBATCH --time=0-7:00:00
 #SBATCH --requeue
 #SBATCH --mail-user=av795@rutgers.edu
 #SBATCH --mail-type=FAIL
@@ -37,7 +37,7 @@ echo "Variant Table SNP"
 gatk --java-options "-Xmx10g" \
 VariantsToTable \
 -R ${GEN_DIR}/AnoGra1.1.fa \
--V ${INDIR}/${SAMPLE}.genotype.g.vcf.gz \
+-V ${OUT_SNP}/${SAMPLE}_snps.vcf.gz \
 -F CHROM -F POS -F QUAL -F QD -F DP -F MQ -F MQRankSum -F FS -F ReadPosRankSum -F SOR \
 -O ${OUT_SNP}/${SAMPLE}_snps.table
 
@@ -46,7 +46,7 @@ echo "Variant Table Indel"
 gatk --java-options "-Xmx10g" \
 VariantsToTable \
 -R ${GEN_DIR}/AnoGra1.1.fa \
--V ${INDIR}/${SAMPLE}.genotype.g.vcf.gz \
+-V ${OUT_INDEL}/${SAMPLE}_indels.vcf.gz \
 -F CHROM -F POS -F QUAL -F QD -F DP -F MQ -F MQRankSum -F FS -F ReadPosRankSum -F SOR \
 -O ${OUT_INDEL}/${SAMPLE}_indels.table
 
