@@ -224,7 +224,7 @@ Now we will run this [**R code**](https://github.com/alyssavanerelli/grahami/blo
 - We will also be filtering out invariant sites
 - I will be doing all of this in the one script below
 
-[variant_filter.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/variant_filter.sh]
+[variant_filter.sh](https://github.com/alyssavanerelli/grahami/blob/main/gatk/variant_filter.sh)
 
 ---
 
