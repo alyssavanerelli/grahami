@@ -1,4 +1,3 @@
-```
 #!/bin/bash
 #SBATCH --partition=p_ccib_1
 #SBATCH --exclude=gpuc001,gpuc002
@@ -111,4 +110,3 @@ zcat ${OUT_INVARIANT}/${SAMPLE}_invariants_filtered_depth.vcf.gz | grep -E '^#|P
 
 echo ""
 echo "done"
-```
