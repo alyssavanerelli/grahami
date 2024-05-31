@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --partition=p_ccib_1
+#SBATCH --partition=cmain
 #SBATCH --exclude=gpuc001,gpuc002
 #SBATCH --job-name=filter_variants
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/gatk/slurmout/slurm-%j-%x.out
