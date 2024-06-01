@@ -315,9 +315,9 @@ Now we will run this [**R code**](https://github.com/alyssavanerelli/grahami/blo
   bcftools view -H genotype_gvcf/snps/Alut_snps_filtered_depth_passed.vcf | wc -l
   ```
 
-| Sample      | Pre-GATK   | Pre-vcftools | 10% missing |
+| Sample      | Pre-GATK   | Pre-vcftools | Final       |
 | ----------- | ---------- | ------------ | ----------- |
-| DTG-SG-149  |            |              |             |
+| DTG-SG-149  | 10208677   | 9569841      | 9282435     |
 
 ### Invariant sites
 
