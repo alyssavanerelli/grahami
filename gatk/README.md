@@ -255,7 +255,7 @@ Now we will run this [**R code**](https://github.com/alyssavanerelli/grahami/blo
 
 **2. Look at stats output in R and use this to inform our filtering**
 - We will run [**this R code**](https://github.com/alyssavanerelli/grahami/blob/main/gatk/vcftools.R) to determine which value to filter each parameter on.
-- [Resource]:(https://speciationgenomics.github.io/filtering_vcfs/)
+- [Resource](https://speciationgenomics.github.io/filtering_vcfs/)
 - **Variant quality:**
   - The first metric we will look at is the (Phred encoded) site quality.
   - This is a measure of how much confidence we have in our variant calls.
