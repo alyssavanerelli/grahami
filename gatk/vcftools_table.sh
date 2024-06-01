@@ -1,9 +1,8 @@
-```
 #!/bin/bash
 #SBATCH --partition=p_ccib_1
 #SBATCH --exclude=gpuc001,gpuc002
 #SBATCH --job-name=vcftools_table
-#SBATCH --output=/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf/slurmout/slurm-%j-%x.out
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/gatk/slurmout/slurm-%j-%x.out
 #SBATCH --mem=10G
 #SBATCH -n 2
 #SBATCH -N 1
@@ -21,17 +20,21 @@ module load VCFtools/vcftools-v0.1.16-13-yc759
 
 echo ""
 echo "load variables"
-COHORT=$1
-INDIR="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf"
-GEN_DIR="/projects/f_geneva_1/alyssa/sagrei/genome"
-OUT_SNP="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf/snps"
-OUT_INDEL="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf/indels"
-OUT_INVARIANT="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf/invariant"
-OUTDIR="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf/vcftools_tables"
-SNPS=${OUT_SNP}/${COHORT}_snps_filtered_depth_passed.vcf
-OUTFILE_SNP=${OUTDIR}/${COHORT}_snps_vcftools
-INVAR=${OUT_INVARIANT}/${COHORT}_invariants_filtered_depth_passed.vcf
-	OUTFILE_INV=${OUTDIR}/${COHORT}_invariants_vcftools
+#SAMPLE=$1
+SAMPLE='DTG-SG-149'
+INDIR="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf"
+GEN_DIR="/projects/f_geneva_1/alyssa/grahami"
+OUTDIR="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf"
+BASE_DIR='/projects/f_geneva_1/alyssa/grahami/gatk'
+OUT_SNP="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/snps"
+OUT_INDEL="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/indels"
+OUT_INVARIANT="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/invariant"
+SNPS=${OUT_SNP}/${SAMPLE}_snps_filtered_depth_passed.vcf
+OUTFILE_SNP=${OUT_SNP}/${SAMPLE}_snps_vcftools
+INVAR=${OUT_INVARIANT}/${SAMPLE}_invariants_filtered_depth_passed.vcf
+OUTFILE_INV=${OUT_INVARIANT}/${SAMPLE}_invariants_vcftools
+
+
 
 echo ""
 echo "run vcftools snps"
@@ -51,4 +54,3 @@ vcftools --vcf ${SNPS} --het --out $OUTFILE_SNP                             # Ca
 
 echo ""
 echo "done"
-```
