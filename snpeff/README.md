@@ -101,3 +101,22 @@ Now we can run `snpEff`
 ```
 java -Xmx8g -jar snpEff.jar AnoGra AnoGra.vcf > AnoGra_out.vcf
 ```
+
+---
+
+## Output VCF file
+- Full output information can be found [here](https://pcingola.github.io/SnpEff/snpeff/inputoutput/)
+- The output VCF file is a tab-separated text file in this format:
+  1. Chromosome name
+  2. Position
+  3. Variant's ID
+  4. Reference genome
+  5. Alternative (i.e. variant)
+  6. Quality score
+  7. Filter (whether or not the variant passed quality filters)
+  8. INFO : Generic information about this variant. SnpEff adds annotation information in this column.
+- SnpEff will also add information to the VCF header as well.
+- Functional annotations are added to the info page using an `ANN` tag
+
+
+
