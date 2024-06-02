@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --partition=p_ccib_1
+#SBATCH --partition=cmain
 #SBATCH --exclude=gpuc001,gpuc002
 #SBATCH --job-name=combine_allsites
-#SBATCH --output=/projects/f_geneva_1/alyssa/sagrei/allsites/slurmout/slurm-%j-%x.out
+#SBATCH --output=/projects/f_geneva_1/alyssa/grahami/gatk/slurmout/slurm-%j-%x.out
 #SBATCH --mem=10G
 #SBATCH -n 2
 #SBATCH -N 1
@@ -21,46 +21,49 @@ module load VCFtools/vcftools-v0.1.16-13-yc759
 
 echo ""
 echo "load variables"
-COHORT=$1
-INDIR="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf"
-GEN_DIR="/projects/f_geneva_1/alyssa/sagrei/genome"
-OUT_SNP="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf/snps"
-OUT_INDEL="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf/indels"
-OUT_INVARIANT="/projects/f_geneva_1/alyssa/sagrei/genotype_gvcf/invariant"
-OUT_ALLSITES="/projects/f_geneva_1/alyssa/sagrei/allsites"
+#SAMPLE=$1
+SAMPLE='DTG-SG-149'
+INDIR="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf"
+GEN_DIR="/projects/f_geneva_1/alyssa/grahami"
+OUTDIR="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf"
+BASE_DIR='/projects/f_geneva_1/alyssa/grahami/gatk'
+OUT_SNP="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/snps"
+OUT_INDEL="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/indels"
+OUT_INVARIANT="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/invariant"
+OUT_ALLSITES="/projects/f_geneva_1/alyssa/grahami/gatk/allsites"
 
 
 echo ""
 echo "copy files"
-cp ${OUT_SNP}/${COHORT}_snp_vcftools_filtered.vcf.recode.vcf ${OUT_SNP}/${COHORT}_snp_final_filtered.vcf
-cp ${OUT_INDEL}/${COHORT}_indels_filtered_depth_passed.vcf ${OUT_INDEL}/${COHORT}_indels_final_filtered.vcf
-cp ${OUT_INVARIANT}/${COHORT}_invariants_vcftools_filtered.vcf.recode.vcf ${OUT_INVARIANT}/${COHORT}_invariants_final_filtered.vcf
+cp ${OUT_SNP}/${SAMPLE}_snp_vcftools_filtered.vcf.recode.vcf ${OUT_SNP}/${SAMPLE}_snp_final_filtered.vcf
+cp ${OUT_INDEL}/${SAMPLE}_indels_filtered_depth_passed.vcf ${OUT_INDEL}/${SAMPLE}_indels_final_filtered.vcf
+cp ${OUT_INVARIANT}/${SAMPLE}_invariants_vcftools_filtered.vcf.recode.vcf ${OUT_INVARIANT}/${SAMPLE}_invariants_final_filtered.vcf
 
 echo ""
 echo "bgzip files"
-bgzip ${OUT_SNP}/${COHORT}_snp_vcftools_filtered.vcf.recode.vcf
-bgzip ${OUT_INDEL}/${COHORT}_indels_filtered_depth_passed.vcf
-bgzip ${OUT_INVARIANT}/${COHORT}_invariants_vcftools_filtered.vcf.recode.vcf
+bgzip ${OUT_SNP}/${SAMPLE}_snp_final_filtered.vcf
+bgzip ${OUT_INDEL}/${SAMPLE}_indels_final_filtered.vcf
+bgzip ${OUT_INVARIANT}/${SAMPLE}_invariants_final_filtered.vcf
 
 
 echo ""
 echo "index files using tabix"
-tabix ${OUT_SNP}/${COHORT}_snp_vcftools_filtered.vcf.recode.vcf.gz
-tabix ${OUT_INDEL}/${COHORT}_indels_filtered_depth_passed.vcf.gz
-tabix ${OUT_INVARIANT}/${COHORT}_invariants_vcftools_filtered.vcf.recode.vcf.gz
+tabix ${OUT_SNP}/${SAMPLE}_snp_final_filtered.vcf.gz
+tabix ${OUT_INDEL}/${SAMPLE}_indels_final_filtered.vcf.gz
+tabix ${OUT_INVARIANT}/${SAMPLE}_invariants_final_filtered.vcf.gz
 
 
 echo ""
 echo "combine using bcftools"
 bcftools concat \
 --allow-overlaps \
-${OUT_SNP}/${COHORT}_snp_vcftools_filtered.vcf.recode.vcf.gz ${OUT_INDEL}/${COHORT}_indels_filtered_depth_passed.vcf.gz ${OUT_INVARIANT}/${COHORT}_invariants_vcftools_filtered.vcf.recode.vcf.gz \
--O z -o ${OUT_ALLSITES}/${COHORT}_allsites.vcf.gz
+${OUT_SNP}/${SAMPLE}_snp_final_filtered.vcf.gz ${OUT_INDEL}/${SAMPLE}_indels_final_filtered.vcf.gz ${OUT_INVARIANT}/${SAMPLE}_invariants_final_filtered.vcf.gz \
+-O z -o ${OUT_ALLSITES}/${SAMPLE}_allsites.vcf.gz
 
 
 echo ""
 echo "index files"
-bcftools index -t ${OUT_ALLSITES}/${COHORT}_allsites.vcf.gz
+bcftools index -t ${OUT_ALLSITES}/${SAMPLE}_allsites.vcf.gz
 
 echo ""
 echo "done"
