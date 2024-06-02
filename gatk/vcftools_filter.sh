@@ -47,10 +47,10 @@ echo "Run vcftools"
 
 echo ""
 echo "Filter SNPs"
-# vcftools --vcf ${SNPS} \
-# --maf ${MAF} --minQ ${QUAL} \
-# --min-meanDP ${MIN_DEPTH} --max-meanDP ${MAX_DEPTH} \
-# --minDP ${MIN_DEPTH} --maxDP ${MAX_DEPTH} --recode --out ${OUT_SNP}/${SAMPLE}_snp_vcftools_filtered.vcf
+vcftools --vcf ${SNPS} \
+--maf ${MAF} --minQ ${QUAL} \
+--min-meanDP ${MIN_DEPTH} --max-meanDP ${MAX_DEPTH} \
+--minDP ${MIN_DEPTH} --maxDP ${MAX_DEPTH} --recode --out ${OUT_SNP}/${SAMPLE}_snp_vcftools_filtered.vcf
 
 echo ""
 echo "Filter invariants"
