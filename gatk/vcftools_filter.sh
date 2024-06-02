@@ -30,6 +30,7 @@ OUT_SNP="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/snps"
 OUT_INDEL="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/indels"
 OUT_INVARIANT="/projects/f_geneva_1/alyssa/grahami/gatk/genotype_gvcf/invariant"
 SNPS=${OUT_SNP}/${SAMPLE}_snps_filtered_depth_passed.vcf
+INVAR=${OUT_INVARIANT}/${SAMPLE}_invariants_filtered_depth_passed.vcf
 
 echo ""
 echo "Set filters for vcftools"
@@ -44,10 +45,20 @@ echo "Run vcftools"
 # ======
 # --remove-indels                       # I left this here for just incase downstream
 
-vcftools --vcf ${SNPS} \
---maf ${MAF} --minQ ${QUAL} \
+echo ""
+echo "Filter SNPs"
+# vcftools --vcf ${SNPS} \
+# --maf ${MAF} --minQ ${QUAL} \
+# --min-meanDP ${MIN_DEPTH} --max-meanDP ${MAX_DEPTH} \
+# --minDP ${MIN_DEPTH} --maxDP ${MAX_DEPTH} --recode --out ${OUT_SNP}/${SAMPLE}_snp_vcftools_filtered.vcf
+
+echo ""
+echo "Filter invariants"
+vcftools --vcf ${INVAR} \
+--minDP ${MIN_DEPTH} --maxDP ${MAX_DEPTH} --minQ ${QUAL} \
 --min-meanDP ${MIN_DEPTH} --max-meanDP ${MAX_DEPTH} \
---minDP ${MIN_DEPTH} --maxDP ${MAX_DEPTH} --recode --out ${OUT_SNP}/${SAMPLE}_snp_vcftools_filtered.vcf
+--recode --recode-INFO-all --out ${OUT_INVARIANT}/${SAMPLE}_invariants_vcftools_filtered.vcf 
+
 
 #--max-missing ${MISS}
 
