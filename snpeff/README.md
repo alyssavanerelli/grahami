@@ -157,8 +157,42 @@ java -Xmx8g -jar snpEff.jar AnoGra AnoGra.vcf > AnoGra_out.vcf
   - **Genotype_Number:**	Genotype number corresponding to this effect (e.g. '2' if the effect corresponds to the second ALT)
   - **Warnings / Errors:**	Any warnings or errors (not shown if empty).
 
+---
+
+## Counting different types of effects
+- I will be looking at the different types of impacts
+- I will be getting counts for each type
+- Also, I will be saving these as a separate file to determine if the sex chromosome shows accumulation of more deleterious variants than the autosomes
 
 
+**HIGH**
+```
+grep "HIGH" AnoGra_out.vcf > high.vcf
+wc -l high.vcf
+```
+
+**MODERATE**
+```
+grep -v "HIGH" AnoGra_out.vcf | grep "MODERATE" > moderate.vcf
+```
+
+**LOW**
+```
+grep -v "HIGH" AnoGra_out.vcf | grep -v "MODERATE" | grep "LOW" > low.vcf
+```
+
+**MODIFIER** (neutral)
+```
+grep -v "HIGH" AnoGra_out.vcf | grep -v "MODERATE" | grep -v "LOW" | grep "MODIFIER" > modifier.vcf
+```
+
+
+| Impact    | Count   |
+| --------- | ------- |
+| HIGH      | 8106    |
+| MODERATE  | 136554  |
+| LOW       | 123198  |
+| MODIFIER  | 9014577 |
 
 
 
