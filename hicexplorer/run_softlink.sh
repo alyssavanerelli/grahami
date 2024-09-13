@@ -1,12 +1,11 @@
 #!/bin/bash
-INPUT_DIR="[YOUR_PATH_HERE]/busco/busco_out"
-OUTDIR="[YOUR_PATH_HERE]/busco/phy_input"
-BUSCO_SET="diptera_odb10"
+INPUT_DIR="/projects/f_geneva_1/data/denovo_genomes/grahami_fixed"
+OUTDIR="/projects/f_geneva_1/alyssa/grahami/hicexplorer/hic_reads"
 
-FILES=$(ls -1 [YOUR_PATH_HERE]/busco/genomes/*.fa | cut -d "/" -f 10 | sort)
+FILES=$(ls -1 /projects/f_geneva_1/data/denovo_genomes/grahami_fixed/DTG-HiC-* | cut -d "/" -f 7 | sort | uniq)
 for FILE in $FILES
-        do
-        CMD="ln -s ${INPUT_DIR}/${FILE}/run_${BUSCO_SET} ${OUTDIR}/run_${FILE}"
+        do 
+        CMD="ln -s ${INPUT_DIR}/${FILE} ${OUTDIR}/"
         echo $CMD
         #eval $CMD
         sleep 0.25
