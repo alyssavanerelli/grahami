@@ -20,9 +20,8 @@ module load bwa
 echo ""
 echo "variables"
 NAME=$1
-READS_INDIR="/projects/f_geneva_1/data/denovo_genomes/grahami_fixed"
-READS_OUTDIR="/projects/f_geneva_1/alyssa/grahami/hicexplorer/mapped_reads"
-BAM_OUTDIR="/projects/f_geneva_1/alyssa/grahami/gatk/bam"
+READS_INDIR="/projects/f_geneva_1/alyssa/grahami/hicexplorer/hic_reads"
+OUTDIR="/projects/f_geneva_1/alyssa/grahami/hicexplorer/mapped_reads"
 
 echo ""
 echo "##################### index and align with BWA"
