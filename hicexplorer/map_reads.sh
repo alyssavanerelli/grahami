@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --partition=cmain
 #SBATCH --exclude=gpuc001,gpuc002
-#SBATCH --job-name=align_reads
+#SBATCH --job-name=map_reads
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/hicexplorer/slurmout/slurm-%j-%x.out
 #SBATCH --mem=100G
 #SBATCH -n 15
@@ -11,16 +11,17 @@
 #SBATCH --mail-user=av795@rutgers.edu
 #SBATCH --mail-type=FAIL
 
-echo "load any Amarel modules that script requires"
+echo "load modules"
 module purge
 module load java 
 module load samtools
 module load bwa
 
-
+echo ""
+echo "variables"
 NAME=$1
-#NAME="DTG-SG-149"
-READS_OUTDIR="/projects/f_geneva_1/alyssa/grahami"
+READS_INDIR="/projects/f_geneva_1/data/denovo_genomes/grahami_fixed"
+READS_OUTDIR="/projects/f_geneva_1/alyssa/grahami/hicexplorer/mapped_reads"
 BAM_OUTDIR="/projects/f_geneva_1/alyssa/grahami/gatk/bam"
 
 echo ""
