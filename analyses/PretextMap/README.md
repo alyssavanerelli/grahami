@@ -1,6 +1,7 @@
 # Link Density Histogram
 Using the programs [PretextMap](https://github.com/sanger-tol/PretextMap) and [PretextView](https://github.com/sanger-tol/PretextView).
 
+
 ## Installation
 PretextMap can be installed through conda
 
@@ -10,15 +11,17 @@ conda activate pretext
 conda install bioconda::pretext-suite
 ```
 
+
 ## Softlink genome and HiC reads to this directory
 ```
 ln -s /projects/f_geneva_1/alyssa/grahami/AnoGra1.1.fa* /projects/f_geneva_1/alyssa/grahami/pretextmap/files/
 ln -s /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/DTG-HiC-10* /projects/f_geneva_1/alyssa/grahami/pretextmap/files/
 ```
 
+
 ## Map HiC reads to genome with bwa
 
-[bwa.sh]()
+[bwa.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/bwa.sh)
 
 
 ## Run PretextMap
@@ -32,7 +35,8 @@ ln -s /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/DTG-HiC-10* /pr
 [pretext.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/pretext.sh)
 
 
-
+## View with PretextView
+You will need to have this downloaded onto your local machine.
 
 
 
