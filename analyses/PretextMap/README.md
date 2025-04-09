@@ -36,7 +36,7 @@ ln -s /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/DTG-HiC-10* /pr
 
 
 ## View with PretextView
-You will need to have this downloaded onto your local machine.
+You will need to have this downloaded onto your local machine. The program can be installed through these instructions [here](https://eukaryotic-genome-assembly.github.io/pretextView_installation/).
 
 
 
