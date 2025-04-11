@@ -21,10 +21,17 @@ ln -s /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/DTG-HiC-10* /pr
 
 ## Map HiC reads to genome with bwa
 
+**align HiC reads to genome**
+
 [bwa.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/bwa.sh)
+
+**calculate mapping stats**
 
 [stats.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/stats.sh)
 
+**merge bam files**
+
+[merge.sh](https://github.com/alyssavanerelli/grahami/edit/main/analyses/PretextMap/merge.sh)
 
 ## Run PretextMap
 - this program also uses `samtools view`
