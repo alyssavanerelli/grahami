@@ -23,6 +23,8 @@ ln -s /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/DTG-HiC-10* /pr
 
 [bwa.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/bwa.sh)
 
+[stats.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/stats.sh)
+
 
 ## Run PretextMap
 - this program also uses `samtools view`
