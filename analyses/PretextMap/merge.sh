@@ -3,7 +3,7 @@
 #SBATCH --exclude=gpuc001,gpuc002
 #SBATCH --job-name=merge
 #SBATCH --output=/projects/f_geneva_1/alyssa/grahami/pretextmap/slurmout/slurm-%j-%x.out
-#SBATCH --mem=200G
+#SBATCH --mem=90G
 #SBATCH -n 15
 #SBATCH -N 1
 #SBATCH --time=3-00:00:00
