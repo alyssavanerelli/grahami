@@ -28,7 +28,7 @@ echo "##################### index and align with BWA"
 bwa mem -t 10 ${INDIR}/AnoGra1.1.fa \
 ${INDIR}/${NAME}_R1_001.fastq.gz \
 ${INDIR}/${NAME}_R2_001.fastq.gz \
-| samtools sort -@10 -o ${OUTDIR}/${NAME}_bwa_aligned.bam -
+| samtools sort -@10 -T /scratch/av795 -o ${OUTDIR}/${NAME}_bwa_aligned.bam -
 
 
 echo ""
