@@ -6,7 +6,7 @@
 #SBATCH --mem=60G
 #SBATCH -n 10
 #SBATCH -N 1
-#SBATCH --time=3-00:00:00
+#SBATCH --time=2-18:00:00
 #SBATCH --requeue
 #SBATCH --mail-user=av795@rutgers.edu
 #SBATCH --mail-type=FAIL
@@ -18,6 +18,6 @@ eval "$(conda shell.bash hook)"
 conda activate pretext
 
 echo "run commands"
-samtools view -h DTG-HiC-103_bwa_aligned.bam | PretextMap -o grahami.pretext --sortby length --sortorder descend --mapq 30
+samtools view -h hic_merged.bam | PretextMap -o grahami.pretext --sortby length --sortorder descend --mapq 30
 
 echo "done!"
