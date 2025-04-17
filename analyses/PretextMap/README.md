@@ -44,8 +44,12 @@ ln -s /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/DTG-HiC-10* /pr
 [pretext.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/pretext.sh)
 
 
-## View with PretextView
+## View with PretextSnapshot
+- [PretextSnapshot](https://github.com/sanger-tol/PretextSnapshot)
+
 You will need to have this downloaded onto your local machine. The program can be installed through these instructions [here](https://eukaryotic-genome-assembly.github.io/pretextView_installation/).
+
+
 
 
 
