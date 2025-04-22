@@ -46,17 +46,9 @@ ln -s /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/DTG-HiC-10* /pr
 
 ## View with PretextSnapshot
 - [PretextSnapshot](https://github.com/sanger-tol/PretextSnapshot)
+- can generate a map of 1-18, and of just 11 and 12
 
-You will need to have this downloaded onto your local machine. The program can be installed through these instructions [here](https://eukaryotic-genome-assembly.github.io/pretextView_installation/).
-
-
-
-
-
-
-
-
-
+[snapshot.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/snapshot.sh)
 
 
 
