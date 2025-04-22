@@ -20,6 +20,6 @@ conda activate pretext
 echo "run commands"
 PretextSnapshot -m grahami.pretext --sequences "scaffold_1 > scaffold_18" --prefix grahami_full
 
-PretextSnapshot -m grahami.pretext --sequences "scaffold_11,scaffold_12" --prefix grahami_sex_chrom
+PretextSnapshot -m grahami.pretext --sequences "scaffold_11 > scaffold_12" --prefix grahami_sex_chrom
 
 echo "done!"
