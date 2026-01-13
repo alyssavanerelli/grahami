@@ -476,11 +476,3 @@ Follow instructions above to run BUSCO on this final genome assembly
 
 # Final Stats Calc
 Follow instructions above to run stats on this final genome assembly
-
-# Next Steps: Go to Maker folder then analyses folder
-
-- Annotate genome with **`MAKER`**
-- Use **`busco_phylogenomics`** to make phylogeny 
-- Chromosome synteny analysis using **`satsuma`**
-- Create hic file using **`juicer`** to make sure genome is assembled correctly
-- Create **busco scores figure**
