@@ -15,7 +15,7 @@ Example code will be pasted below. For more information (slurm submission header
 - This needs to be done on each Illumina read file
   - Will submit a separate job for each read pair
 
-<details><summary>EXAMPLE</summary>
+<details><summary>code</summary>
 <p>
   
   ```
@@ -75,7 +75,7 @@ detailed list of options can be found [here](https://github.com/bcgsc/abyss/tree
 **bloom filters**
 - explanation
 
-<details><summary>EXAMPLE</summary>
+<details><summary>code</summary>
 <p>
   
   ```
@@ -111,7 +111,7 @@ This program will calculate scaffold length, N50, % gaps, etc.
   - will be beneficial to rename the output file
 
 
-<details><summary>EXAMPLE</summary>
+<details><summary>code</summary>
 <p>
   
   ```
@@ -199,7 +199,7 @@ Install busco using conda
 - This will create a `.bam` file
 - If a run failed, temporary `.bam` files need to be deleted to re-run.
 
-<details><summary>EXAMPLE</summary>
+<details><summary>code</summary>
 <p>
   
   ```
