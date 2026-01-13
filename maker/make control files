@@ -1,5 +1,0 @@
-# load module ?
-module load singularity
-
-#run this command to make files
-srun -p p_ccib_1 singularity exec /projects/f_geneva_1/programs/maker:2.31.11-repbase.sif maker -CTL
