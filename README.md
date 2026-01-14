@@ -19,12 +19,12 @@ Example code will be pasted below. For more information (slurm submission header
 <p>
   
   ```
-  echo "load any Amarel modules that script requires"
+  
   module purge                                    # clears out any pre-existing modules
   module load java                                # load any modules needed
   module load FastQC
 
-  echo "Bash commands for the analysis you are going to run"
+  
 
   readset="/projects/f_geneva_1/alyssa/grahami/DTG-SG-149"
 
@@ -72,19 +72,17 @@ abyss-sealer -b <Bloom filter size> -k <kmer size> -k <kmer size>... -o <output_
 
 detailed list of options can be found [here](https://github.com/bcgsc/abyss/tree/master/Sealer#options)
 
-**bloom filters**
-- explanation
 
 <details><summary>code</summary>
 <p>
   
   ```
-  echo "load any Amarel modules that script requires"
+  
   module purge                                    # clears out any pre-existing modules
   module load boost                               # load any modules needed
   
 
-  echo "Bash commands for the analysis you are going to run"
+  
   reads="/projects/f_geneva_1/alyssa/grahami/DTG-SG-"
   longreads="/projects/f_geneva_1/alyssa/grahami/DTG_SG_65_S1"
 
@@ -115,12 +113,12 @@ This program will calculate scaffold length, N50, % gaps, etc.
 <p>
   
   ```
-  echo "load any Amarel modules that script requires"
+  
   module purge                                    # clears out any pre-existing modules
   module load java                                # load any modules needed
 
 
-  echo "Bash commands for the analysis you are going to run"
+  
   stats.sh in=/projects/f_geneva_1/alyssa/grahami/sealer/run1_scaffold.fa
   ```
   
@@ -203,12 +201,10 @@ Install busco using conda
 <p>
   
   ```
-  echo "load any Amarel modules that script requires"
 module purge                                    # clears out any pre-existing modules
 module load samtools                            # load any modules needed
 module load bwa
 
-echo "Bash commands for the analysis you are going to run"
 
 echo "index and align with BWA"
 bwa index /projects/f_geneva_1/alyssa/grahami/sealer/run2_scaffold.fa
@@ -252,12 +248,12 @@ Before running `pilon`, the genome needs to be split into scaffolds because of m
 <p>
   
   ```
-  echo "load any Amarel modules that script requires"
+  
 module purge                                    # clears out any pre-existing modules
 module load java
 module load samtools
 
-echo "Bash commands for the analysis you are going to run"
+
 samtools faidx /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/run2_scaffold.fa
  cut -f1-2 /projects/f_geneva_1/alyssa/grahami/pilon/chr_split/run2_scaffold.fa.fai > scaffold_sizes.txt
   ```
@@ -300,7 +296,7 @@ In this step, we are creating a file that will extract each chr from the fasta f
 <p>
   
   ```
-  echo "load any Amarel modules that script requires"
+  
 module purge                                    # clears out any pre-existing modules
 module load java
 module load samtools
@@ -443,7 +439,7 @@ Sort genome scaffolds by size and name accordingly
   ```
   species=$1
 
-echo "Bash commands for the analysis you are going to run"
+
 echo ""
 echo "##### sort by size and rename sequence"
 sortbyname.sh -Xmx4g in=${species}.fa out=${species}_sorted.fa length descending
