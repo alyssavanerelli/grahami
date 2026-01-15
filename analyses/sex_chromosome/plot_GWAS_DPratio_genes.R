@@ -2,11 +2,11 @@ library(tidyverse)
 library(readxl)
 
 #input files
-GWAS<-read.csv(file="~/Library/CloudStorage/Dropbox/in_progress_papers/grahami_genome_ms/sex_analysis/grh_11_12_GWAS.csv", header=TRUE)
-dp<-read.csv(file="~/Library/CloudStorage/Dropbox/in_progress_papers/grahami_genome_ms/sex_analysis/grh_11_12_DPratio.csv", header=TRUE)
-intervals <- read.table("~/Library/CloudStorage/Dropbox/in_progress_papers/grahami_genome_ms/sex_analysis/2Mb_50kb_step_windows.bed", header=TRUE)
+GWAS<-read.csv(file="grh_11_12_GWAS.csv", header=TRUE)
+dp<-read.csv(file="grh_11_12_DPratio.csv", header=TRUE)
+intervals <- read.table("2Mb_50kb_step_windows.bed", header=TRUE)
 # Asag X genes
-AgraX_genes <- read.table("~/Library/CloudStorage/Dropbox/in_progress_papers/grahami_genome_ms/sex_analysis/Agra_X_orthologs.tsv", header=T)
+AgraX_genes <- read.table("Agra_X_orthologs.tsv", header=T)
 
 #depth
 lowerq_dp = quantile(dp$DP_ratio,na.rm = TRUE) [2]
