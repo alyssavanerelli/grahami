@@ -40,3 +40,8 @@ Resulting output is a table of the number of uniq Acar X genes on each scaffold
    1 scaffold_11184
    1 scaffold_11084
 ```
+# To Generate Figure run:
+
+```
+Rscript plot_GWAS_DPratio_genes.R
+```
