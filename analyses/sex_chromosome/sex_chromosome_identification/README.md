@@ -5,6 +5,8 @@ Final sample dataset includes 41 males and 41 females from across 33 sites
 ## 1. Run ipyrad 
 Using sequence data following initial processing (clone_filter, trimming with Trimmomatic, process_radtags)
 
+Running ipyrad with all samples together will output the VCF needed for the GWAS. Running ipyrad for males and females separately will output the VCFs needed for sex-associated read depth analysis. 
+
 ```bash
 #!/bin/bash
 
