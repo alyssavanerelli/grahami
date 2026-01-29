@@ -145,4 +145,77 @@ AATTC, GCATG                                                                    
                                                                                 ## [29] [reference_as_filter]: Reads mapped to this reference are removed in step 3
 ```
 
+## GWAS: association between genomic variation and phenotypic sex
+Using the VCF output from the all-samples (82 samples: 41 males, 41 females) ipyrad run. Analysis performed on the first (largest) 20 scaffolds in the assembly. 
+
+```bash
+#!/bin/bash
+
+#SBATCH -p shared
+#SBATCH --cpus-per-task=4
+#SBATCH -N 1
+#SBATCH --mem 10G
+#SBATCH -t 1-00:00:00
+#SBATCH -J grh_sex_gwas
+#SBATCH -o grh_sex_gwas_%j.out
+#SBATCH -e grh_sex_gwas_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=imaayan@g.harvard.edu
+
+module load Mambaforge/22.11.1-fasrc01
+
+# load singularity image on the cluster which preserves the modules needed to run this script.
+singularity run /n/singularity_images/FAS/centos7/compute-el7-noslurm-2023-03-29.sif
+
+# Load modules
+#VCFlib
+module load vcflib/2015Feb18-fasrc01
+#PLINK
+module load plink/1.90-fasrc01
+#VCFtools
+module load vcftools/0.1.14-fasrc01
+
+# input file is grh_G90.vcf
+
+# look at the order of samples, and then make grh_sex.txt file, with a single column where 1 is Male and 2 is Female
+vcfsamplenames grh_G90.vcf
+
+#change chromosome label to numeric (vcftools compatibility)
+sed -i 's/scaffold_//g' grh_G90.vcf
+
+#keep the first 20 scaffolds
+grep "#" grh_G90.vcf > VCF_header.txt
+grep -v "#" grh_G90.vcf > grh.txt
+awk '$1 <= 20 {print $0}' grh.txt > grh20scf.txt
+cat VCF_header.txt grh20scf.txt > grh20scf.vcf
+
+#make PLINK PED and MAP files
+vcftools --vcf grh20scf.vcf --plink --out grh20scf
+
+
+#add sex information as the trait (6th column) in the PED file
+cut -f 1-5 grh20scf.ped > grh.first_5_columns.txt
+paste grh.first_5_columns.txt grh_sex.txt > grh.first_6_columns.txt
+cut -f 7- grh20scf.ped > grh.columns_7_onwards.txt
+paste grh.first_6_columns.txt grh.columns_7_onwards.txt > grh.v2.ped
+rm grh.first_5_columns.txt grh.first_6_columns.txt grh.columns_7_onwards.txt
+mv grh.v2.ped grh20scf.ped
+
+#GWAS for maleness trait
+plink --file grh20scf --assoc fisher --noweb --allow-no-sex
+
+#summarize association results for plotting
+#keep information on CHR, SNP, BP, and P value
+awk '{print $1,$2,$3,$8}' plink.assoc.fisher > grh20scf.assoc.fisher.csv
+awk '{a = -log($8)/log(10); printf("%0.4f\n", a)}' plink.assoc.fisher > grh20scf.logp.csv
+sed -i 's/+inf/logp/g' grh20scf.logp.csv
+paste grh20scf.assoc.fisher.csv grh20scf.logp.csv > grh20scf.gwas_for_plotting.txt
+sed -i 's/\t/ /g' grh20scf.gwas_for_plotting.txt
+
+# leave singularity image
+exit
+
+# use grh20scg.gwas_for_plotting.txt to plot figure in R
+
+```
 
