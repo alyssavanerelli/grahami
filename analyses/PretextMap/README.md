@@ -31,7 +31,7 @@ ln -s /projects/f_geneva_1/alyssa/grahami/juicerdir/AnoGra/fastq/DTG-HiC-10* /pr
 
 **merge bam files**
 
-[merge.sh](https://github.com/alyssavanerelli/grahami/edit/main/analyses/PretextMap/merge.sh)
+[merge.sh](https://github.com/alyssavanerelli/grahami/blob/main/analyses/PretextMap/merge.sh)
 
 ## Run PretextMap
 - this program also uses `samtools view`
